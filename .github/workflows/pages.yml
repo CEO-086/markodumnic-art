@@ -1,0 +1,38 @@
+# Objava sajta na GitHub Pages (pregled dok ne bude domena).
+# Objavljuju se samo fajlovi sajta: originali, alati i podešavanja ostaju samo u repou.
+name: GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  objava:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.objava.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Samo fajlovi sajta
+        run: |
+          mkdir _site
+          git archive HEAD | tar -x -C _site
+          # isto što se ne objavljuje ni na Vercelu, plus git i Vercel podešavanja
+          while read -r p; do [ -n "$p" ] && rm -rf "_site/$p"; done < .vercelignore
+          rm -rf _site/.github _site/.gitignore _site/.vercelignore _site/vercel.json
+          du -sh _site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+      - id: objava
+        uses: actions/deploy-pages@v4
