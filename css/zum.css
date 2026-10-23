@@ -1,0 +1,548 @@
+/* =========================================================
+   Marko Dumnić — zum.css
+   Prikazivač djela sa pločicama (zum.html).
+   Samo tokeni iz tokens.css — nijedan hardkodovan hex.
+
+   Prikazivač stoji u bloku sa klasom `soba-tamna`, koja unutar sebe
+   mijenja vrijednosti tokena na tamnu paletu. Zato su sve boje ispod
+   pisane kao obični tokeni (--paper, --ink, --rule) — automatski
+   dobijaju tamne vrijednosti unutar sobe, a svijetle izvan nje.
+   ========================================================= */
+
+
+/* === Lokalne mjere === */
+
+.zum {
+  /* Visina okna: velika, ali tako da naslov i mjerač ostanu na ekranu. */
+  --zum-visina: clamp(22rem, 68vh, 46rem);
+  --zum-visina-uska: clamp(18rem, 56vh, 30rem);
+}
+
+
+/* ---------------------------------------------------------
+   UVOD
+   --------------------------------------------------------- */
+
+.zum-uvod {
+  padding-bottom: var(--s-6);
+}
+
+.zum-uvod .naslov-1 {
+  margin-top: var(--s-3);
+}
+
+
+/* ---------------------------------------------------------
+   SOBA — tamni blok oko prikazivača
+   Ide od ivice do ivice ekrana: slika je glavni glas, pa ne
+   stoji u kutiji nego zauzima cijelu širinu.
+   --------------------------------------------------------- */
+
+.zum-soba {
+  background: var(--paper);
+  color: var(--ink-soft);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: var(--s-5) var(--gutter) var(--s-4);
+}
+
+
+/* ---------------------------------------------------------
+   GORNJA TRAKA — naziv djela i mjerač
+   --------------------------------------------------------- */
+
+.zum-traka {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-6);
+  max-width: var(--max-w-wide);
+  margin: 0 auto var(--s-4);
+}
+
+.zum-traka__naslov {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.zum-traka__naslov .naslov-3 {
+  color: var(--ink);
+}
+
+.zum-traka__meta {
+  max-width: none;
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-muted);
+}
+
+
+/* ---------------------------------------------------------
+   MJERAČ — brojevi performansi
+   Tabelarne cifre da se vrijednosti ne pomjeraju lijevo-desno
+   dok se brojevi mijenjaju.
+   --------------------------------------------------------- */
+
+.zum-mjerac {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  margin: 0;
+}
+
+/* `display: flex` iznad nadjačava ugrađeno `[hidden]`, pa ga vraćamo. */
+.zum-mjerac[hidden] {
+  display: none;
+}
+
+/* Na uskom ekranu mjerač je jedan red sitnih parova „oznaka: broj“,
+   da ne otme visinu slici. Od 820px prelazi u uspravne parove. */
+.zum-mjerac__par {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+}
+
+.zum-mjerac dt {
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: var(--track-xwide);
+  color: var(--ink-muted);
+}
+
+.zum-mjerac dd {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+@media (min-width: 820px) {
+  .zum-mjerac {
+    gap: var(--s-2) var(--s-6);
+  }
+
+  .zum-mjerac__par {
+    display: grid;
+    gap: 2px;
+    min-width: 5.5rem;
+  }
+
+  .zum-mjerac dd {
+    font-size: var(--t-sm);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   OKNO — vidno polje prikazivača
+   `overflow: hidden` je ono što od platna pravi prozor.
+   `touch-action: none` predaje dodir JS-u (pinch i vučenje),
+   inače bi browser skrolovao stranicu umjesto slike.
+   --------------------------------------------------------- */
+
+.zum-okno {
+  position: relative;
+  width: 100%;
+  max-width: var(--max-w-wide);
+  height: var(--zum-visina-uska);
+  margin-inline: auto;
+  overflow: hidden;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Bez plavog highlighta na dodir u mobilnim browserima. */
+  -webkit-tap-highlight-color: transparent;
+  /* Novi sloj kompozicije — transform platna ne prelije van okna. */
+  isolation: isolate;
+  contain: paint;
+}
+
+@media (min-width: 820px) {
+  .zum-okno {
+    height: var(--zum-visina);
+  }
+}
+
+.zum-okno.je-vuceno {
+  cursor: grabbing;
+}
+
+/* Fokus na oknu mora biti jasan — okno prima tastaturu. */
+.zum-okno:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Dok se čeka info.json — tiha šrafura na dubljem papiru,
+   isti potez kao u ostatku sajta. */
+.zum[data-stanje="ucitavanje"] .zum-okno {
+  background-color: var(--paper-deep);
+  background-image: var(--hatch);
+  background-repeat: repeat;
+}
+
+/* Rezervni prikaz se ne vuče i ne zumira, pa ni kursor to ne nagoviještava,
+   a kontrole i uputa se sklanjaju — mrtva dugmad su gora od nikakvih. */
+.zum[data-stanje="rezerva"] .zum-okno {
+  cursor: default;
+}
+
+.zum[data-stanje="rezerva"] .zum-kontrole,
+.zum[data-stanje="rezerva"] .zum-uputa {
+  display: none;
+}
+
+
+/* ---------------------------------------------------------
+   PLATNO — nosi transform (translate + scale)
+   Dimenzije postavlja zum.js u sadržajnim jedinicama; sve
+   pločice su pozicionirane u tom istom prostoru.
+   --------------------------------------------------------- */
+
+.zum-platno {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  /* Nagovještaj kompozitoru: transform se mijenja svaki frejm. */
+  will-change: transform;
+}
+
+/* Slojevi nivoa se potpuno preklapaju; z-index postavlja zum.js. */
+.zum-nivo {
+  position: absolute;
+  inset: 0;
+}
+
+.zum-nivo[hidden] {
+  display: none;
+}
+
+/* Pojedinačna pločica. Pojavljuje se tihim fade-om da se učitavanje
+   ne vidi kao preskakanje — vidi i blok za manje pokreta na kraju. */
+.zum-plocica {
+  position: absolute;
+  display: block;
+  max-width: none;
+  opacity: 0;
+  transition: opacity 160ms var(--ease);
+  /* Ivice susjednih pločica se ne smiju vidjeti kao šav. */
+  image-rendering: auto;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.zum-plocica.je-ucitana {
+  opacity: 1;
+}
+
+/* Rezervni prikaz: platno se ne transformiše nego ispuni okno,
+   pa obična slika stane cijela, uklopljena, bez zumiranja. */
+.zum[data-stanje="rezerva"] .zum-platno {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+}
+
+.zum-rezerva {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Sitna margina da slika ne dotiče ivicu okna. */
+  padding: var(--s-4);
+}
+
+
+/* ---------------------------------------------------------
+   PORUKA — greške i objašnjenja
+   Stoji ISPOD okna, nikad preko slike: tekst preko slike je
+   zabranjen u ovom dizajnu, a i poruka se tako lakše čita.
+   --------------------------------------------------------- */
+
+.zum-poruka {
+  max-width: var(--max-w-wide);
+  margin: var(--s-4) auto 0;
+  padding: var(--s-3) var(--s-4);
+  background: var(--paper-warm);
+  border-left: 2px solid var(--accent);
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+}
+
+.zum-poruka[hidden] {
+  display: none;
+}
+
+
+/* ---------------------------------------------------------
+   DONJA TRAKA — kontrole i uputa
+   Kontrole su ispod slike, nikad preko nje.
+   --------------------------------------------------------- */
+
+.zum-podtraka {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-5);
+  max-width: var(--max-w-wide);
+  margin: var(--s-4) auto 0;
+}
+
+.zum-kontrole {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.zum-dugme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding-inline: var(--s-2);
+  background: none;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease),
+              background-color var(--dur) var(--ease),
+              color var(--dur) var(--ease);
+}
+
+.zum-dugme--sira {
+  padding-inline: var(--s-4);
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+}
+
+.zum-dugme:hover {
+  border-color: var(--ink);
+  background-color: var(--paper-deep);
+}
+
+.zum-dugme[disabled] {
+  color: var(--ink-faint);
+  border-color: var(--rule);
+  background: none;
+  cursor: not-allowed;
+}
+
+.zum-uputa {
+  max-width: none;
+  margin: 0;
+  font-size: var(--t-xs);
+  line-height: var(--leading-snug);
+  color: var(--ink-muted);
+}
+
+.zum-uputa kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 1px var(--s-1);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  font-family: var(--font-ui);
+  font-size: 0.95em;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+
+/* ---------------------------------------------------------
+   BEZ JAVASCRIPTA
+   Skriveno po pravilu; <noscript> blok u zum.html ga otkriva.
+   --------------------------------------------------------- */
+
+.zum-bez-js {
+  display: none;
+  max-width: var(--max-w);
+  margin: var(--s-5) auto 0;
+}
+
+.zum-bez-js p {
+  margin-bottom: var(--s-5);
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+}
+
+.zum-bez-js img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+}
+
+
+/* ---------------------------------------------------------
+   SPISAK DRUGIH DJELA
+   Linija ispod stavke je uvijek tu (prozirna), pa prelaz ne
+   pomjera tekst.
+   --------------------------------------------------------- */
+
+.zum-spisak {
+  display: grid;
+  gap: 0;
+  max-width: var(--measure);
+  border-top: 1px solid var(--rule);
+}
+
+.zum-spisak li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.zum-spisak__stavka {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-5);
+  padding: var(--s-4) 0;
+  text-decoration: none;
+  color: var(--ink-soft);
+  transition: color var(--dur) var(--ease),
+              padding-left var(--dur) var(--ease);
+}
+
+.zum-spisak__naziv {
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+}
+
+.zum-spisak__meta {
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+}
+
+.zum-spisak__stavka:hover,
+.zum-spisak__stavka:focus-visible {
+  padding-left: var(--s-3);
+}
+
+.zum-spisak__stavka:hover .zum-spisak__naziv,
+.zum-spisak__stavka:focus-visible .zum-spisak__naziv {
+  color: var(--accent-deep);
+}
+
+/* Djelo koje je trenutno u prikazivaču. */
+.zum-spisak__stavka[aria-current="true"] {
+  padding-left: var(--s-3);
+  box-shadow: inset 2px 0 0 0 var(--accent);
+}
+
+.zum-spisak__stavka[aria-current="true"] .zum-spisak__naziv {
+  color: var(--ink);
+}
+
+
+/* ---------------------------------------------------------
+   TEHNIČKA BILJEŠKA
+   --------------------------------------------------------- */
+
+.zum-biljeska .naslov-2 {
+  margin-top: var(--s-3);
+}
+
+.zum-karta {
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule-strong);
+}
+
+.zum-karta__broj {
+  max-width: none;
+  margin-bottom: var(--s-3);
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: var(--track-xwide);
+  /* Bilo var(--accent-deep) (sijena) — 4.27:1 na --paper-warm, ispod AA.
+     --ink-muted daje 5.10:1 na --paper-warm (5.52 na --paper). */
+  color: var(--ink-muted);
+}
+
+.zum-karta .naslov-3 {
+  margin-bottom: var(--s-3);
+}
+
+.zum-karta p {
+  max-width: 34ch;
+  font-size: var(--t-sm);
+  line-height: var(--leading-body);
+}
+
+.zum-biljeska__detalj {
+  max-width: var(--measure);
+}
+
+
+/* ---------------------------------------------------------
+   MANJE POKRETA
+   Pločice se pojavljuju bez fade-a (skokovito), kako je traženo.
+   Zum sam po sebi već radi bez prelaza — to rješava zum.js.
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .zum-plocica {
+    opacity: 1;
+    transition: none;
+  }
+
+  .zum-platno {
+    will-change: auto;
+  }
+
+  .zum-spisak__stavka {
+    transition: none;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   ŠTAMPA
+   Interaktivni prikazivač nema smisla na papiru — ostaje naziv
+   djela i objašnjenje.
+   --------------------------------------------------------- */
+
+@media print {
+  .zum-soba,
+  .zum-mjerac,
+  .zum-kontrole,
+  .zum-uputa,
+  .zum-okno {
+    display: none;
+  }
+
+  .zum-bez-js {
+    display: block;
+  }
+
+  .zum-karta {
+    break-inside: avoid;
+  }
+}

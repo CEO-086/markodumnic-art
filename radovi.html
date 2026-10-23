@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="sr-Latn-ME">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radovi — Marko Dumnić</title>
+<meta name="description" content="Ulja na platnu Marka Dumnića u tri serije — torinski pejzaži, prizori iz ateljea i sanjarenja o rodnom gradu. Pregled radova sa filterom po seriji.">
+<!-- fontovi -->
+<link rel="preload" href="fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<!-- /fontovi -->
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/radovi.css">
+
+<!--
+  Degradiranje bez JavaScripta:
+  svih 13 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
+  stavke. Ako JS ne radi, dugmad filtera se sklanjaju (vidi <noscript> ispod)
+  da korisnik ne dobije mrtve kontrole, a mreža ostaje cijela — što je
+  ispravno ponašanje za pregled radova.
+-->
+<noscript>
+  <style>
+    /* Bez JS-a nema filtriranja — skrivamo dugmad i objašnjavamo zašto. */
+    .filter__dugmad { display: none; }
+    .filter__bez-js { display: block; }
+  </style>
+</noscript>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F3EEE4">
+<meta property="og:title" content="Radovi — Marko Dumnić">
+<meta property="og:description" content="Ulja na platnu u tri serije: Torino, atelje i rodni grad.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://markodumnic.art/img/og/sajt.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<!-- hreflang -->
+<link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/radovi">
+<link rel="alternate" hreflang="en" href="https://markodumnic.art/en/radovi">
+<link rel="alternate" hreflang="x-default" href="https://markodumnic.art/radovi">
+<link rel="canonical" href="https://markodumnic.art/radovi">
+<meta property="og:url" content="https://markodumnic.art/radovi">
+<meta property="og:locale" content="sr_ME">
+<meta property="og:locale:alternate" content="en_GB">
+<!-- /hreflang -->
+</head>
+<body>
+
+<a class="preskoci" href="#glavno">Preskoči na sadržaj</a>
+
+<header class="zaglavlje">
+  <div class="zaglavlje__traka">
+    <a class="logotip" href="index.html">
+      <span class="logotip__ime">Marko Dumnić</span>
+      <span class="logotip__uloga">Slikar</span>
+    </a>
+
+    <button class="meni-dugme" type="button" aria-expanded="false" aria-controls="glavna-navigacija">
+      <span class="meni-dugme__linija"></span>
+      <span class="meni-dugme__linija"></span>
+      <span class="vizuelno-skriveno">Meni</span>
+    </button>
+
+    <nav class="navigacija" id="glavna-navigacija" aria-label="Glavna navigacija">
+      <a href="index.html">Početna</a>
+      <a href="o-autoru.html">O autoru</a>
+      <a href="radovi.html" aria-current="page">Radovi</a>
+      <a href="galerija.html">Galerija</a>
+      <a href="kontakt.html">Kontakt</a>
+    </nav>
+
+    <!-- jezik -->
+    <div class="jezik">
+      <button class="jezik__dugme" type="button" aria-expanded="false" aria-controls="jezik-lista"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><svg class="jezik__strelica" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vizuelno-skriveno"> Jezik: crnogorski. Promijeni jezik</span></button>
+      <nav class="jezik__lista" id="jezik-lista" aria-label="Jezik">
+        <a class="jezik__veza" href="radovi.html" hreflang="sr-ME" lang="sr-Latn-ME" aria-current="true"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><span class="jezik__ime">Crnogorski</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="en/radovi.html" hreflang="en" lang="en"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><span class="jezik__ime">English</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+    <!-- /jezik -->
+  </div>
+</header>
+
+<main id="glavno">
+
+  <section class="sekcija">
+    <div class="omot">
+      <header class="radovi-uvod">
+        <h1 class="naslov-1">Radovi</h1>
+        <p class="uvodni">
+          Ulja na platnu u tri serije: torinski pejzaži iz godina studija, prizori
+          iz ateljea i sanjarenja o rodnom gradu — Cetinju.
+        </p>
+      </header>
+
+      <div class="linija" role="presentation"></div>
+
+      <!-- Filter. Dugmad su prava dugmad sa aria-pressed; grupa je označena
+           kao role="group" jer se aria-pressed i role="tab" ne kombinuju. -->
+      <div class="filter">
+        <div class="filter__dugmad" role="group" aria-label="Filter radova po seriji" id="filter-radova">
+          <button class="filter__dugme je-aktivno" type="button" data-filter="sve" aria-pressed="true">Sve</button>
+          <button class="filter__dugme" type="button" data-filter="torino" aria-pressed="false">Torinski pejzaži</button>
+          <button class="filter__dugme" type="button" data-filter="atelje" aria-pressed="false">Prizori iz ateljea</button>
+          <button class="filter__dugme" type="button" data-filter="rodni-grad" aria-pressed="false">Sanjarenja o rodnom gradu</button>
+        </div>
+
+        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Prikazano 13 od 13 radova</p>
+
+        <p class="filter__bez-js">
+          Filter po seriji zahtijeva JavaScript. Ispod su prikazani svi radovi.
+        </p>
+      </div>
+
+      <ul class="mreza-radova" id="mreza-radova">
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/aria-di-torino.html">
+            <span class="rad__okvir">
+              <!-- Prva slika je uvijek u prvom ekranu na svakoj širini, pa ide
+                   eager i bez decoding="async": lazy na prvoj slici samo odlaže
+                   najvažniji piksel na stranici (LCP). Ostale ostaju lazy. -->
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/aria-di-torino-480.avif 480w, img/radovi/w/aria-di-torino-800.avif 800w, img/radovi/w/aria-di-torino-1200.avif 1200w, img/radovi/w/aria-di-torino-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/aria-di-torino-480.webp 480w, img/radovi/w/aria-di-torino-800.webp 800w, img/radovi/w/aria-di-torino-1200.webp 1200w, img/radovi/w/aria-di-torino-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/aria-di-torino.jpg" width="1171" height="1400" loading="eager" fetchpriority="high"
+                     alt="Vila sa crvenim krovom na uglu ulice, a iznad nje nebo u gustim, kovitlavim potezima plave i bijele.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Aria di Torino</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 60&nbsp;×&nbsp;50&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/piazza-castello-e-torre-littoria.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/piazza-castello-e-torre-littoria-480.avif 480w, img/radovi/w/piazza-castello-e-torre-littoria-800.avif 800w, img/radovi/w/piazza-castello-e-torre-littoria-1181.avif 1181w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/piazza-castello-e-torre-littoria-480.webp 480w, img/radovi/w/piazza-castello-e-torre-littoria-800.webp 800w, img/radovi/w/piazza-castello-e-torre-littoria-1181.webp 1181w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/piazza-castello-e-torre-littoria.jpg" width="1042" height="1400" loading="lazy" decoding="async"
+                     alt="Toranj Torre Littoria izdiže se nad fasadama Piazza Castello; nebo je razbijeno u kratke poteze boje.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Piazza Castello e Torre Littoria</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 40&nbsp;×&nbsp;30&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/ponte-isabella.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/ponte-isabella-480.avif 480w, img/radovi/w/ponte-isabella-800.avif 800w, img/radovi/w/ponte-isabella-1180.avif 1180w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/ponte-isabella-480.webp 480w, img/radovi/w/ponte-isabella-800.webp 800w, img/radovi/w/ponte-isabella-1180.webp 1180w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/ponte-isabella.jpg" width="1180" height="857" loading="lazy" decoding="async"
+                     alt="Most preko rijeke Po, sa obalom i šetalištem u prvom planu i lukovima koji se ogledaju u vodi.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Ponte Isabella</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 40&nbsp;×&nbsp;30&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/krovovi-torina.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/krovovi-torina-480.avif 480w, img/radovi/w/krovovi-torina-800.avif 800w, img/radovi/w/krovovi-torina-1174.avif 1174w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/krovovi-torina-480.webp 480w, img/radovi/w/krovovi-torina-800.webp 800w, img/radovi/w/krovovi-torina-1174.webp 1174w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/krovovi-torina.jpg" width="1116" height="1400" loading="lazy" decoding="async"
+                     alt="Kupola i krovovi Torina u plavom i okerastom svjetlu, gledani odozgo, iz gustog gradskog tkiva.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Krovovi Torina</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 50&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/havanac-kastro.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/havanac-kastro-480.avif 480w, img/radovi/w/havanac-kastro-800.avif 800w, img/radovi/w/havanac-kastro-1200.avif 1200w, img/radovi/w/havanac-kastro-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/havanac-kastro-480.webp 480w, img/radovi/w/havanac-kastro-800.webp 800w, img/radovi/w/havanac-kastro-1200.webp 1200w, img/radovi/w/havanac-kastro-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/havanac-kastro.jpg" width="1398" height="1400" loading="lazy" decoding="async"
+                     alt="Havanski bišon Kastro spava na pokrivaču u ateljeu, među jastucima i slikama na zidu.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Havanac Kastro</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 60&nbsp;×&nbsp;60&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/mrtva-priroda-sa-vazom.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/mrtva-priroda-sa-vazom-480.avif 480w, img/radovi/w/mrtva-priroda-sa-vazom-800.avif 800w, img/radovi/w/mrtva-priroda-sa-vazom-1200.avif 1200w, img/radovi/w/mrtva-priroda-sa-vazom-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/mrtva-priroda-sa-vazom-480.webp 480w, img/radovi/w/mrtva-priroda-sa-vazom-800.webp 800w, img/radovi/w/mrtva-priroda-sa-vazom-1200.webp 1200w, img/radovi/w/mrtva-priroda-sa-vazom-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/mrtva-priroda-sa-vazom.jpg" width="1400" height="1161" loading="lazy" decoding="async"
+                     alt="Plava vaza, saksija sa cvijetom i kutija na stolu, pred šarenim zidom ateljea.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Mrtva priroda sa vazom</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 50&nbsp;×&nbsp;60&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/mrtva-priroda-sa-bocama.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/mrtva-priroda-sa-bocama-480.avif 480w, img/radovi/w/mrtva-priroda-sa-bocama-800.avif 800w, img/radovi/w/mrtva-priroda-sa-bocama-1200.avif 1200w, img/radovi/w/mrtva-priroda-sa-bocama-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/mrtva-priroda-sa-bocama-480.webp 480w, img/radovi/w/mrtva-priroda-sa-bocama-800.webp 800w, img/radovi/w/mrtva-priroda-sa-bocama-1200.webp 1200w, img/radovi/w/mrtva-priroda-sa-bocama-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/mrtva-priroda-sa-bocama.jpg" width="1400" height="1048" loading="lazy" decoding="async"
+                     alt="Dvije boce i zelena vaza na narandžastom stolu, sa ramovima prislonjenim uz zid.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Mrtva priroda sa bocama</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 30&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/mrtva-priroda-sa-cvijecem.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/mrtva-priroda-sa-cvijecem-480.avif 480w, img/radovi/w/mrtva-priroda-sa-cvijecem-800.avif 800w, img/radovi/w/mrtva-priroda-sa-cvijecem-1200.avif 1200w, img/radovi/w/mrtva-priroda-sa-cvijecem-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/mrtva-priroda-sa-cvijecem-480.webp 480w, img/radovi/w/mrtva-priroda-sa-cvijecem-800.webp 800w, img/radovi/w/mrtva-priroda-sa-cvijecem-1200.webp 1200w, img/radovi/w/mrtva-priroda-sa-cvijecem-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/mrtva-priroda-sa-cvijecem.jpg" width="1104" height="1400" loading="lazy" decoding="async"
+                     alt="Cvijeće u limenoj posudi, krtola i luk na stolu, a iza njih prazan ram.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Mrtva priroda sa cvijećem</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 50&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/autoportret.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/autoportret-480.avif 480w, img/radovi/w/autoportret-800.avif 800w, img/radovi/w/autoportret-1200.avif 1200w, img/radovi/w/autoportret-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/autoportret-480.webp 480w, img/radovi/w/autoportret-800.webp 800w, img/radovi/w/autoportret-1200.webp 1200w, img/radovi/w/autoportret-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/autoportret.jpg" width="1152" height="1400" loading="lazy" decoding="async"
+                     alt="Autoportret kao mala skica na stolu ateljea, među cvijetom u saksiji, narom i ramovima.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Autoportret</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 60&nbsp;×&nbsp;50&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="rodni-grad">
+          <a class="rad__veza" href="djelo/prijatelji.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/prijatelji-480.avif 480w, img/radovi/w/prijatelji-800.avif 800w, img/radovi/w/prijatelji-1200.avif 1200w, img/radovi/w/prijatelji-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/prijatelji-480.webp 480w, img/radovi/w/prijatelji-800.webp 800w, img/radovi/w/prijatelji-1200.webp 1200w, img/radovi/w/prijatelji-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/prijatelji.jpg" width="1204" height="1400" loading="lazy" decoding="async"
+                     alt="Dva psa na zelenoj livadi u Cetinju, pred rascvjetalim žbunjem i kućama u pozadini.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Prijatelji</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 75&nbsp;×&nbsp;65&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="rodni-grad">
+          <a class="rad__veza" href="djelo/staro-groblje.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/staro-groblje-480.avif 480w, img/radovi/w/staro-groblje-800.avif 800w, img/radovi/w/staro-groblje-1200.avif 1200w, img/radovi/w/staro-groblje-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/staro-groblje-480.webp 480w, img/radovi/w/staro-groblje-800.webp 800w, img/radovi/w/staro-groblje-1200.webp 1200w, img/radovi/w/staro-groblje-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/staro-groblje.jpg" width="1227" height="1400" loading="lazy" decoding="async"
+                     alt="Kapela na starom groblju, okružena nadgrobnim pločama i tamnim drvećem.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Staro groblje</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 45&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="rodni-grad">
+          <a class="rad__veza" href="djelo/jutarnje-svjetlo.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/jutarnje-svjetlo-480.avif 480w, img/radovi/w/jutarnje-svjetlo-800.avif 800w, img/radovi/w/jutarnje-svjetlo-1200.avif 1200w, img/radovi/w/jutarnje-svjetlo-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/jutarnje-svjetlo-480.webp 480w, img/radovi/w/jutarnje-svjetlo-800.webp 800w, img/radovi/w/jutarnje-svjetlo-1200.webp 1200w, img/radovi/w/jutarnje-svjetlo-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/jutarnje-svjetlo.jpg" width="1035" height="1400" loading="lazy" decoding="async"
+                     alt="Kamena kuća sa narandžastim krovom i golo drvo pred njom, u prvom jutarnjem svjetlu.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Jutarnje svjetlo</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 40&nbsp;×&nbsp;30&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="rodni-grad">
+          <a class="rad__veza" href="djelo/svjetlo-u-sumrak.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/svjetlo-u-sumrak-480.avif 480w, img/radovi/w/svjetlo-u-sumrak-800.avif 800w, img/radovi/w/svjetlo-u-sumrak-1200.avif 1200w, img/radovi/w/svjetlo-u-sumrak-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/svjetlo-u-sumrak-480.webp 480w, img/radovi/w/svjetlo-u-sumrak-800.webp 800w, img/radovi/w/svjetlo-u-sumrak-1200.webp 1200w, img/radovi/w/svjetlo-u-sumrak-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/svjetlo-u-sumrak.jpg" width="1258" height="1400" loading="lazy" decoding="async"
+                     alt="Mala kuća pod ljubičastim večernjim nebom, iza kamenog zida i ogoljenih grana.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Svjetlo u sumrak</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 55&nbsp;×&nbsp;45&nbsp;cm</span>
+          </a>
+        </li>
+
+      </ul>
+
+      <!-- Prazno stanje: nikad se ne vidi sa trenutnim podacima, ali stoji
+           ako korisnik u hash upiše kategoriju koja nema radova. -->
+      <p class="radovi-prazno srafura" id="radovi-prazno" hidden>
+        U ovoj kategoriji za sada nema radova.
+      </p>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="podnozje">
+  <div class="podnozje__unutra">
+    <div class="podnozje__blok">
+      <p class="podnozje__ime">Marko Dumnić</p>
+      <p class="podnozje__meta">Slikar · Cetinje, Crna Gora</p>
+      <p class="podnozje__meta">Accademia Albertina di Belle Arti, Torino</p>
+    </div>
+    <nav class="podnozje__blok" aria-label="Podnožje">
+      <a href="index.html">Početna</a>
+      <a href="o-autoru.html">O autoru</a>
+      <a href="radovi.html">Radovi</a>
+      <a href="galerija.html">Virtuelna galerija</a>
+      <a href="kontakt.html">Kontakt</a>
+    </nav>
+    <div class="podnozje__blok">
+      <a class="podnozje__insta" href="https://www.instagram.com/marko.mapko/" rel="noopener">
+        <span class="podnozje__insta-tekst">Instagram</span><span class="vizuelno-skriveno"> — @marko.mapko</span>
+        <span class="podnozje__ikona" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <p class="podnozje__potpis">© <span data-godina>2026</span> Marko Dumnić. Sva prava zadržana.</p>
+</footer>
+
+<script src="js/base.js"></script>
+<script src="js/radovi.js"></script>
+</body>
+</html>

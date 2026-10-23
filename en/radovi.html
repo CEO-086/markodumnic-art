@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Works — Marko Dumnić</title>
+<meta name="description" content="Oil paintings by Marko Dumnić in three series — Turin Landscapes, Glimpses from the Studio and Hometown Reveries. Browse the works and filter them by series.">
+<!-- fontovi -->
+<link rel="preload" href="../fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<!-- /fontovi -->
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/radovi.css">
+
+<!--
+  Degradiranje bez JavaScripta:
+  svih 13 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
+  stavke. Ako JS ne radi, dugmad filtera se sklanjaju (vidi <noscript> ispod)
+  da korisnik ne dobije mrtve kontrole, a mreža ostaje cijela — što je
+  ispravno ponašanje za pregled radova.
+-->
+<noscript>
+  <style>
+    /* Bez JS-a nema filtriranja — skrivamo dugmad i objašnjavamo zašto. */
+    .filter__dugmad { display: none; }
+    .filter__bez-js { display: block; }
+  </style>
+</noscript>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F3EEE4">
+<meta property="og:title" content="Works — Marko Dumnić">
+<meta property="og:description" content="Oil on canvas in three series: Turin, the studio and the painter’s hometown.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://markodumnic.art/img/og/sajt.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<!-- hreflang -->
+<link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/radovi">
+<link rel="alternate" hreflang="en" href="https://markodumnic.art/en/radovi">
+<link rel="alternate" hreflang="x-default" href="https://markodumnic.art/radovi">
+<link rel="canonical" href="https://markodumnic.art/en/radovi">
+<meta property="og:url" content="https://markodumnic.art/en/radovi">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="sr_ME">
+<!-- /hreflang -->
+</head>
+<body>
+
+<a class="preskoci" href="#glavno">Skip to content</a>
+
+<header class="zaglavlje">
+  <div class="zaglavlje__traka">
+    <a class="logotip" href="index.html">
+      <span class="logotip__ime">Marko Dumnić</span>
+      <span class="logotip__uloga">Painter</span>
+    </a>
+
+    <button class="meni-dugme" type="button" aria-expanded="false" aria-controls="glavna-navigacija">
+      <span class="meni-dugme__linija"></span>
+      <span class="meni-dugme__linija"></span>
+      <span class="vizuelno-skriveno">Menu</span>
+    </button>
+
+    <nav class="navigacija" id="glavna-navigacija" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="o-autoru.html">About</a>
+      <a href="radovi.html" aria-current="page">Works</a>
+      <a href="galerija.html">Gallery</a>
+      <a href="kontakt.html">Contact</a>
+    </nav>
+
+    <!-- jezik -->
+    <div class="jezik">
+      <button class="jezik__dugme" type="button" aria-expanded="false" aria-controls="jezik-lista"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk-d"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk-d)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><svg class="jezik__strelica" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vizuelno-skriveno"> Language: English. Change language</span></button>
+      <nav class="jezik__lista" id="jezik-lista" aria-label="Language">
+        <a class="jezik__veza" href="../radovi.html" hreflang="sr-ME" lang="sr-Latn-ME"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><span class="jezik__ime">Crnogorski</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="../en/radovi.html" hreflang="en" lang="en" aria-current="true"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><span class="jezik__ime">English</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+    <!-- /jezik -->
+  </div>
+</header>
+
+<main id="glavno">
+
+  <section class="sekcija">
+    <div class="omot">
+      <header class="radovi-uvod">
+        <h1 class="naslov-1">Works</h1>
+        <p class="uvodni">
+          Oil on canvas in three series: landscapes of Turin from his years of
+          study, glimpses from the studio, and reveries of his hometown, Cetinje.
+        </p>
+      </header>
+
+      <div class="linija" role="presentation"></div>
+
+      <!-- Filter. Dugmad su prava dugmad sa aria-pressed; grupa je označena
+           kao role="group" jer se aria-pressed i role="tab" ne kombinuju. -->
+      <div class="filter">
+        <div class="filter__dugmad" role="group" aria-label="Filter works by series" id="filter-radova">
+          <button class="filter__dugme je-aktivno" type="button" data-filter="sve" aria-pressed="true">All</button>
+          <button class="filter__dugme" type="button" data-filter="torino" aria-pressed="false">Turin Landscapes</button>
+          <button class="filter__dugme" type="button" data-filter="atelje" aria-pressed="false">Glimpses from the Studio</button>
+          <button class="filter__dugme" type="button" data-filter="rodni-grad" aria-pressed="false">Hometown Reveries</button>
+        </div>
+
+        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Showing 13 of 13 works</p>
+
+        <p class="filter__bez-js">
+          Filtering by series requires JavaScript. All the works are shown below.
+        </p>
+      </div>
+
+      <ul class="mreza-radova" id="mreza-radova">
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/aria-di-torino.html">
+            <span class="rad__okvir">
+              <!-- Prva slika je uvijek u prvom ekranu na svakoj širini, pa ide
+                   eager i bez decoding="async": lazy na prvoj slici samo odlaže
+                   najvažniji piksel na stranici (LCP). Ostale ostaju lazy. -->
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/aria-di-torino-480.avif 480w, ../img/radovi/w/aria-di-torino-800.avif 800w, ../img/radovi/w/aria-di-torino-1200.avif 1200w, ../img/radovi/w/aria-di-torino-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/aria-di-torino-480.webp 480w, ../img/radovi/w/aria-di-torino-800.webp 800w, ../img/radovi/w/aria-di-torino-1200.webp 1200w, ../img/radovi/w/aria-di-torino-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/aria-di-torino.jpg" width="1171" height="1400" loading="eager" fetchpriority="high"
+                     alt="A villa with a red roof on a street corner, under a sky of thick, swirling strokes of blue and white.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Aria di Torino</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 60&nbsp;×&nbsp;50&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/piazza-castello-e-torre-littoria.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/piazza-castello-e-torre-littoria-480.avif 480w, ../img/radovi/w/piazza-castello-e-torre-littoria-800.avif 800w, ../img/radovi/w/piazza-castello-e-torre-littoria-1181.avif 1181w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/piazza-castello-e-torre-littoria-480.webp 480w, ../img/radovi/w/piazza-castello-e-torre-littoria-800.webp 800w, ../img/radovi/w/piazza-castello-e-torre-littoria-1181.webp 1181w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/piazza-castello-e-torre-littoria.jpg" width="1042" height="1400" loading="lazy" decoding="async"
+                     alt="The Torre Littoria rises above the façades of Piazza Castello; the sky is broken into short strokes of colour.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Piazza Castello e Torre Littoria</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 40&nbsp;×&nbsp;30&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/ponte-isabella.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/ponte-isabella-480.avif 480w, ../img/radovi/w/ponte-isabella-800.avif 800w, ../img/radovi/w/ponte-isabella-1180.avif 1180w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/ponte-isabella-480.webp 480w, ../img/radovi/w/ponte-isabella-800.webp 800w, ../img/radovi/w/ponte-isabella-1180.webp 1180w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/ponte-isabella.jpg" width="1180" height="857" loading="lazy" decoding="async"
+                     alt="A bridge over the Po, with the riverbank and promenade in the foreground and its arches mirrored in the water.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Ponte Isabella</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 40&nbsp;×&nbsp;30&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/krovovi-torina.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/krovovi-torina-480.avif 480w, ../img/radovi/w/krovovi-torina-800.avif 800w, ../img/radovi/w/krovovi-torina-1174.avif 1174w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/krovovi-torina-480.webp 480w, ../img/radovi/w/krovovi-torina-800.webp 800w, ../img/radovi/w/krovovi-torina-1174.webp 1174w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/krovovi-torina.jpg" width="1116" height="1400" loading="lazy" decoding="async"
+                     alt="A dome and the rooftops of Turin in blue and ochre light, seen from above, from within the dense fabric of the city.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Turin Rooftops</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 50&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/havanac-kastro.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/havanac-kastro-480.avif 480w, ../img/radovi/w/havanac-kastro-800.avif 800w, ../img/radovi/w/havanac-kastro-1200.avif 1200w, ../img/radovi/w/havanac-kastro-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/havanac-kastro-480.webp 480w, ../img/radovi/w/havanac-kastro-800.webp 800w, ../img/radovi/w/havanac-kastro-1200.webp 1200w, ../img/radovi/w/havanac-kastro-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/havanac-kastro.jpg" width="1398" height="1400" loading="lazy" decoding="async"
+                     alt="Kastro, a Havanese dog, asleep on a blanket in the studio, among cushions and paintings on the wall.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Havanese Kastro</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 60&nbsp;×&nbsp;60&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/mrtva-priroda-sa-vazom.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/mrtva-priroda-sa-vazom-480.avif 480w, ../img/radovi/w/mrtva-priroda-sa-vazom-800.avif 800w, ../img/radovi/w/mrtva-priroda-sa-vazom-1200.avif 1200w, ../img/radovi/w/mrtva-priroda-sa-vazom-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/mrtva-priroda-sa-vazom-480.webp 480w, ../img/radovi/w/mrtva-priroda-sa-vazom-800.webp 800w, ../img/radovi/w/mrtva-priroda-sa-vazom-1200.webp 1200w, ../img/radovi/w/mrtva-priroda-sa-vazom-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/mrtva-priroda-sa-vazom.jpg" width="1400" height="1161" loading="lazy" decoding="async"
+                     alt="A blue vase, a potted flower and a box on a table, against the colourful wall of the studio.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Still Life with Vase</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 50&nbsp;×&nbsp;60&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/mrtva-priroda-sa-bocama.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/mrtva-priroda-sa-bocama-480.avif 480w, ../img/radovi/w/mrtva-priroda-sa-bocama-800.avif 800w, ../img/radovi/w/mrtva-priroda-sa-bocama-1200.avif 1200w, ../img/radovi/w/mrtva-priroda-sa-bocama-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/mrtva-priroda-sa-bocama-480.webp 480w, ../img/radovi/w/mrtva-priroda-sa-bocama-800.webp 800w, ../img/radovi/w/mrtva-priroda-sa-bocama-1200.webp 1200w, ../img/radovi/w/mrtva-priroda-sa-bocama-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/mrtva-priroda-sa-bocama.jpg" width="1400" height="1048" loading="lazy" decoding="async"
+                     alt="Two bottles and a green vase on an orange table, with frames leaning against the wall.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Still Life with Bottles</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 30&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/mrtva-priroda-sa-cvijecem.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/mrtva-priroda-sa-cvijecem-480.avif 480w, ../img/radovi/w/mrtva-priroda-sa-cvijecem-800.avif 800w, ../img/radovi/w/mrtva-priroda-sa-cvijecem-1200.avif 1200w, ../img/radovi/w/mrtva-priroda-sa-cvijecem-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/mrtva-priroda-sa-cvijecem-480.webp 480w, ../img/radovi/w/mrtva-priroda-sa-cvijecem-800.webp 800w, ../img/radovi/w/mrtva-priroda-sa-cvijecem-1200.webp 1200w, ../img/radovi/w/mrtva-priroda-sa-cvijecem-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/mrtva-priroda-sa-cvijecem.jpg" width="1104" height="1400" loading="lazy" decoding="async"
+                     alt="Flowers in a tin pot, a tuber and an onion on the table, with an empty frame behind them.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Still Life with Flowers</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 50&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/autoportret.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/autoportret-480.avif 480w, ../img/radovi/w/autoportret-800.avif 800w, ../img/radovi/w/autoportret-1200.avif 1200w, ../img/radovi/w/autoportret-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/autoportret-480.webp 480w, ../img/radovi/w/autoportret-800.webp 800w, ../img/radovi/w/autoportret-1200.webp 1200w, ../img/radovi/w/autoportret-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/autoportret.jpg" width="1152" height="1400" loading="lazy" decoding="async"
+                     alt="The self-portrait appears as a small sketch on the studio table, among a potted flower, a pomegranate and frames.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Self-Portrait</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 60&nbsp;×&nbsp;50&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="rodni-grad">
+          <a class="rad__veza" href="djelo/prijatelji.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/prijatelji-480.avif 480w, ../img/radovi/w/prijatelji-800.avif 800w, ../img/radovi/w/prijatelji-1200.avif 1200w, ../img/radovi/w/prijatelji-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/prijatelji-480.webp 480w, ../img/radovi/w/prijatelji-800.webp 800w, ../img/radovi/w/prijatelji-1200.webp 1200w, ../img/radovi/w/prijatelji-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/prijatelji.jpg" width="1204" height="1400" loading="lazy" decoding="async"
+                     alt="Two dogs on a green meadow in Cetinje, in front of flowering shrubs, with houses in the background.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Friends</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 75&nbsp;×&nbsp;65&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="rodni-grad">
+          <a class="rad__veza" href="djelo/staro-groblje.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/staro-groblje-480.avif 480w, ../img/radovi/w/staro-groblje-800.avif 800w, ../img/radovi/w/staro-groblje-1200.avif 1200w, ../img/radovi/w/staro-groblje-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/staro-groblje-480.webp 480w, ../img/radovi/w/staro-groblje-800.webp 800w, ../img/radovi/w/staro-groblje-1200.webp 1200w, ../img/radovi/w/staro-groblje-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/staro-groblje.jpg" width="1227" height="1400" loading="lazy" decoding="async"
+                     alt="A chapel in an old cemetery, surrounded by gravestones and dark trees.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Old Cemetery</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 45&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="rodni-grad">
+          <a class="rad__veza" href="djelo/jutarnje-svjetlo.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/jutarnje-svjetlo-480.avif 480w, ../img/radovi/w/jutarnje-svjetlo-800.avif 800w, ../img/radovi/w/jutarnje-svjetlo-1200.avif 1200w, ../img/radovi/w/jutarnje-svjetlo-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/jutarnje-svjetlo-480.webp 480w, ../img/radovi/w/jutarnje-svjetlo-800.webp 800w, ../img/radovi/w/jutarnje-svjetlo-1200.webp 1200w, ../img/radovi/w/jutarnje-svjetlo-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/jutarnje-svjetlo.jpg" width="1035" height="1400" loading="lazy" decoding="async"
+                     alt="A stone house with an orange roof and a bare tree in front of it, in the first light of morning.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Morning Light</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 40&nbsp;×&nbsp;30&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="rodni-grad">
+          <a class="rad__veza" href="djelo/svjetlo-u-sumrak.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/svjetlo-u-sumrak-480.avif 480w, ../img/radovi/w/svjetlo-u-sumrak-800.avif 800w, ../img/radovi/w/svjetlo-u-sumrak-1200.avif 1200w, ../img/radovi/w/svjetlo-u-sumrak-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/svjetlo-u-sumrak-480.webp 480w, ../img/radovi/w/svjetlo-u-sumrak-800.webp 800w, ../img/radovi/w/svjetlo-u-sumrak-1200.webp 1200w, ../img/radovi/w/svjetlo-u-sumrak-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/svjetlo-u-sumrak.jpg" width="1258" height="1400" loading="lazy" decoding="async"
+                     alt="A small house under a violet evening sky, behind a stone wall and bare branches.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Dusk Light</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 55&nbsp;×&nbsp;45&nbsp;cm</span>
+          </a>
+        </li>
+
+      </ul>
+
+      <!-- Prazno stanje: nikad se ne vidi sa trenutnim podacima, ali stoji
+           ako korisnik u hash upiše kategoriju koja nema radova. -->
+      <p class="radovi-prazno srafura" id="radovi-prazno" hidden>
+        There are no works in this series yet.
+      </p>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="podnozje">
+  <div class="podnozje__unutra">
+    <div class="podnozje__blok">
+      <p class="podnozje__ime">Marko Dumnić</p>
+      <p class="podnozje__meta">Painter · Cetinje, Montenegro</p>
+      <p class="podnozje__meta">Accademia Albertina di Belle Arti, Turin</p>
+    </div>
+    <nav class="podnozje__blok" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="o-autoru.html">About</a>
+      <a href="radovi.html">Works</a>
+      <a href="galerija.html">Virtual Gallery</a>
+      <a href="kontakt.html">Contact</a>
+    </nav>
+    <div class="podnozje__blok">
+      <a class="podnozje__insta" href="https://www.instagram.com/marko.mapko/" rel="noopener">
+        <span class="podnozje__insta-tekst">Instagram</span><span class="vizuelno-skriveno"> — @marko.mapko</span>
+        <span class="podnozje__ikona" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <p class="podnozje__potpis">© <span data-godina>2026</span> Marko Dumnić. All rights reserved.</p>
+</footer>
+
+<script src="../js/base.js"></script>
+<script src="../js/radovi.js"></script>
+</body>
+</html>

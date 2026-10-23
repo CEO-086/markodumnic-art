@@ -1,0 +1,92 @@
+# Cloudflare Pages — zaglavlja za markodumnic.art
+#
+# Isto važi za Vercel: vidi vercel.json (ista pravila, Vercel ne čita ovaj fajl).
+#
+# ZAMKA: kad se na jednu adresu primijeni više pravila, Cloudflare ista
+# zaglavlja SPAJA zapetom, ne zamjenjuje ih. Zato /splat.html prvo skida
+# opšti CSP redom "! Content-Security-Policy", pa tek onda daje svoj.
+#
+# Vercel radi obrnuto: kasnije pravilo ZAMJENJUJE isto zaglavlje, pa su
+# u vercel.json opšta pravila gore, posebna dolje. Njegov "source" je
+# path-to-regexp: "/(en/)?splat" ne hvata /splat (kosa crta ulazi u
+# opcionu grupu), zato tamo stoji "/((?:en/)?splat(?:\.html)?)".
+#
+# Spoljnih izvora nema: fontovi su u /fonts/ (alati/fontovi.py), pa je
+# font-src samo 'self'. 'unsafe-inline' u style-src je zbog <style>
+# blokova u šest stranica; skripte ostaju strogo 'self'.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; worker-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  X-Frame-Options: DENY
+
+# Prikazivač splata: Spark sortira splatove u Web Workeru iz blob: URL-a
+# i dekoduje ih kroz WebAssembly. 'wasm-unsafe-eval' dozvoljava samo
+# WebAssembly, ne eval() nad tekstom. Ostatak sajta ostaje na strogom CSP-u.
+/splat.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+# Cloudflare Pages po defaultu služi /splat i za /splat.html — isto pravilo.
+/splat
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/en/splat.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/en/splat
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+# --- Keš ---
+# HTML stranice nemaju pravilo: ostaje podrazumijevano (Vercel i
+# Cloudflare: "public, max-age=0, must-revalidate"), pa nova verzija
+# stiže odmah. Pravilo za HTML se NE stavlja na /*, jer bi se ovdje
+# spojilo zapetom sa svakim Cache-Control ispod.
+#
+# stale-while-revalidate: dan po isteku pregledač još služi staru kopiju
+# i u pozadini provjerava novu — stranica se ne zaustavlja na mreži.
+
+# Biblioteke su zaključane na verziju, ali putanja NEMA broj verzije
+# (vendor/three/three.module.js). Zato ne "immutable" na godinu, nego
+# 30 dana: nova verzija pod istim imenom stigne najkasnije za mjesec.
+/vendor/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+# Fontovi: adresa nosi ?v=<heš sadržaja> (alati/fontovi.py upisuje i
+# tokens.css i preload u <head>), pa novi font = nova adresa — smiju
+# "immutable" na godinu.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Slike se keširaju 30 dana. ZAMKA: slika zamijenjena pod ISTIM imenom
+# kod posjetilaca ostaje stara do mjesec dana — nova slika = novo ime
+# (npr. aria-di-torino-2.jpg), pa se ažuriraju HTML i data/radovi.json.
+/img/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+# CSS i JS nemaju heš u imenu fajla, pa ne smiju biti "immutable":
+# sat vremena, pa provjera. Izmjena stigne do svih najkasnije za sat.
+/css/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/js/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+/data/*
+  Cache-Control: no-cache
+
+# Snimci splatova — veliki, ali se mijenjaju samo novim snimanjem.
+# Zamijenjen snimak = novo ime fajla, upisano u splat/index.json.
+/splat/*
+  Cache-Control: public, max-age=86400
+
+# Spisak snimaka se uvijek provjerava, da novi snimak stigne odmah.
+# "!" skida dnevni keš iz /splat/* (inače bi se vrijednosti spojile).
+/splat/index.json
+  ! Cache-Control
+  Cache-Control: no-cache

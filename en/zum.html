@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Close-up — Marko Dumnić</title>
+<meta name="description" content="Works by Marko Dumnić in close-up — a viewer that loads only the visible part of the image, so the canvas can be studied down to a single brushstroke.">
+<!-- fontovi -->
+<link rel="preload" href="../fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<!-- /fontovi -->
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/zum.css">
+
+<!-- Pregledna pločica se učitava prva; nagovještaj je skraćuje na par desetina ms. -->
+<link rel="preload" as="image" href="../img/plocice/aria-di-torino/0/0_0.jpg" type="image/jpeg">
+
+<!--
+  Degradiranje bez JavaScripta:
+  prikazivač po pločicama ne postoji bez JS-a, pa <noscript> pokazuje običnu
+  sliku djela i objašnjava šta se izgubilo. Kontrole se sklanjaju da korisnik
+  ne dobije mrtva dugmad.
+-->
+<noscript>
+  <style>
+    .zum-okno,
+    .zum-kontrole,
+    .zum-mjerac { display: none; }
+    .zum-bez-js { display: block; }
+  </style>
+</noscript>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F3EEE4">
+<meta property="og:title" content="Close-up — Marko Dumnić">
+<meta property="og:description" content="The works can be viewed magnified, right down to the surface.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://markodumnic.art/img/og/sajt.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- hreflang -->
+<link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/zum">
+<link rel="alternate" hreflang="en" href="https://markodumnic.art/en/zum">
+<link rel="alternate" hreflang="x-default" href="https://markodumnic.art/zum">
+<link rel="canonical" href="https://markodumnic.art/en/zum">
+<meta property="og:url" content="https://markodumnic.art/en/zum">
+<meta property="og:locale" content="en_GB">
+<meta property="og:locale:alternate" content="sr_ME">
+<!-- /hreflang -->
+</head>
+<body>
+
+<a class="preskoci" href="#glavno">Skip to content</a>
+
+<header class="zaglavlje">
+  <div class="zaglavlje__traka">
+    <a class="logotip" href="index.html">
+      <span class="logotip__ime">Marko Dumnić</span>
+      <span class="logotip__uloga">Painter</span>
+    </a>
+
+    <button class="meni-dugme" type="button" aria-expanded="false" aria-controls="glavna-navigacija">
+      <span class="meni-dugme__linija"></span>
+      <span class="meni-dugme__linija"></span>
+      <span class="vizuelno-skriveno">Menu</span>
+    </button>
+
+    <nav class="navigacija" id="glavna-navigacija" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="o-autoru.html">About</a>
+      <a href="radovi.html">Works</a>
+      <a href="galerija.html">Gallery</a>
+      <a href="kontakt.html">Contact</a>
+    </nav>
+
+    <!-- jezik -->
+    <div class="jezik">
+      <button class="jezik__dugme" type="button" aria-expanded="false" aria-controls="jezik-lista"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk-d"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk-d)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><svg class="jezik__strelica" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vizuelno-skriveno"> Language: English. Change language</span></button>
+      <nav class="jezik__lista" id="jezik-lista" aria-label="Language">
+        <a class="jezik__veza" href="../zum.html" hreflang="sr-ME" lang="sr-Latn-ME"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><span class="jezik__ime">Crnogorski</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="../en/zum.html" hreflang="en" lang="en" aria-current="true"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><span class="jezik__ime">English</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+    <!-- /jezik -->
+  </div>
+</header>
+
+<main id="glavno">
+
+  <section class="sekcija zum-uvod">
+    <div class="omot">
+      <p class="oznaka">Viewer</p>
+      <h1 class="naslov-1">Close-up</h1>
+      <p class="uvodni mt-5">
+        Oil paint cannot be seen in a reproduction that fits on a single screen — it
+        reveals itself only when you come close enough to tell a palette-knife stroke
+        from a brushstroke. This page opens the work at full size and lets you come
+        that close, as if you were standing before the canvas in the studio.
+      </p>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       PRIKAZIVAČ
+       `soba-tamna` prebacuje tokene na tamnu paletu unutar ovog
+       bloka — boja se najtačnije čita na tamnoj podlozi, a ostatak
+       stranice ostaje na toplom papiru.
+       ========================================================= -->
+  <section class="zum" aria-labelledby="zum-naslov"
+           data-zum
+           data-zum-id="aria-di-torino"
+           data-zum-osnova="img/plocice"
+           data-zum-rezerva="img/radovi">
+
+    <h2 class="vizuelno-skriveno" id="zum-naslov">Artwork viewer</h2>
+
+    <div class="zum-soba soba-tamna">
+
+      <div class="zum-traka">
+        <div class="zum-traka__naslov">
+          <p class="naslov-3" data-zum-naziv>Aria di Torino</p>
+          <p class="zum-traka__meta" data-zum-meta>Oil on canvas · 60 × 50 cm · 2024</p>
+        </div>
+
+        <!-- Mjerenje performansi. Korisnik ovo pokazuje klijentima. -->
+        <dl class="zum-mjerac" data-zum-mjerac aria-live="off">
+          <div class="zum-mjerac__par">
+            <dt>First tile</dt>
+            <dd data-zum-vrijeme>—</dd>
+          </div>
+          <div class="zum-mjerac__par">
+            <dt>Loaded</dt>
+            <dd data-zum-broj>0</dd>
+          </div>
+          <div class="zum-mjerac__par">
+            <dt>Level</dt>
+            <dd data-zum-nivo>0 / 2</dd>
+          </div>
+          <div class="zum-mjerac__par">
+            <dt>Scale</dt>
+            <dd data-zum-skala>100%</dd>
+          </div>
+        </dl>
+      </div>
+
+      <!--
+        Okno je fokusabilno (tabindex="0") jer prima tastaturu:
+        strelice pomjeraju, + i − zumiraju, 0 vraća na cijelu sliku.
+        aria-label zum.js dopunjava imenom djela.
+      -->
+      <div class="zum-okno"
+           data-zum-okno
+           tabindex="0"
+           role="application"
+           aria-label="Zoomable artwork viewer. Arrow keys move the image, plus and minus zoom, zero returns to the whole painting.">
+        <div class="zum-platno" data-zum-platno></div>
+      </div>
+
+      <!-- Poruka stoji ISPOD okna, nikad preko slike. -->
+      <p class="zum-poruka" data-zum-poruka role="status" hidden></p>
+
+      <div class="zum-podtraka">
+        <div class="zum-kontrole" role="group" aria-label="Zoom controls">
+          <button class="zum-dugme" type="button" data-zum-akcija="umanji"
+                  aria-label="Zoom out">
+            <span aria-hidden="true">−</span>
+          </button>
+          <button class="zum-dugme" type="button" data-zum-akcija="uvecaj"
+                  aria-label="Zoom in">
+            <span aria-hidden="true">+</span>
+          </button>
+          <button class="zum-dugme zum-dugme--sira" type="button"
+                  data-zum-akcija="reset">
+            Whole painting
+          </button>
+        </div>
+
+        <p class="zum-uputa">
+          Scroll wheel or pinch to zoom · drag to move · double-click to zoom in ·
+          keyboard: arrow keys, <kbd>+</kbd> <kbd>−</kbd> <kbd>0</kbd>
+        </p>
+      </div>
+
+      <!-- Vidi se samo kad JS ne radi. -->
+      <div class="zum-bez-js">
+        <p>
+          The tiled viewer needs JavaScript. Without it you see the whole
+          painting in one piece — the composition, but not the brushwork.
+        </p>
+        <img src="../img/radovi/aria-di-torino.jpg"
+             alt="Aria di Torino — the whole painting, without zoom"
+             width="1171" height="1400">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================
+       OSTALA DJELA SA PLOČICAMA
+       Pravi linkovi (rade bez JS-a); sa JS-om zum.js ih presretne
+       i samo zamijeni sadržaj prikazivača.
+       ========================================================= -->
+  <section class="sekcija zum-djela" aria-labelledby="zum-djela-naslov">
+    <div class="omot">
+      <p class="oznaka">Prepared works</p>
+      <h2 class="naslov-2" id="zum-djela-naslov">More works in close-up</h2>
+      <p class="mt-4">
+        Tiles have been made for all thirteen works, from full-resolution
+        photographs. Each new work gets its tiles with a single command and
+        appears here straight away.
+      </p>
+
+      <ul class="zum-spisak mt-6">
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=aria-di-torino"
+             data-zum-djelo="aria-di-torino">
+            <span class="zum-spisak__naziv">Aria di Torino</span>
+            <span class="zum-spisak__meta">Oil on canvas · 60 × 50 cm · 2024</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=piazza-castello-e-torre-littoria"
+             data-zum-djelo="piazza-castello-e-torre-littoria">
+            <span class="zum-spisak__naziv">Piazza Castello e Torre Littoria</span>
+            <span class="zum-spisak__meta">Oil on canvas · 40 × 30 cm · 2024</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=ponte-isabella"
+             data-zum-djelo="ponte-isabella">
+            <span class="zum-spisak__naziv">Ponte Isabella</span>
+            <span class="zum-spisak__meta">Oil on canvas · 40 × 30 cm · 2024</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=krovovi-torina"
+             data-zum-djelo="krovovi-torina">
+            <span class="zum-spisak__naziv">Turin Rooftops</span>
+            <span class="zum-spisak__meta">Oil on canvas · 50 × 40 cm · 2024</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=havanac-kastro"
+             data-zum-djelo="havanac-kastro">
+            <span class="zum-spisak__naziv">Havanese Kastro</span>
+            <span class="zum-spisak__meta">Oil on canvas · 60 × 60 cm · 2023</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=mrtva-priroda-sa-vazom"
+             data-zum-djelo="mrtva-priroda-sa-vazom">
+            <span class="zum-spisak__naziv">Still Life with Vase</span>
+            <span class="zum-spisak__meta">Oil on canvas · 50 × 60 cm · 2023</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=mrtva-priroda-sa-bocama"
+             data-zum-djelo="mrtva-priroda-sa-bocama">
+            <span class="zum-spisak__naziv">Still Life with Bottles</span>
+            <span class="zum-spisak__meta">Oil on canvas · 30 × 40 cm · 2023</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=mrtva-priroda-sa-cvijecem"
+             data-zum-djelo="mrtva-priroda-sa-cvijecem">
+            <span class="zum-spisak__naziv">Still Life with Flowers</span>
+            <span class="zum-spisak__meta">Oil on canvas · 50 × 40 cm · 2023</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=autoportret"
+             data-zum-djelo="autoportret">
+            <span class="zum-spisak__naziv">Self-Portrait</span>
+            <span class="zum-spisak__meta">Oil on canvas · 60 × 50 cm · 2023</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=prijatelji"
+             data-zum-djelo="prijatelji">
+            <span class="zum-spisak__naziv">Friends</span>
+            <span class="zum-spisak__meta">Oil on canvas · 75 × 65 cm · 2025</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=staro-groblje"
+             data-zum-djelo="staro-groblje">
+            <span class="zum-spisak__naziv">Old Cemetery</span>
+            <span class="zum-spisak__meta">Oil on canvas · 45 × 40 cm · 2025</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=jutarnje-svjetlo"
+             data-zum-djelo="jutarnje-svjetlo">
+            <span class="zum-spisak__naziv">Morning Light</span>
+            <span class="zum-spisak__meta">Oil on canvas · 40 × 30 cm · 2025</span>
+          </a>
+        </li>
+        <li>
+          <a class="zum-spisak__stavka" href="zum.html?id=svjetlo-u-sumrak"
+             data-zum-djelo="svjetlo-u-sumrak">
+            <span class="zum-spisak__naziv">Dusk Light</span>
+            <span class="zum-spisak__meta">Oil on canvas · 55 × 45 cm · 2025</span>
+          </a>
+        </li>
+      </ul>
+
+      <p class="mt-6">
+        <a class="dugme dugme--tekst" href="radovi.html">All works</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       TEHNIČKA BILJEŠKA
+       Namijenjena klijentima, ne programerima — objašnjava princip,
+       ne implementaciju.
+       ========================================================= -->
+  <section class="sekcija sekcija--toplo zum-biljeska"
+           aria-labelledby="zum-biljeska-naslov">
+    <div class="omot">
+      <p class="oznaka">How it works</p>
+      <h2 class="naslov-2" id="zum-biljeska-naslov">Three levels, and only what you can see</h2>
+
+      <p class="uvodni mt-5">
+        An ordinary image viewer does one of two bad things: it either sends a
+        small image and stretches it until it turns blurry, or sends a huge one
+        and keeps the visitor waiting. This one does neither.
+      </p>
+
+      <div class="mreza mreza--3 mt-7">
+        <div class="zum-karta">
+          <p class="zum-karta__broj">01</p>
+          <h3 class="naslov-3">An image cut in advance</h3>
+          <p>
+            The work is divided into small pieces — tiles — at three levels
+            of magnification. The overview level is a single tile, the middle
+            level four and the closest sixteen. The cutting is done once, before
+            the site goes online, so the browser has nothing to calculate.
+          </p>
+        </div>
+
+        <div class="zum-karta">
+          <p class="zum-karta__broj">02</p>
+          <h3 class="naslov-3">Only what is visible is loaded</h3>
+          <p>
+            When you move in on a corner of the canvas, only that corner
+            arrives. The other fifteen tiles of that level do not travel over
+            the network until they come into view. That is why the first view
+            takes a single request, not the whole image.
+          </p>
+        </div>
+
+        <div class="zum-karta">
+          <p class="zum-karta__broj">03</p>
+          <h3 class="naslov-3">The coarser level waits underneath</h3>
+          <p>
+            When the zoom crosses a threshold and a sharper level is needed,
+            the previous one stays underneath until the new tiles are in place.
+            So the image never goes blank and never flickers — it simply sharpens.
+          </p>
+        </div>
+      </div>
+
+      <hr class="linija mt-7">
+
+      <div class="zum-biljeska__detalj mt-7">
+        <h3 class="naslov-3">The meter in the corner</h3>
+        <p class="mt-4">
+          The figures above the image are not decoration. <strong>First tile</strong> is
+          the time from opening the page to the first pixel of the work on screen —
+          the only figure a visitor actually feels. <strong>Loaded</strong>
+          shows how many tiles have arrived so far out of the total; if that
+          number stays low while you look at a single detail, the viewer is doing its job.
+        </p>
+        <p>
+          Museum viewers (IIIF, Deep Zoom) use the same principle for
+          gigapixel captures of paintings. Here the tiles are cut from a
+          full-resolution photograph of the work, so the closest level shows the
+          image pixel for pixel — as many strokes as the photograph caught. When a
+          higher-resolution capture arrives, only one more level is added; the
+          viewer stays the same.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="podnozje">
+  <div class="podnozje__unutra">
+    <div class="podnozje__blok">
+      <p class="podnozje__ime">Marko Dumnić</p>
+      <p class="podnozje__meta">Painter · Cetinje, Montenegro</p>
+      <p class="podnozje__meta">Accademia Albertina di Belle Arti, Turin</p>
+    </div>
+    <nav class="podnozje__blok" aria-label="Footer">
+      <a href="index.html">Home</a>
+      <a href="o-autoru.html">About</a>
+      <a href="radovi.html">Works</a>
+      <a href="galerija.html">Virtual Gallery</a>
+      <a href="kontakt.html">Contact</a>
+    </nav>
+    <div class="podnozje__blok">
+      <a class="podnozje__insta" href="https://www.instagram.com/marko.mapko/" rel="noopener">
+        <span class="podnozje__insta-tekst">Instagram</span><span class="vizuelno-skriveno"> — @marko.mapko</span>
+        <span class="podnozje__ikona" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <p class="podnozje__potpis">© <span data-godina>2026</span> Marko Dumnić. All rights reserved.</p>
+</footer>
+
+<script src="../js/base.js"></script>
+<script src="../js/zum.js"></script>
+</body>
+</html>

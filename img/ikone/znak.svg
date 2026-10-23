@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Monogram MD — Marko Dumnić">
+<title>Znak Marka Dumnića — monogram MD</title>
+<rect width="64" height="64" fill="#EDE5D7"/>
+<clipPath id="md-kvadrat-znak"><rect width="64" height="64"/></clipPath>
+<g clip-path="url(#md-kvadrat-znak)" opacity="0.12">
+<path d="M0 2.97L2.97 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M0 8.91L8.91 0" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M0 14.849L14.849 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M0 20.789L20.789 0" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M0 26.729L26.729 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M0 32.668L32.668 0" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M0 38.608L38.608 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M0 44.548L44.548 0" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M0 50.487L50.487 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M0 56.427L56.427 0" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M0 62.367L62.367 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M4.307 64L64 4.307" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M10.246 64L64 10.246" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M16.186 64L64 16.186" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M22.126 64L64 22.126" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M28.065 64L64 28.065" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M34.005 64L64 34.005" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M39.945 64L64 39.945" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M45.884 64L64 45.884" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M51.824 64L64 51.824" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M57.764 64L64 57.764" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M63.703 64L64 63.703" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+</g>
+<g fill="#EDE5D7" stroke="#EDE5D7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M10 17.839 L17.08 17.839 L15.563 21.076 L15.563 42.924 L17.08 46.161 L10 46.161 L11.517 42.924 L11.517 21.076 Z"/>
+<path d="M31.241 17.839 L36.805 17.839 L36.805 46.161 L31.241 46.161 L32.759 42.924 L32.759 21.076 Z"/>
+<path d="M11.517 17.839 L24.566 43.126 L36.805 17.839 L34.377 17.839 L23.655 38.474 L15.563 17.839 Z"/>
+<path d="M36.805 17.839 L45.402 17.839 C49.954 17.839 54 22.492 54 31.494 C54 40.092 49.954 46.161 45.402 46.161 L36.805 46.161 L36.805 43.329 L44.897 43.329 C47.931 43.329 50.561 39.283 50.561 31.494 C50.561 24.11 47.931 20.469 44.897 20.469 L36.805 20.469 Z"/>
+</g>
+<g fill="#1E1A15">
+<path d="M10 17.839 L17.08 17.839 L15.563 21.076 L15.563 42.924 L17.08 46.161 L10 46.161 L11.517 42.924 L11.517 21.076 Z"/>
+<path d="M31.241 17.839 L36.805 17.839 L36.805 46.161 L31.241 46.161 L32.759 42.924 L32.759 21.076 Z"/>
+<path d="M11.517 17.839 L24.566 43.126 L36.805 17.839 L34.377 17.839 L23.655 38.474 L15.563 17.839 Z"/>
+<path d="M36.805 17.839 L45.402 17.839 C49.954 17.839 54 22.492 54 31.494 C54 40.092 49.954 46.161 45.402 46.161 L36.805 46.161 L36.805 43.329 L44.897 43.329 C47.931 43.329 50.561 39.283 50.561 31.494 C50.561 24.11 47.931 20.469 44.897 20.469 L36.805 20.469 Z"/>
+</g>
+<rect x="3" y="3" width="58" height="58" fill="none" stroke="#1E1A15" stroke-width="0.9" opacity="0.28"/>
+</svg>

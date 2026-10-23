@@ -1,0 +1,1765 @@
+/* =========================================================
+   Virtuelna galerija — stilovi stranice
+   Samo var(--...) tokeni. Bez sjenki, bez gradijenata,
+   bez radiusa preko 2px.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   Korijen i prebacivanje stanja
+   data-stanje: ulaz | ucitavanje | soba | 2d
+   data-razlog: webgl | fajl | cdn | podaci | json | prazno
+   (smanjeno kretanje NIJE razlog za 2D — sala radi i tada)
+   --------------------------------------------------------- */
+
+/* Uvod stranice: razmak ispod naslova (silazni potezi slova H1 su
+   dodirivali uvodni pasus) i bez ~220 px praznine do sale — sala je
+   nastavak uvoda, ne nova sekcija. Ovdje, a ne .mt-* klasama, jer
+   pravila komponenti u strane.css nadjačavaju pomoćne klase. */
+.galerija-uvod .naslov-1 + .uvodni { margin-top: var(--s-4); }
+.galerija-uvod { padding-bottom: 0; }
+.galerija-uvod + .sekcija { padding-top: var(--s-6); }
+
+.galerija {
+  margin-top: var(--s-6);
+
+  /* Mjere okna, na jednom mjestu. Medija upiti na dnu mijenjaju samo
+     ove promjenljive, a HUD i panel ih čitaju — pa se dugmad i panel
+     nikad ne preklapaju, ma koja da je širina.
+     --visina-sale   visina okna (ulaz, platno)
+     --sirina-panela panel sa desne strane (desktop, tablet, telefon položeno)
+     --visina-panela panel odozdo (uspravni telefon)
+     --hud-odmak     razmak dugmadi od ivice okna */
+  --visina-sale:   min(72vh, 680px);
+  --sirina-panela: min(30rem, 86%);
+  --visina-panela: 40%;
+  --hud-odmak:     var(--s-4);
+}
+
+/* Tamna soba (ulaz + platno) — skrivena kad se ide na 2D, i prije nego
+   JS postavi data-stanje (bez JS-a, ili bez podrške za ES module,
+   dugme "Uđi u salu" ne bi radilo) */
+.galerija:not([data-stanje]) .galerija-scena,
+.galerija[data-stanje="2d"] .galerija-scena { display: none; }
+
+/* 2D mreža — vidljiva u stanju 2d i dok stanja još nema */
+.galerija-2d { display: none; }
+.galerija:not([data-stanje]) .galerija-2d,
+.galerija[data-stanje="2d"] .galerija-2d { display: block; }
+
+/* JS radi (js/rano.js postavi <html data-js>), ali galerija.js još nije
+   postavio stanje: mreža ostaje skrivena — inače bi se njene lijene
+   slike preuzimale ni za koga. Umjesto nje se drži mjesto za salu, da
+   stranica ne poskoči. Bez JS-a i u stanju 2d (nema WebGL-a, greška)
+   mreža se vidi kao i prije. */
+html[data-js] .galerija:not([data-stanje]) .galerija-2d { display: none; }
+html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
+
+/* Objašnjenje za slučaj bez JavaScripta — samo dok stanja nema */
+.galerija[data-stanje] .galerija-2d__razlog--js { display: none; }
+.galerija:not([data-stanje]) .galerija-2d__razlog--js { display: block; }
+
+/* ---------------------------------------------------------
+   Scena — tamna ploča koja drži ulaz, platno, HUD i panel
+   --------------------------------------------------------- */
+
+.galerija-scena {
+  position: relative;
+  overflow: hidden;
+  min-height: var(--visina-sale);
+  background-color: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------
+   Ulazni ekran
+   --------------------------------------------------------- */
+
+.galerija-ulaz {
+  display: none;
+  position: relative;
+  min-height: var(--visina-sale);
+  box-sizing: border-box;
+  padding: var(--s-7) var(--gutter);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--s-4);
+  max-width: 54ch;
+}
+
+.galerija[data-stanje="ulaz"] .galerija-ulaz { display: flex; }
+
+/* Tiha šrafura u donjem desnom uglu ploče — potpis sajta.
+   Stoji na .galerija-scena, ne na .galerija-ulaz: ulaz je sužen na 54ch
+   pa bi šrafura završila nasred ploče. Token --hatch je crn (za svijetli
+   papir), pa se na tamnoj ploči obrće u svijetle linije — boja se ne
+   izmišlja, samo se obrće. Maska uklanja tvrdu ivicu pravougaonika. */
+.galerija[data-stanje="ulaz"] .galerija-scena::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 auto;
+  width: min(34rem, 46%);
+  height: min(22rem, 58%);
+  background-image: var(--hatch);
+  filter: invert(1);
+  opacity: 0.11;
+  pointer-events: none;
+  /* Maska uzima samo alfu, boja stopa je nebitna — zato stoji token, a ne
+     hex: pravilo "nijedan hex u komponenti" važi i ovdje. */
+  -webkit-mask-image: radial-gradient(120% 120% at 100% 100%, var(--ink) 30%, transparent 72%);
+  mask-image: radial-gradient(120% 120% at 100% 100%, var(--ink) 30%, transparent 72%);
+}
+
+.galerija-ulaz__oznaka {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-xwide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.galerija-ulaz__naslov {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--t-xl);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.galerija-uputstvo {
+  margin: var(--s-2) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s-3);
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+}
+
+.galerija-uputstvo li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+
+.galerija-uputstvo__opis { flex: 1 1 auto; }
+
+.galerija-uputstvo__tipka {
+  flex: 0 0 auto;
+  min-width: 6.5em;
+  padding: var(--s-1) var(--s-2);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+.galerija-uputstvo em {
+  font-style: normal;
+  color: var(--ink);
+}
+
+.galerija-ulaz__dugme {
+  margin-top: var(--s-3);
+  min-height: 44px;          /* dodirna meta */
+}
+
+.galerija-ulaz__napomena {
+  margin: 0;
+  max-width: var(--measure);
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  line-height: var(--leading-body);
+  color: var(--ink-muted);
+}
+
+/* Napomena o smanjenom kretanju — vidljiva SAMO onima koji su ga
+   uključili. Sala u tom slučaju radi (kamera skače umjesto da klizi),
+   pa ovo nije poruka o grešci nego najava ponašanja. Tanka linija
+   lijevo, bez akcenta — akcenat na ekranu nosi dugme "Uđi u salu". */
+.galerija-ulaz__napomena--kretanje {
+  display: none;
+  padding-left: var(--s-4);
+  border-left: 1px solid var(--rule-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .galerija-ulaz__napomena--kretanje { display: block; }
+}
+
+/* ---------------------------------------------------------
+   Platno
+   --------------------------------------------------------- */
+
+.galerija-platno {
+  display: none;
+  width: 100%;
+  height: var(--visina-sale);
+}
+
+.galerija[data-stanje="ucitavanje"] .galerija-platno,
+.galerija[data-stanje="soba"] .galerija-platno { display: block; }
+
+/* Kamera centrira izabrano djelo u kadru, a panel pokriva desni dio
+   okna — pa bi pola slike bilo pod panelom. Zato se cijelo platno
+   pomjeri ulijevo za pola širine panela: djelo staje u sredinu
+   VIDLJIVOG dijela. Lijeva ivica sale ode van okna (overflow: hidden),
+   desna je ionako pod panelom. Procenat u translate se računa od
+   širine samog platna, koja je jednaka širini okna — isto kao širina
+   panela. Pogađanje djela klikom radi i dalje: js/galerija.js čita
+   getBoundingClientRect(), koji pomjeraj uračunava. */
+.galerija-platno {
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.galerija[data-izabrano][data-panel="otvoren"] .galerija-platno {
+  transform: translateX(calc(var(--sirina-panela) / -2));
+}
+
+.galerija-platno canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  /* U pregledu sobe prevlačenje LIJEVO-DESNO okreće pogled (js/galerija.js),
+     a gore-dolje i dalje pripada stranici: `pan-y` pušta prst da skroluje
+     stranicu preko platna, a vodoravni pokret predaje skriptu. `none` bi
+     ovdje zarobio prst nad salom. Dvoklik-zum je ugašen i ovim, pa tap
+     na platno odmah bira djelo. */
+  touch-action: pan-y;
+  cursor: pointer;             /* klik bira djelo */
+  outline: none;
+}
+
+/* Pred izabranim djelom svaki pokret pripada sali: jedan prst kruži oko
+   platna, dva prsta približavaju. Stranica se tada ne skroluje preko
+   okna — izlaz je Esc, „Pregled“ ili tap pored djela. */
+.galerija[data-izabrano] .galerija-platno canvas {
+  touch-action: none;
+  cursor: grab;
+}
+
+.galerija[data-izabrano] .galerija-platno canvas:active { cursor: grabbing; }
+
+/* Platno dobija fokus kad se uđe u salu (tabindex u js/galerija.js), pa
+   fokus mora biti vidljiv — unutrašnji outline, da ga ivica ploče ne reže. */
+.galerija-platno canvas:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+/* Poruka tokom preuzimanja */
+.galerija-ucitavanje {
+  display: none;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  letter-spacing: var(--track-wide);
+  color: var(--ink-muted);
+}
+
+.galerija[data-stanje="ucitavanje"] .galerija-ucitavanje { display: block; }
+
+/* ---------------------------------------------------------
+   HUD — izlaz, FPS, kretanje na dodir
+   --------------------------------------------------------- */
+
+.galerija-hud { display: none; }
+
+/* HUD je providan sloj preko DIJELA okna koji panel ne pokriva: desna
+   (ili donja) ivica mu se pomjera za širinu (visinu) panela dok je panel
+   otvoren. Dugmad su ćelije jedne mreže, pa ne mogu jedno preko drugog,
+   a nijedno ne može pod panel. Sam sloj ne hvata pokazivač
+   (pointer-events: none) — prevlačenje po praznom dijelu ide na platno. */
+.galerija[data-stanje="soba"] .galerija-hud {
+  position: absolute;
+  inset: var(--hud-odmak);
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-areas:
+    "traka"
+    "."
+    "ugao"
+    "kretanje";
+  justify-items: start;
+  gap: var(--s-2);
+  pointer-events: none;
+}
+
+.galerija[data-stanje="soba"][data-panel="otvoren"] .galerija-hud {
+  right: calc(var(--sirina-panela) + var(--hud-odmak));
+}
+
+.galerija-hud__traka,
+.galerija-kretanje,
+.galerija-ugao { pointer-events: auto; }
+
+/* Dugmad stoje LIJEVO, a ne desno, i to je mjereno a ne stvar ukusa:
+   panel sa podacima zauzima desnu stranu okna (min(30rem, 86%), cijela
+   visina). Kad je bio u desnom uglu, panel ga je prekrivao i „Izađi“,
+   „Pregled“ i strelice su postajali neklikabilni dok je panel otvoren —
+   a panel se sada otvara sam, pri svakom izboru djela. Lijeva traka
+   nikad nije pod panelom, pa ništa ne mora da skače pri otvaranju. */
+.galerija-hud__traka {
+  grid-area: traka;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.galerija-hud__dugme {
+  appearance: none;
+  min-height: 44px;          /* dodirna meta */
+  padding: var(--s-2) var(--s-4);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background-color: var(--paper-warm);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.galerija-hud__dugme:hover { color: var(--accent); border-color: var(--accent); }
+
+.galerija-hud__dugme:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.galerija-hud__dugme[aria-pressed="false"] { color: var(--ink-faint); }
+
+/* Sitan brojač FPS-a u uglu */
+.galerija-fps {
+  min-width: 5.5em;
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--track-wide);
+  text-align: right;
+  color: var(--ink-muted);
+}
+
+.galerija[data-fps="ne"] .galerija-fps { visibility: hidden; }
+
+/* Kretanje među djelima: Pregled · ◀ · ▶
+   Rade isto što i tastatura, pa i na telefonu gdje tastature nema. */
+.galerija-kretanje {
+  grid-area: kretanje;
+  display: flex;
+  gap: var(--s-2);
+}
+
+.galerija-kretanje__dugme {
+  appearance: none;
+  min-height: 44px;          /* dodirna meta */
+  min-width: 5.5rem;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background-color: var(--paper-warm);
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+/* Strelice su uže od "Pregleda" — jedan znak ne traži 5.5rem */
+.galerija-kretanje__dugme--strelica {
+  min-width: 44px;
+  padding: var(--s-3);
+  font-size: var(--t-sm);
+  letter-spacing: 0;
+}
+
+.galerija-kretanje__dugme:hover,
+.galerija-kretanje__dugme:active { color: var(--accent); border-color: var(--accent); }
+
+.galerija-kretanje__dugme:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* "Pregled" dok si već u pregledu: prigušen, ali ostaje u Tab redu
+   (aria-disabled, ne disabled) i dalje reaguje — samo ne obećava promjenu. */
+.galerija-kretanje__dugme[aria-disabled="true"] {
+  color: var(--ink-faint);
+  border-color: var(--rule);
+}
+
+.galerija-kretanje__dugme[aria-disabled="true"]:hover {
+  color: var(--ink-faint);
+  border-color: var(--rule);
+}
+
+/* Uglovi gledanja: Lijevo · Sprijeda · Desno · Izbliza · Bočno svjetlo.
+   Postoje SAMO dok je djelo izabrano (data-izabrano postavlja JS);
+   u pregledu sobe nemaju oko čega da kruže. Na širokom ekranu se
+   prelamaju u dva reda ako ne stanu; na telefonu su jedan red koji
+   se skroluje prstom (vidi medija upite). */
+.galerija-ugao {
+  grid-area: ugao;
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  max-width: 100%;
+}
+
+.galerija[data-stanje="soba"][data-izabrano] .galerija-ugao { display: flex; }
+
+/* Natpisi su riječi, ne jedan znak — širina po sadržaju, ne fiksnih 5.5rem */
+.galerija-ugao__dugme {
+  flex: 0 0 auto;
+  min-width: 44px;
+  white-space: nowrap;
+}
+
+/* Prekidač bočnog svjetla: upaljen nosi akcenat, ugašen je običan.
+   (Ugašeno dugme NE ide u --ink-faint kao FPS — ono mora ostati čitljivo
+   i pozivati na klik.) */
+.galerija-ugao__prekidac[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background-color: var(--paper-deep);
+}
+
+/* ---------------------------------------------------------
+   Panel sa podacima o djelu
+   Klizne sa desne strane na desktopu, odozdo na mobilnom.
+   Pozadina --paper (unutar .soba-tamna je tamna), tanka linija, bez sjenke.
+
+   Panel se otvara zajedno sa kretanjem kamere ka djelu i NE otima
+   fokus (vidi js/galerija.js — role="region", ne "dialog"), pa je
+   `visibility: hidden` ovdje bezbjedan: ništa fokusabilno u njemu
+   se ne traži dok je sakriven.
+   --------------------------------------------------------- */
+
+.galerija-panel {
+  position: absolute;
+  inset: 0 0 auto auto;
+  z-index: 2;
+  box-sizing: border-box;
+  width: var(--sirina-panela);
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--s-6) var(--s-6) var(--s-7);
+  background-color: var(--paper);
+  border-left: 1px solid var(--rule-strong);
+  border-radius: 0;
+  transform: translateX(101%);
+  visibility: hidden;
+  transition: transform var(--dur) var(--ease), visibility var(--dur) var(--ease);
+}
+
+.galerija[data-panel="otvoren"] .galerija-panel {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.galerija-panel__zatvori {
+  appearance: none;
+  position: absolute;
+  inset: var(--s-4) var(--s-4) auto auto;
+  width: 44px;               /* dodirna meta */
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background-color: transparent;
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: var(--t-md);
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.galerija-panel__zatvori:hover { color: var(--accent); border-color: var(--accent); }
+
+.galerija-panel__zatvori:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.galerija-panel__oznaka {
+  margin: 0 0 var(--s-2);
+  color: var(--ink-muted);
+}
+
+.galerija-panel__naziv {
+  margin: 0 0 var(--s-5);
+  max-width: 18ch;
+  font-family: var(--font-display);
+  font-size: var(--t-lg);
+  font-weight: 500;
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.galerija-panel__meta {
+  margin: 0 0 var(--s-5);
+  padding: var(--s-4) 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: var(--s-2) var(--s-4);
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+}
+
+.galerija-panel__meta dt {
+  margin: 0;
+  font-size: var(--t-xs);
+  letter-spacing: var(--track-xwide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.galerija-panel__meta dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.galerija-panel__opis {
+  margin: 0 0 var(--s-5);
+  max-width: var(--measure);
+  font-family: var(--font-ui);
+  font-size: var(--t-base);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.galerija-panel__link { display: inline-block; }
+
+.galerija-panel__napomena {
+  margin: var(--s-6) 0 0;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  line-height: var(--leading-body);
+  color: var(--ink-muted);
+}
+
+/* ---------------------------------------------------------
+   2D zamjena — ista djela u običnoj mreži
+   --------------------------------------------------------- */
+
+.galerija-2d__poruka {
+  max-width: var(--measure);
+  margin-bottom: var(--s-7);
+  padding-left: var(--s-5);
+  border-left: 2px solid var(--accent);
+}
+
+.galerija-2d__poruka .naslov-3 { margin-top: 0; }
+
+/* Razlog se otkriva prema data-razlog na .galerija */
+.galerija-2d__razlog {
+  display: none;
+  margin: var(--s-3) 0 0;
+  font-family: var(--font-ui);
+  font-size: var(--t-base);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.galerija[data-razlog="webgl"]  .galerija-2d__razlog[data-razlog="webgl"],
+.galerija[data-razlog="fajl"]   .galerija-2d__razlog[data-razlog="fajl"],
+.galerija[data-razlog="cdn"]    .galerija-2d__razlog[data-razlog="cdn"],
+.galerija[data-razlog="podaci"] .galerija-2d__razlog[data-razlog="podaci"],
+.galerija[data-razlog="json"]   .galerija-2d__razlog[data-razlog="json"],
+.galerija[data-razlog="prazno"] .galerija-2d__razlog[data-razlog="prazno"] {
+  display: block;
+}
+
+.galerija-2d__razlog code {
+  font-size: 0.92em;
+  color: var(--ink);
+}
+
+/* .mreza--3 iz base.css je auto-fit, pa u širokom omotu daje četiri kolone.
+   Ovdje želimo najviše tri — sedam djela u tri mirna reda. */
+.galerija-2d__mreza {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-7) var(--s-6);
+}
+
+@media (max-width: 900px) {
+  .galerija-2d__mreza { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .galerija-2d__mreza { grid-template-columns: 1fr; }
+}
+
+/* Djela su različitih proporcija, pa se potpisi poravnavaju tako što
+   svaka ćelija ima istu visinu, a slika se u njoj centrira. */
+.galerija-2d__mreza > li {
+  display: flex;
+  flex-direction: column;
+}
+
+.galerija-2d__djelo {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.galerija-2d__djelo > a { flex: 1 1 auto; }
+
+.galerija-2d__okvir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background-color: var(--paper-warm);
+}
+
+.galerija-2d__djelo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 20rem;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.galerija-2d__djelo a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.galerija-2d__djelo a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.galerija-2d__djelo figcaption {
+  display: grid;
+  gap: var(--s-1);
+  margin-top: var(--s-3);
+}
+
+.galerija-2d__naziv {
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+}
+
+.galerija-2d__meta {
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  letter-spacing: var(--track-wide);
+  color: var(--ink-muted);
+}
+
+.galerija-svi-radovi {
+  max-width: var(--measure);
+  margin: var(--s-6) 0 0;
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  line-height: var(--leading-body);
+  color: var(--ink-muted);
+}
+
+/* ---------------------------------------------------------
+   Sekcija "Šta ovdje još ne radi"
+   --------------------------------------------------------- */
+
+.galerija-nedostaci__uvod {
+  max-width: var(--measure);
+  font-family: var(--font-ui);
+  font-size: var(--t-base);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.galerija-nedostaci { margin-top: var(--s-6); }
+
+.galerija-spisak {
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s-4);
+  max-width: var(--measure);
+}
+
+.galerija-spisak li {
+  padding-left: var(--s-5);
+  border-left: 1px solid var(--rule);
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.galerija-spisak--ne li { border-left-color: var(--rule-strong); }
+
+.galerija-spisak strong {
+  display: block;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.galerija-spisak code {
+  font-size: 0.92em;
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------
+   Prilagođavanje ekranu
+   Laptop/desktop (> 1024px) je osnova iznad. Redom ispod:
+   tablet (721–1024), telefon uspravno (≤ 720, panel odozdo),
+   vrlo uski ekrani (≤ 380), telefon položeno (visina ≤ 500).
+   Svuda važi: dugmad su ≥ 44px, HUD nikad ne ulazi pod panel.
+   --------------------------------------------------------- */
+
+/* Tablet: panel uži, da lijevo ostane mjesta za sliku i dugmad.
+   Okno više — na uspravnom tabletu 680px je tek pola ekrana. */
+@media (min-width: 721px) and (max-width: 1024px) {
+  .galerija {
+    --sirina-panela: min(21rem, 46%);
+    --visina-sale:   min(72vh, 820px);
+  }
+  .galerija-panel { padding: var(--s-5) var(--s-5) var(--s-6); }
+}
+
+@media (max-width: 720px) {
+
+  /* Okno skoro do dna ekrana, ispod ljepljivog zaglavlja: na telefonu
+     se u sali radi prstom, pa je svaki piksel kadra bitan.
+     `vh` je rezerva za pregledače bez `dvh`; `dvh` ne skače kad se
+     traka sa adresom sakrije. */
+  .galerija {
+    --visina-sale:   max(26rem, calc(100vh - var(--h-zaglavlje) - var(--s-5)));
+    --visina-panela: 40%;
+    --hud-odmak:     var(--s-3);
+  }
+
+  @supports (height: 100dvh) {
+    .galerija {
+      --visina-sale: max(26rem, calc(100dvh - var(--h-zaglavlje) - var(--s-5)));
+    }
+  }
+
+  /* Ulazni ekran nosi dosta teksta — ne treba mu cijeli ekran */
+  .galerija-ulaz {
+    min-height: 0;
+    padding: var(--s-6) var(--s-5);
+    max-width: none;
+  }
+
+  .galerija-scena { min-height: 0; }
+
+  .galerija-uputstvo li {
+    flex-direction: column;
+    gap: var(--s-1);
+  }
+
+  .galerija-uputstvo__tipka {
+    min-width: 0;
+    align-self: flex-start;
+  }
+
+  /* Panel klizne odozdo, stalne visine (--visina-panela), a sadržaj se
+     u njemu skroluje. Stalna visina, ne `auto`: HUD mora znati gdje
+     panel počinje da bi red sa uglovima stao tačno iznad njega —
+     a gornjih 60% okna ostaje za sliku oko koje se kruži. */
+  .galerija-panel {
+    inset: auto 0 0 0;
+    width: 100%;
+    height: var(--visina-panela);
+    max-height: none;
+    padding: var(--s-4) var(--s-5) var(--s-5);
+    border-left: 0;
+    border-top: 1px solid var(--rule-strong);
+    transform: translateY(101%);
+  }
+
+  .galerija[data-panel="otvoren"] .galerija-panel { transform: translateY(0); }
+
+  .galerija-panel__zatvori { inset: var(--s-2) var(--s-3) auto auto; }
+
+  /* Panel je ovdje odozdo, pa se platno pomjera NAGORE: za pola visine
+     panela, umanjeno za dvije gornje trake (≈ 2rem nazad), da djelo
+     stane između „Pregled ◀ ▶“ i reda sa uglovima. */
+  .galerija[data-izabrano][data-panel="otvoren"] .galerija-platno {
+    transform: translateY(calc(var(--visina-panela) / -2 + 2rem));
+  }
+
+  /* Niži panel — razmaci se skupljaju da naziv, podaci i početak
+     opisa stanu bez skrolovanja. */
+  .galerija-panel__naziv {
+    margin-bottom: var(--s-3);
+    padding-right: calc(44px + var(--s-2));   /* ne ispod dugmeta × */
+    font-size: var(--t-md);
+  }
+  .galerija-panel__meta {
+    grid-template-columns: 6.5rem 1fr;
+    padding: var(--s-3) 0;
+    margin-bottom: var(--s-3);
+  }
+  .galerija-panel__opis {
+    margin-bottom: var(--s-3);
+    font-size: var(--t-sm);
+  }
+  .galerija-panel__napomena { margin-top: var(--s-4); }
+
+  /* HUD: gore „Izađi · FPS“ pa „Pregled ◀ ▶“ — dvije trake jedna pod
+     drugom, izvan domašaja panela. Red sa uglovima stoji dolje, odmah
+     iznad panela. Dok je panel otvoren, HUD se završava tamo gdje
+     panel počinje, pa nijedno dugme ne može pod njega. */
+  .galerija[data-stanje="soba"] .galerija-hud {
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+      "traka"
+      "kretanje"
+      "."
+      "ugao";
+  }
+
+  .galerija[data-stanje="soba"][data-panel="otvoren"] .galerija-hud {
+    right: var(--hud-odmak);
+    bottom: calc(var(--visina-panela) + var(--s-2));
+  }
+
+  .galerija-kretanje__dugme { min-width: 4.75rem; padding: var(--s-3); }
+  .galerija-kretanje__dugme--strelica { min-width: 44px; }
+
+  /* Uglovi: jedan red, prst ga skroluje vodoravno. `pan-x` da vodoravni
+     pokret ne ode stranici, a `contain` da skrol ne pređe na stranicu
+     kad se dođe do kraja reda. Unutrašnji odmak od 2px čuva okvir
+     fokusa od sječenja; negativna margina vraća red na mjesto. */
+  .galerija-ugao {
+    flex-wrap: nowrap;
+    justify-self: stretch;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    touch-action: pan-x;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 2px;
+    padding: 2px;
+    margin: -2px;
+  }
+
+  .galerija-ugao__dugme { scroll-snap-align: start; }
+
+  .galerija-ugao::-webkit-scrollbar { display: none; }
+
+  .galerija-ugao__dugme {
+    min-width: 44px;
+    padding: var(--s-3);
+  }
+}
+
+/* Vrlo uski ekrani (do 380px): gap i padding se skupljaju da trake ne
+   guraju okno u horizontalni skrol — natpisi ostaju čitljivi, a dodirne
+   mete ostaju 44px visoke. */
+@media (max-width: 380px) {
+  .galerija-kretanje,
+  .galerija-ugao { gap: var(--s-1); }
+  .galerija-kretanje__dugme { min-width: 4.25rem; padding: var(--s-2); }
+  .galerija-kretanje__dugme--strelica { min-width: 44px; padding: var(--s-2); }
+  .galerija-ugao__dugme { min-width: 44px; padding: var(--s-2); }
+  .galerija-hud__traka { gap: var(--s-1); }
+  .galerija-hud__dugme { padding: var(--s-2) var(--s-3); }
+  .galerija-fps { min-width: 4.5em; }
+}
+
+/* Telefon položeno (i svaki nizak prozor): panel odozdo bi pojeo
+   skoro cijelo okno, pa se vraća na desnu stranu, uži. Okno je visoko
+   koliko ekran dozvoli ispod zaglavlja. Gore samo „Izađi · FPS“, a
+   dolje u jednom redu „Pregled ◀ ▶“ i uglovi (koji se skroluju) —
+   sredina kadra ostaje slici. Stoji POSLIJE upita za ≤ 720px, pa
+   pobjeđuje i na položenim telefonima užim od 720px. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .galerija {
+    --visina-sale:   max(17.5rem, calc(100vh - var(--h-zaglavlje) - var(--s-2)));
+    --sirina-panela: min(17rem, 40%);
+    --hud-odmak:     var(--s-3);
+  }
+
+  @supports (height: 100dvh) {
+    .galerija {
+      --visina-sale: max(17.5rem, calc(100dvh - var(--h-zaglavlje) - var(--s-2)));
+    }
+  }
+
+  .galerija-ulaz { min-height: 0; max-width: none; }
+  .galerija-scena { min-height: 0; }
+
+  .galerija-panel {
+    inset: 0 0 auto auto;
+    width: var(--sirina-panela);
+    height: 100%;
+    max-height: none;
+    padding: var(--s-4) var(--s-4) var(--s-5);
+    border-top: 0;
+    border-left: 1px solid var(--rule-strong);
+    transform: translateX(101%);
+  }
+
+  .galerija[data-panel="otvoren"] .galerija-panel { transform: translateX(0); }
+
+  .galerija[data-izabrano][data-panel="otvoren"] .galerija-platno {
+    transform: translateX(calc(var(--sirina-panela) / -2));
+  }
+
+  .galerija-panel__naziv {
+    margin-bottom: var(--s-3);
+    padding-right: calc(44px + var(--s-2));
+    font-size: var(--t-md);
+  }
+  .galerija-panel__meta {
+    grid-template-columns: 5.5rem 1fr;
+    padding: var(--s-2) 0;
+    margin-bottom: var(--s-3);
+  }
+  .galerija-panel__opis { font-size: var(--t-sm); margin-bottom: var(--s-3); }
+
+  .galerija[data-stanje="soba"] .galerija-hud {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "traka    traka"
+      ".        ."
+      "kretanje ugao";
+    column-gap: var(--s-3);
+  }
+
+  .galerija[data-stanje="soba"][data-panel="otvoren"] .galerija-hud {
+    right: calc(var(--sirina-panela) + var(--hud-odmak));
+    bottom: var(--hud-odmak);
+  }
+
+  .galerija-kretanje__dugme { min-width: 4.75rem; padding: var(--s-3); }
+  .galerija-kretanje__dugme--strelica { min-width: 44px; }
+
+  .galerija-ugao {
+    flex-wrap: nowrap;
+    justify-self: stretch;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    touch-action: pan-x;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 2px;
+    padding: 2px;
+    margin: -2px;
+  }
+
+  .galerija-ugao__dugme { scroll-snap-align: start; }
+
+  .galerija-ugao::-webkit-scrollbar { display: none; }
+
+  .galerija-ugao__dugme { padding: var(--s-3); }
+}
+
+/* ---------------------------------------------------------
+   Smanjeno kretanje — panel se pojavljuje bez klizanja.
+   Sala i dalje RADI: u js/galerija.js kamera u tom slučaju skače
+   odmah na izabrano djelo i paralaksa je ugašena. Ovdje se gase
+   samo CSS prelazi.
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .galerija-panel {
+    transition: none;
+    transform: none;
+  }
+  /* Platno se i dalje pomjera od panela (inače bi djelo bilo pod njim),
+     samo odmah, bez klizanja. */
+  .galerija-platno { transition: none; }
+  .galerija-hud__dugme,
+  .galerija-kretanje__dugme,
+  .galerija-panel__zatvori { transition: none; }
+}
+
+
+/* ---------------------------------------------------------
+   Traka ispod sale — kretanje i uglovi gledanja
+   Dugmad su izvučena IZ okna, ispod slike, da ne zaklanjaju djelo.
+   Ova pravila stoje na kraju fajla i namjerno poništavaju raniji
+   raspored u HUD mreži (grid-area, vodoravni skrol na telefonu).
+   --------------------------------------------------------- */
+
+.galerija-alati { display: none; }
+
+.galerija[data-stanje="soba"] .galerija-alati {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+  padding: var(--s-3);
+  background-color: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.galerija-alati .galerija-kretanje,
+.galerija-alati .galerija-ugao {
+  grid-area: auto;
+  flex-wrap: wrap;
+  overflow: visible;
+  touch-action: manipulation;
+  scroll-snap-type: none;
+  padding: 0;
+  margin: 0;
+  gap: var(--s-2);
+}
+
+/* Na telefonu sala ustupa mjesto traci, da dugmad budu na ekranu
+   bez skrolovanja. */
+@media (max-width: 720px) {
+  .galerija[data-stanje="soba"] {
+    --visina-sale: max(20rem, calc(100vh - var(--h-zaglavlje) - 9rem));
+  }
+  @supports (height: 100dvh) {
+    .galerija[data-stanje="soba"] {
+      --visina-sale: max(20rem, calc(100dvh - var(--h-zaglavlje) - 9rem));
+    }
+  }
+  .galerija[data-stanje="soba"] .galerija-alati { justify-content: flex-start; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .galerija[data-stanje="soba"] {
+    --visina-sale: max(14rem, calc(100vh - var(--h-zaglavlje) - 4.5rem));
+  }
+  @supports (height: 100dvh) {
+    .galerija[data-stanje="soba"] {
+      --visina-sale: max(14rem, calc(100dvh - var(--h-zaglavlje) - 4.5rem));
+    }
+  }
+  .galerija[data-stanje="soba"] .galerija-alati { flex-wrap: nowrap; overflow-x: auto; }
+  .galerija-alati .galerija-ugao { flex-wrap: nowrap; }
+}
+
+/* ---------------------------------------------------------
+   Lupa — krug koji uvećava dio djela (js/galerija.js, LUPA)
+   Stoji u .galerija-platno, pa se pomjera zajedno sa njim kad
+   panel gurne platno ulijevo. Ne hvata pokazivač: miš i prst
+   prolaze kroz nju do 3D platna.
+   --------------------------------------------------------- */
+
+.galerija-platno { position: relative; }
+
+.galerija-lupa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  border: 3px solid #F3EEE4;
+  box-shadow: 0 0 0 1px rgba(30, 26, 21, 0.5), 0 10px 30px rgba(0, 0, 0, 0.45);
+  z-index: 1;
+}
+
+.galerija-lupa[hidden] { display: none; }
+
+.galerija-lupa canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.galerija[data-izabrano] .galerija-platno canvas:has(~ .galerija-lupa:not([hidden])) { cursor: none; }
+
+/* Natpis na prelaz miša — ista sadržina kao kartica na zidu */
+.galerija-natpis {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 260px;
+  padding: 12px 16px 13px;
+  background: #F6F2EA;
+  color: #1E1A15;
+  border: 1px solid rgba(30, 26, 21, 0.18);
+  border-radius: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  animation: galerija-natpis-ulaz 140ms ease-out;
+}
+
+.galerija-natpis[hidden] { display: none; }
+
+.galerija-natpis__autor,
+.galerija-natpis__serija {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6B6257;
+}
+
+.galerija-natpis__naziv {
+  margin: 2px 0 3px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.15;
+  color: #1E1A15;
+}
+
+.galerija-natpis__serija { margin-top: 6px; }
+.galerija-natpis__serija:empty { display: none; }
+
+@keyframes galerija-natpis-ulaz {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .galerija-natpis { animation: none; }
+}
+
+/* Izbliza — djelo preko cijelog ekrana, u najvećoj rezoluciji */
+html.galerija-izbliza-otvoreno { overflow: hidden; }
+
+.galerija-izbliza {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: #0E0C0A;
+  color: #F3EEE4;
+  animation: galerija-natpis-ulaz 180ms ease-out;
+}
+
+.galerija-izbliza__okno {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.galerija-izbliza__slika {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  cursor: zoom-in;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* Puna veličina: 1 piksel fotografije = 1 piksel ekrana, kretanje po slici */
+.galerija-izbliza.je-puna .galerija-izbliza__okno {
+  display: block;
+  overflow: auto;
+  touch-action: pan-x pan-y;
+  padding: 0;
+  overscroll-behavior: contain;
+}
+
+.galerija-izbliza.je-puna .galerija-izbliza__slika {
+  max-width: none;
+  max-height: none;
+  cursor: grab;
+  box-shadow: none;
+}
+
+.galerija-izbliza.je-puna .galerija-izbliza__okno:active .galerija-izbliza__slika { cursor: grabbing; }
+
+.galerija-izbliza__traka {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(243, 238, 228, 0.14);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.galerija-izbliza__opis {
+  margin: 0;
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.galerija-izbliza__opis strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  color: #F3EEE4;
+}
+
+.galerija-izbliza__opis span { color: rgba(243, 238, 228, 0.7); }
+
+.galerija-izbliza__savjet {
+  margin: 0;
+  color: rgba(243, 238, 228, 0.55);
+  font-size: 12px;
+}
+
+.galerija-izbliza__zatvori {
+  min-height: 44px;
+  padding: 0 18px;
+  background: transparent;
+  color: #F3EEE4;
+  border: 1px solid rgba(243, 238, 228, 0.4);
+  border-radius: 2px;
+  font: inherit;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.galerija-izbliza__zatvori:hover { border-color: #F3EEE4; }
+.galerija-izbliza__zatvori:focus-visible { border-color: #F3EEE4; outline: 2px solid #F3EEE4; outline-offset: 2px; }
+/* Okno slike je fokusabilno (Enter = puna veličina, strelice skroluju) */
+.galerija-izbliza__okno:focus-visible { outline: 2px solid #F3EEE4; outline-offset: -4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .galerija-izbliza { animation: none; }
+}
+
+/* =========================================================
+   Vođena tura, mapa sale, savjeti, poruka, vinjeta
+   ========================================================= */
+
+/* Dugme „Obiđi izložbu“ je glavna radnja trake — oker okvir,
+   a dok tura traje, tanka linija napretka po dnu dugmeta. */
+.galerija-tura {
+  position: relative;
+  overflow: hidden;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.galerija-tura:hover,
+.galerija-tura:focus-visible { color: var(--ink); border-color: var(--ink); }
+
+.galerija[data-tura="radi"] .galerija-tura {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+
+/* Mapa sale — gornji desni ugao okna, u istom redu kao traka */
+.galerija-mapa {
+  grid-area: traka;
+  justify-self: end;
+  align-self: start;
+  pointer-events: auto;
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  width: 9.5rem;
+}
+
+.galerija-mapa:empty { display: none; }
+
+.galerija-mapa__prekidac {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;          /* dodirna meta */
+  padding: 0 12px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background-color: rgba(21, 18, 14, 0.72);
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.galerija-mapa__prekidac:hover { color: var(--accent); border-color: var(--accent); }
+.galerija-mapa__prekidac:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.galerija-mapa__strelica {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(1px) rotate(-135deg);
+  transition: transform var(--dur) var(--ease);
+}
+
+.galerija-mapa.je-skupljena .galerija-mapa__strelica { transform: translateY(-2px) rotate(45deg); }
+.galerija-mapa.je-skupljena .galerija-mapa__crtez { display: none; }
+
+.galerija-mapa__crtez {
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: 6px;
+  box-sizing: border-box;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background-color: rgba(21, 18, 14, 0.72);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.galerija-mapa__pod { fill: rgba(176, 120, 72, 0.22); }
+
+.galerija-mapa__zid {
+  fill: none;
+  stroke: #E9DFCF;
+  stroke-width: 0.22;
+  stroke-linecap: square;
+}
+
+.galerija-mapa__sala {
+  fill: var(--ink-muted);   /* #8E8474 u .soba-tamna — 5:1 na tamnoj mapi (bilo je 1.89:1) */
+  font-family: var(--font-ui);
+  font-size: 1.05px;
+  letter-spacing: 0.12px;
+}
+
+.galerija-mapa__djelo { cursor: pointer; outline: none; }
+.galerija-mapa__meta { fill: transparent; }
+/* Nevidljiva meta, ≥ 24 px na ekranu (poluprečnik računa js/galerija.js) */
+.galerija-mapa__pogodak { fill: transparent; }
+.galerija-mapa__tacka {
+  fill: #E9DFCF;
+  stroke: rgba(21, 18, 14, 0.9);
+  stroke-width: 0.15;
+  transition: fill 160ms ease;
+}
+
+.galerija-mapa__djelo:hover .galerija-mapa__tacka,
+.galerija-mapa__djelo:focus-visible .galerija-mapa__tacka,
+.galerija-mapa__djelo.je-izabrano .galerija-mapa__tacka { fill: #D9A441; }
+
+.galerija-mapa__djelo:focus-visible .galerija-mapa__meta { fill: none; stroke: #D9A441; stroke-width: 0.18; }
+.galerija-mapa__djelo.je-izabrano .galerija-mapa__tacka { r: 0.6; }
+
+.galerija-mapa__pogled { fill: rgba(217, 164, 65, 0.32); }
+.galerija-mapa__oko { fill: #D9A441; stroke: #15120E; stroke-width: 0.15; }
+
+/* Dugme „?“ — kvadratno, jedan znak */
+.galerija-hud__pomoc {
+  min-width: 44px;
+  padding-inline: 0;
+  font-size: var(--t-sm);
+  letter-spacing: 0;
+}
+
+/* Kratka poruka preko donjeg dijela sale */
+.galerija-poruka {
+  position: absolute;
+  left: 50%;
+  bottom: var(--s-5);
+  z-index: 4;
+  margin: 0;
+  max-width: calc(100% - 2 * var(--s-5));
+  padding: 10px 16px;
+  border: 1px solid rgba(233, 223, 207, 0.25);
+  border-radius: var(--radius);
+  background-color: rgba(21, 18, 14, 0.82);
+  color: #F3EEE4;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 6px);
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+
+.galerija-poruka.je-vidljiva { opacity: 1; transform: translate(-50%, 0); }
+.galerija:not([data-stanje="soba"]) .galerija-poruka { display: none; }
+.galerija[data-panel="otvoren"] .galerija-poruka { left: calc((100% - var(--sirina-panela)) / 2); }
+
+/* Savjeti pri prvom ulasku */
+.galerija-savjeti {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: var(--s-5);
+  overflow-y: auto;
+  background-color: rgba(14, 12, 10, 0.72);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: galerija-natpis-ulaz 260ms ease-out;
+}
+
+.galerija-savjeti[hidden],
+.galerija:not([data-stanje="soba"]) .galerija-savjeti { display: none; }
+
+.galerija-savjeti__okvir {
+  width: min(46rem, 100%);
+  padding: clamp(var(--s-5), 4vw, var(--s-7));
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background-color: var(--paper);
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.galerija-savjeti__oznaka {
+  margin: 0 0 var(--s-2);
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.galerija-savjeti__naslov {
+  margin: 0 0 var(--s-6);
+  font-family: var(--font-display);
+  font-size: var(--t-xl);
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.galerija-savjeti__lista {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+  margin: 0 0 var(--s-6);
+  padding: 0;
+  list-style: none;
+}
+
+.galerija-savjet {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  line-height: 1.45;
+}
+
+.galerija-savjet__ikona {
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--s-1);
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.galerija-savjet__ikona .ispuna { fill: var(--accent); stroke: none; }
+
+.galerija-savjet__naslov { color: var(--ink); font-weight: 600; }
+.galerija-savjet__opis { color: var(--ink-muted); }
+
+.galerija-savjeti__akcije {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--s-4) var(--s-6);
+}
+
+/* Tekst za miš ili za prst — po tome kako se uređaj stvarno koristi */
+.samo-prst { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .samo-mis { display: none; }
+  .samo-prst { display: inline; }
+}
+
+/* Blaga vinjeta: ivice kadra tonu, pogled ide ka sredini — kao oko u
+   polumračnoj sali. Ne hvata pokazivač. */
+.galerija-platno::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 46%, transparent 58%, rgba(10, 8, 6, 0.38) 100%);
+}
+
+/* Kursor „ruka“ nad djelom */
+.galerija[data-nad-djelom] .galerija-platno canvas { cursor: pointer; }
+
+@media (max-width: 720px) {
+  .galerija-mapa { width: 6.5rem; }
+  .galerija-savjeti { place-items: start center; padding: var(--s-3); }
+  .galerija-savjeti__okvir { padding: var(--s-5) var(--s-4); }
+  .galerija-savjeti__naslov { margin-bottom: var(--s-4); font-size: var(--t-lg); }
+  .galerija-savjeti__lista { grid-template-columns: 1fr; gap: var(--s-3); margin-bottom: var(--s-4); }
+  .galerija-savjet {
+    grid-template-columns: 44px 1fr;
+    justify-items: start;
+    text-align: left;
+    column-gap: var(--s-3);
+    row-gap: 0;
+  }
+  .galerija-savjet__ikona { grid-row: span 2; width: 40px; height: 40px; margin: 0; }
+  .galerija[data-panel="otvoren"] .galerija-poruka { left: 50%; bottom: calc(var(--visina-panela) + var(--s-3)); }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .galerija-mapa { width: 5.5rem; }
+  .galerija-savjeti { place-items: start center; padding: var(--s-2); }
+  .galerija-savjeti__lista { gap: var(--s-3); margin-bottom: var(--s-3); }
+  .galerija-savjeti__naslov { margin-bottom: var(--s-3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .galerija-savjeti { animation: none; }
+  .galerija-poruka { transition: none; }
+}
+
+/* Traka gore lijevo ostaje uz vrh i kad je mapa u istom redu viša od nje */
+.galerija-hud__traka { align-self: start; }
+
+/* Brojač slika u sekundi je alat za provjeru: dugme se ne prikazuje
+   posjetiocima, a brojač se pali tipkom F u sali. */
+#galerija-fps-prekidac { display: none; }
+
+/* =========================================================
+   Tekst stranice: ulaz, o izložbi, prečice, poziv
+   ========================================================= */
+.galerija-ulaz__uvod {
+  max-width: 38ch;
+  margin: 0 0 var(--s-6);
+  color: var(--ink-soft);
+}
+
+.galerija-info { align-items: start; gap: clamp(var(--s-6), 5vw, var(--s-9)); }
+.galerija-info .naslov-2 { margin-block: 0 var(--s-5); }
+.galerija-info p { max-width: var(--measure); color: var(--ink-soft); }
+.galerija-info a { color: inherit; }
+
+.galerija-cinjenice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4) var(--s-7);
+  margin: var(--s-6) 0 0;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+}
+
+.galerija-cinjenice dt {
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.galerija-cinjenice dd { margin: var(--s-1) 0 0; color: var(--ink); }
+
+.galerija-nacini {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0 0 var(--s-6);
+  padding: 0;
+  list-style: none;
+  color: var(--ink-soft);
+}
+
+.galerija-nacini strong { color: var(--ink); font-weight: 600; }
+
+.galerija-precice {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+}
+
+.galerija-precice caption {
+  margin-bottom: var(--s-3);
+  text-align: left;
+  font-size: var(--t-xs);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.galerija-precice th,
+.galerija-precice td {
+  padding: var(--s-2) 0;
+  border-top: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: baseline;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.galerija-precice th { width: 6.5rem; padding-right: var(--s-4); white-space: nowrap; }
+
+.galerija-precice kbd {
+  display: inline-block;
+  min-width: 1.9em;
+  padding: 2px 6px;
+  border: 1px solid var(--rule-strong);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  background-color: var(--paper);
+  font-family: var(--font-ui);
+  font-size: 0.85em;
+  text-align: center;
+  color: var(--ink);
+}
+
+/* Na telefonu tastature nema — prečice se ne prikazuju */
+@media (hover: none) and (pointer: coarse) {
+  .galerija-precice { display: none; }
+}
+
+/* Traka „Zanima vas neko djelo…“ ne smije sjesti na donju liniju tabele prečica */
+.galerija-info + .linija { margin-block: var(--s-8) var(--s-6); }
+
+.galerija-poziv {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4) var(--s-6);
+}
+
+.galerija-poziv__tekst {
+  flex: 1 1 22rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--t-lg);
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+/* Mapa u traci ispod sale: desno, uvijek otvorena, ne prekriva sliku */
+.galerija-alati .galerija-mapa {
+  grid-area: auto;
+  justify-self: auto;
+  align-self: center;
+  margin-left: auto;
+  width: 7.5rem;
+}
+.galerija-alati .galerija-mapa__prekidac { display: none; }
+.galerija-alati .galerija-mapa.je-skupljena .galerija-mapa__crtez { display: block; }
+.galerija-alati .galerija-mapa__crtez {
+  padding: 4px;
+  background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@media (max-width: 720px) {
+  .galerija-alati .galerija-mapa { width: 6rem; }
+}
+
+/* Traka: dugmad lijevo (kretanje gore, uglovi ispod), mapa desno kroz oba reda */
+.galerija[data-stanje="soba"] .galerija-alati {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--s-4);
+}
+.galerija-alati .galerija-kretanje,
+.galerija-alati .galerija-ugao { grid-column: 1; justify-self: start; }
+.galerija-alati .galerija-mapa { grid-column: 2; grid-row: 1 / span 2; margin-left: 0; }
+
+/* Telefon: mapa samo pored reda za kretanje, uglovi ispod preko cijele širine */
+@media (max-width: 720px) {
+  .galerija-alati .galerija-mapa { grid-row: 1; align-self: start; }
+  .galerija-alati .galerija-ugao { grid-column: 1 / -1; }
+}
+
+@media (pointer: coarse) {
+  .galerija-savjeti__sam { min-height: 44px; }
+}
+
+/* ---------------------------------------------------------
+   Štampa: sala (3D, dugmad, savjeti, lupa, izbliza) nema smisla na
+   papiru — štampa se 2D mreža istaknutih djela, bez poruke o razlogu.
+   --------------------------------------------------------- */
+@media print {
+  .galerija-scena,
+  .galerija-alati,
+  .galerija-izbliza,
+  .galerija-natpis,
+  .galerija-lupa,
+  .galerija-2d__poruka { display: none !important; }
+  .galerija .galerija-2d { display: block !important; }
+  .galerija-2d__djelo { break-inside: avoid; }
+}
+
+/* ---------------------------------------------------------
+   Visok kontrast (forced-colors): mapa i uključena dugmad crtaju se
+   sistemskim bojama — inače su zidovi, natpisi i tačke mape nevidljivi
+   ili ~2:1, a „uključeno“ se ne razlikuje od „isključeno“.
+   --------------------------------------------------------- */
+@media (forced-colors: active) {
+  .galerija-mapa__pod { fill: none; }
+  .galerija-mapa__zid { stroke: CanvasText; }
+  .galerija-mapa__sala { fill: CanvasText; }
+  .galerija-mapa__tacka { fill: Canvas; stroke: CanvasText; transition: none; }
+  .galerija-mapa__djelo:hover .galerija-mapa__tacka,
+  .galerija-mapa__djelo:focus-visible .galerija-mapa__tacka,
+  .galerija-mapa__djelo.je-izabrano .galerija-mapa__tacka { fill: Highlight; stroke: CanvasText; }
+  .galerija-mapa__djelo:focus-visible .galerija-mapa__meta { stroke: Highlight; }
+  .galerija-mapa__oko { fill: Highlight; stroke: CanvasText; }
+  .galerija-mapa__pogled { fill: none; stroke: Highlight; stroke-width: 0.12; }
+  .galerija .galerija-tura[aria-pressed="true"],
+  .galerija[data-tura="radi"] .galerija-tura,
+  .galerija .galerija-ugao__prekidac[aria-pressed="true"] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+    border-color: HighlightText;
+  }
+}

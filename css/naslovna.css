@@ -1,0 +1,419 @@
+/* =========================================================
+   Marko Dumnić — naslovna strana
+   Samo stilovi specifični za index.html.
+   Sve vrijednosti iz tokena (css/tokens.css) — bez hex boja.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1 · Hero — tipografski blok lijevo, jedno djelo desno
+   --------------------------------------------------------- */
+
+.hero {
+  padding-block: clamp(var(--s-7), 9vw, var(--s-10)) clamp(var(--s-7), 8vw, var(--s-9));
+}
+
+/* Mobilno je podrazumijevano: tekst gore, slika ispod.
+   Dvije kolone se pale već od 48rem (768px), da tablet ne dobije
+   jednu kolonu sa slikom preko cijelog ekrana. */
+.hero__unutra {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(var(--s-7), 7vw, var(--s-9));
+  align-items: center;
+}
+
+@media (min-width: 48rem) {
+  .hero__unutra {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  }
+}
+
+/* Sitne oznake nose --ink-muted namjerno — sekundarni glas, tipografija se
+   povlači pred slikom. Čitljivost dolazi iz tokena: --ink-muted je u
+   css/tokens.css potamnjen na #665E53 i daje 5.52:1 na --paper i 5.10:1 na
+   --paper-warm. Ako se taj token ikad posvijetli, oznake na ovoj strani
+   padaju ispod 4.5:1 — popravka ide u token, ne ovdje. */
+.hero__tekst > .oznaka {
+  color: var(--ink-muted);
+}
+
+.hero__naslov {
+  margin-block: var(--s-5) var(--s-5);
+  font-size: var(--t-3xl);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Ime i prezime jedno ispod drugog */
+.hero__ime {
+  display: block;
+}
+
+.hero__ime + .hero__ime {
+  /* prezime blago uvučeno — tiha asimetrija, bez ukrasa */
+  margin-left: 0.06em;
+}
+
+.hero__uvod {
+  max-width: 34ch;
+  margin-block: 0 clamp(var(--s-6), 4vw, var(--s-7));
+  color: var(--ink-soft);
+}
+
+.hero__akcije {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-5) var(--s-6);
+}
+
+/* Djelo — stoji na papiru, bez okvira i bez sjenke */
+.hero__djelo {
+  margin: 0;
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+}
+
+.hero__djelo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  background-color: var(--paper-deep);
+}
+
+/* U jednoj koloni slika ne smije da pojede cio ekran: visina je
+   ograničena, a širina prati proporciju djela. */
+@media (max-width: 47.99rem) {
+  .hero__djelo img {
+    width: auto;
+    max-width: 100%;
+    max-height: 72vh;
+    max-height: 72svh;
+  }
+}
+
+.hero__potpis {
+  color: var(--ink-muted);
+}
+
+/* Potpisi i metapodaci bez crtice — crtica ispred znači samo „naslov“. */
+.hero__potpis::before,
+.kartica-djelo__meta::before,
+.disciplina__potpis::before {
+  content: none;
+  margin-right: 0;
+}
+
+/* ---------------------------------------------------------
+   2 · Traka sa šrafurom — vizuelni predah
+   --------------------------------------------------------- */
+
+.traka-srafura {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 80px;
+  padding-inline: var(--gutter);
+  border-block: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+.traka-srafura__tekstura {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.traka-srafura__citat {
+  position: relative;
+  margin: 0;
+  max-width: 48ch;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  text-align: center;
+  color: var(--ink-soft);
+  /* da tekst ostane čitljiv preko teksture */
+  padding-inline: var(--s-4);
+  background-color: var(--paper);
+  text-wrap: balance;
+}
+
+/* ---------------------------------------------------------
+   3 · Izbor radova
+   --------------------------------------------------------- */
+
+.izbor__naslov {
+  margin-block: 0 clamp(var(--s-6), 4vw, var(--s-8));
+}
+
+.izbor__mreza {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: clamp(var(--s-6), 4vw, var(--s-8)) clamp(var(--s-5), 3vw, var(--s-7));
+}
+
+.izbor__stavka {
+  margin: 0;
+}
+
+/* NAPOMENA O IMENOVANJU
+   Kartica djela na naslovnoj zove se `.kartica-djelo*`, a NE `.djelo*`.
+   Imena `.djelo`, `.djelo__slika` i `.djelo__naziv` su zauzeta u
+   css/radovi.css (stranica pojedinačnog djela) sa drugim značenjem —
+   tamo su to blokovi same stranice, ne kartice u mreži. Dvije stranice
+   trenutno ne učitavaju oba fajla, ali bi svako buduće dijeljenje CSS-a
+   (zajednički bundle, komponenta za „slična djela“) napravilo sudar.
+   Ne preimenovati nazad. */
+
+.kartica-djelo {
+  display: grid;
+  gap: var(--s-3);
+  text-decoration: none;
+  color: inherit;
+}
+
+.kartica-djelo__slika {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  background-color: var(--paper-deep);
+  transition: filter var(--dur) var(--ease);
+}
+
+.kartica-djelo__naziv {
+  margin: var(--s-2) 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+.kartica-djelo__meta {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+/* Hover: slika blago posvijetli — jedan suptilan znak, ništa više */
+.kartica-djelo:hover .kartica-djelo__slika,
+.kartica-djelo:focus-visible .kartica-djelo__slika {
+  filter: brightness(1.05);
+}
+
+.izbor__sve {
+  margin-block: clamp(var(--s-7), 5vw, var(--s-8)) 0;
+  /* Lijevo, kao „Više o autoru →“ i „Cijela serija →“. */
+  max-width: none;
+}
+
+/* ---------------------------------------------------------
+   4 · Dvije discipline
+   --------------------------------------------------------- */
+
+.discipline__naslov {
+  margin-block: 0 clamp(var(--s-6), 4vw, var(--s-8));
+}
+
+.discipline__mreza {
+  gap: clamp(var(--s-7), 6vw, var(--s-9));
+  align-items: start;
+}
+
+/* Tablet (40–62rem): umjesto 2 + 1 kolone — jedna serija po redu,
+   tekst lijevo, slika desno. */
+@media (min-width: 40rem) and (max-width: 61.99rem) {
+  .discipline__mreza {
+    grid-template-columns: 1fr;
+  }
+
+  .disciplina {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    column-gap: clamp(var(--s-6), 5vw, var(--s-8));
+    align-items: start;
+  }
+
+  .disciplina__naslov,
+  .disciplina__opis,
+  .disciplina__veza {
+    grid-column: 1;
+  }
+
+  .disciplina__slika {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+  }
+}
+
+/* Desktop: tri kolone dijele redove (subgrid), pa naslovi, opisi,
+   slike i veze „Cijela serija“ stoje u istoj liniji. */
+@media (min-width: 62rem) {
+  .discipline__mreza {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: var(--s-5);
+  }
+
+  @supports (grid-template-rows: subgrid) {
+    .disciplina {
+      grid-row: span 4;
+      grid-template-rows: subgrid;
+    }
+  }
+}
+
+.disciplina {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.disciplina__naslov {
+  margin: 0;
+  padding-block-end: var(--s-4);
+  border-block-end: 1px solid var(--rule);
+}
+
+.disciplina__opis {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--ink-soft);
+}
+
+.disciplina__slika {
+  margin: 0;
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+}
+
+.disciplina__slika img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  background-color: var(--paper);
+}
+
+.disciplina__potpis {
+  color: var(--ink-muted);
+}
+
+/* ---------------------------------------------------------
+   5 · Virtuelna galerija — najava (jedino tamno mjesto)
+   --------------------------------------------------------- */
+
+.najava-galerije {
+  /* .soba-tamna redefiniše tokene, pa ovdje samo pročitamo --paper */
+  background-color: var(--paper);
+  color: var(--ink-soft);
+  position: relative;
+}
+
+.najava-galerije__unutra {
+  display: grid;
+  gap: var(--s-5);
+  justify-items: start;
+}
+
+/* Kolona teksta je uska, ali počinje na istoj lijevoj ivici kao
+   ostali sadržaj (ograničenje je na djeci, ne na .omot-u). */
+.najava-galerije__unutra > * {
+  max-width: 62ch;
+}
+
+/* U tamnoj sobi --ink-muted je #8E8474 i daje 5.07:1 na #15120E — prolazi. */
+.najava-galerije__unutra > .oznaka {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.najava-galerije__naslov {
+  margin: 0;
+  color: var(--ink);
+}
+
+.najava-galerije__uvod {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.najava-galerije__akcija {
+  margin-block: var(--s-3) 0;
+}
+
+/* `.dugme--puno:hover` iz base.css uzima --accent-deep (sijena) kao podlogu
+   i --paper kao tekst. U tamnoj sobi --paper je #15120E, pa taj par daje
+   3.49:1 — ispod praga. Ovdje podlogu nosi --accent (oker) uz isti tamni
+   tekst: 6.18:1. I dalje jedan akcenat na ekranu. */
+.najava-galerije .dugme--puno:hover,
+.najava-galerije .dugme--puno:focus-visible {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+
+/* ---------------------------------------------------------
+   6 · Kratko o autoru
+   --------------------------------------------------------- */
+
+.o-kratko__unutra {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), auto));
+  gap: clamp(var(--s-5), 4vw, var(--s-8));
+  align-items: start;
+}
+
+.o-kratko__oznaka {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.o-kratko__strana {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+}
+
+.o-kratko__portret {
+  margin: 0;
+  max-width: 18rem;
+}
+
+.o-kratko__portret img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+}
+
+.o-kratko__tekst {
+  max-width: var(--measure);
+}
+
+.o-kratko__naslov {
+  margin-block: 0 var(--s-5);
+}
+
+.o-kratko__tekst p {
+  margin-block: 0 var(--s-5);
+  color: var(--ink-soft);
+}
+
+.o-kratko__akcija {
+  margin-block: var(--s-6) 0;
+}
+
+@media (min-width: 60rem) {
+  .o-kratko__unutra {
+    grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+  }
+}

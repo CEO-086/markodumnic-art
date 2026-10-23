@@ -1,0 +1,30 @@
+{
+  "name": "Marko Dumnić — slikar",
+  "short_name": "M. Dumnić",
+  "description": "Ulja Marka Dumnića — Torino, atelje i Cetinje. Radovi, virtuelna galerija i kontakt.",
+  "lang": "sr-Latn-ME",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F3EEE4",
+  "theme_color": "#1E1A15",
+  "icons": [
+    {
+      "src": "/img/ikone/ikona-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/ikone/ikona-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

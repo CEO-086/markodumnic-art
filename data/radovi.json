@@ -1,0 +1,461 @@
+{
+  "napomena": "Fotografije, nazivi, godine i dimenzije su iz autorovog portfolija 2026 (MarkoDumnicPortfolio2026.pdf). Nazivi su prevedeni na crnogorski, original je u polju 'originalniNaziv'. Kratki opisi su opisi onoga što se vidi na slici — autor ih može zamijeniti svojim riječima. Engleski: polje 'en' (naziv, opis, tehnika) i 'nazivEn' kod kategorija; nazivi serija i djela su iz engleskog portfolija, osim tri mrtve prirode (u portfoliju sve tri glase 'Still life').",
+  "autor": {
+    "ime": "Marko Dumnić",
+    "uloga": "Slikar",
+    "mjesto": "Cetinje, Crna Gora · Lavis (Trento), Italija",
+    "skola": "Accademia Albertina di Belle Arti, Torino",
+    "instagram": "https://www.instagram.com/marko.mapko/",
+    "email": "mfnlulu@gmail.com"
+  },
+  "kategorije": [
+    {
+      "id": "sve",
+      "naziv": "Sve",
+      "nazivEn": "All"
+    },
+    {
+      "id": "torino",
+      "naziv": "Torinski pejzaži",
+      "nazivEn": "Turin Landscapes"
+    },
+    {
+      "id": "atelje",
+      "naziv": "Prizori iz ateljea",
+      "nazivEn": "Glimpses from the Studio"
+    },
+    {
+      "id": "rodni-grad",
+      "naziv": "Sanjarenja o rodnom gradu",
+      "nazivEn": "Hometown Reveries"
+    }
+  ],
+  "radovi": [
+    {
+      "id": "aria-di-torino",
+      "naziv": "Aria di Torino",
+      "originalniNaziv": "Aria di Torino",
+      "godina": 2024,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "60 × 50 cm",
+      "kategorija": "torino",
+      "istaknuto": true,
+      "opis": "Vila sa crvenim krovom na uglu ulice, a iznad nje nebo u gustim, kovitlavim potezima plave i bijele.",
+      "paleta": [
+        "#5F5A53",
+        "#3B3230",
+        "#7D796E",
+        "#959A88",
+        "#C7BDA6"
+      ],
+      "slika": "img/radovi/aria-di-torino.jpg",
+      "slikaVelika": "img/radovi/velike/aria-di-torino.jpg",
+      "sirinaPx": 1171,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Aria di Torino",
+        "opis": "A villa with a red roof on a street corner, under a sky of thick, swirling strokes of blue and white.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "piazza-castello-e-torre-littoria",
+      "naziv": "Piazza Castello e Torre Littoria",
+      "originalniNaziv": "Piazza Castello e Torre Littoria",
+      "godina": 2024,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "40 × 30 cm",
+      "kategorija": "torino",
+      "istaknuto": true,
+      "opis": "Toranj Torre Littoria izdiže se nad fasadama Piazza Castello; nebo je razbijeno u kratke poteze boje.",
+      "paleta": [
+        "#726F67",
+        "#323039",
+        "#5D4A43",
+        "#908D7F",
+        "#C7A88B"
+      ],
+      "slika": "img/radovi/piazza-castello-e-torre-littoria.jpg",
+      "slikaVelika": "img/radovi/velike/piazza-castello-e-torre-littoria.jpg",
+      "sirinaPx": 1042,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Piazza Castello e Torre Littoria",
+        "opis": "The Torre Littoria rises above the façades of Piazza Castello; the sky is broken into short strokes of colour.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1181
+      ]
+    },
+    {
+      "id": "ponte-isabella",
+      "naziv": "Ponte Isabella",
+      "originalniNaziv": "Ponte Isabella",
+      "godina": 2024,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "40 × 30 cm",
+      "kategorija": "torino",
+      "istaknuto": true,
+      "opis": "Most preko rijeke Po, sa obalom i šetalištem u prvom planu i lukovima koji se ogledaju u vodi.",
+      "paleta": [
+        "#6B635A",
+        "#302C2D",
+        "#AEA392",
+        "#433C3B",
+        "#564540"
+      ],
+      "slika": "img/radovi/ponte-isabella.jpg",
+      "slikaVelika": "img/radovi/velike/ponte-isabella.jpg",
+      "sirinaPx": 1180,
+      "visinaPx": 857,
+      "en": {
+        "naziv": "Ponte Isabella",
+        "opis": "A bridge over the Po, with the riverbank and promenade in the foreground and its arches mirrored in the water.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1180
+      ]
+    },
+    {
+      "id": "krovovi-torina",
+      "naziv": "Krovovi Torina",
+      "originalniNaziv": "Turin rooftops",
+      "godina": 2024,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "50 × 40 cm",
+      "kategorija": "torino",
+      "istaknuto": false,
+      "opis": "Kupola i krovovi Torina u plavom i okerastom svjetlu, gledani odozgo, iz gustog gradskog tkiva.",
+      "paleta": [
+        "#242029",
+        "#7E7E81",
+        "#524D55",
+        "#8BB1BB",
+        "#CBC5AB"
+      ],
+      "slika": "img/radovi/krovovi-torina.jpg",
+      "slikaVelika": "img/radovi/velike/krovovi-torina.jpg",
+      "sirinaPx": 1116,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Turin Rooftops",
+        "opis": "A dome and the rooftops of Turin in blue and ochre light, seen from above, from within the dense fabric of the city.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1174
+      ]
+    },
+    {
+      "id": "havanac-kastro",
+      "naziv": "Havanac Kastro",
+      "originalniNaziv": "Havanese Kastro",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "60 × 60 cm",
+      "kategorija": "atelje",
+      "istaknuto": true,
+      "opis": "Havanski bišon Kastro spava na pokrivaču u ateljeu, među jastucima i slikama na zidu.",
+      "paleta": [
+        "#726558",
+        "#423B34",
+        "#968977",
+        "#AD9E89",
+        "#BEB19D"
+      ],
+      "slika": "img/radovi/havanac-kastro.jpg",
+      "slikaVelika": "img/radovi/velike/havanac-kastro.jpg",
+      "sirinaPx": 1398,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Havanese Kastro",
+        "opis": "Kastro, a Havanese dog, asleep on a blanket in the studio, among cushions and paintings on the wall.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "mrtva-priroda-sa-vazom",
+      "naziv": "Mrtva priroda sa vazom",
+      "originalniNaziv": "Still life",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "50 × 60 cm",
+      "kategorija": "atelje",
+      "istaknuto": true,
+      "opis": "Plava vaza, saksija sa cvijetom i kutija na stolu, pred šarenim zidom ateljea.",
+      "paleta": [
+        "#7B6447",
+        "#8E785A",
+        "#5D4A34",
+        "#A18C6D",
+        "#B3A586"
+      ],
+      "slika": "img/radovi/mrtva-priroda-sa-vazom.jpg",
+      "slikaVelika": "img/radovi/velike/mrtva-priroda-sa-vazom.jpg",
+      "sirinaPx": 1400,
+      "visinaPx": 1161,
+      "en": {
+        "naziv": "Still Life with Vase",
+        "opis": "A blue vase, a potted flower and a box on a table, against the colourful wall of the studio.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "mrtva-priroda-sa-bocama",
+      "naziv": "Mrtva priroda sa bocama",
+      "originalniNaziv": "Still life",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "30 × 40 cm",
+      "kategorija": "atelje",
+      "istaknuto": false,
+      "opis": "Dvije boce i zelena vaza na narandžastom stolu, sa ramovima prislonjenim uz zid.",
+      "paleta": [
+        "#6B5841",
+        "#43433B",
+        "#867154",
+        "#9C8565",
+        "#B0A17E"
+      ],
+      "slika": "img/radovi/mrtva-priroda-sa-bocama.jpg",
+      "slikaVelika": "img/radovi/velike/mrtva-priroda-sa-bocama.jpg",
+      "sirinaPx": 1400,
+      "visinaPx": 1048,
+      "en": {
+        "naziv": "Still Life with Bottles",
+        "opis": "Two bottles and a green vase on an orange table, with frames leaning against the wall.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "mrtva-priroda-sa-cvijecem",
+      "naziv": "Mrtva priroda sa cvijećem",
+      "originalniNaziv": "Still life",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "50 × 40 cm",
+      "kategorija": "atelje",
+      "istaknuto": false,
+      "opis": "Cvijeće u limenoj posudi, krtola i luk na stolu, a iza njih prazan ram.",
+      "paleta": [
+        "#7F6143",
+        "#5A3C24",
+        "#98846A",
+        "#AB9A83",
+        "#BCAE99"
+      ],
+      "slika": "img/radovi/mrtva-priroda-sa-cvijecem.jpg",
+      "slikaVelika": "img/radovi/velike/mrtva-priroda-sa-cvijecem.jpg",
+      "sirinaPx": 1104,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Still Life with Flowers",
+        "opis": "Flowers in a tin pot, a tuber and an onion on the table, with an empty frame behind them.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "autoportret",
+      "naziv": "Autoportret",
+      "originalniNaziv": "Self-portrait",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "60 × 50 cm",
+      "kategorija": "atelje",
+      "istaknuto": false,
+      "opis": "Autoportret kao mala skica na stolu ateljea, među cvijetom u saksiji, narom i ramovima.",
+      "paleta": [
+        "#7F7059",
+        "#55483A",
+        "#9D8E73",
+        "#B0A387",
+        "#BDB49B"
+      ],
+      "slika": "img/radovi/autoportret.jpg",
+      "slikaVelika": "img/radovi/velike/autoportret.jpg",
+      "sirinaPx": 1152,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Self-Portrait",
+        "opis": "The self-portrait appears as a small sketch on the studio table, among a potted flower, a pomegranate and frames.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "prijatelji",
+      "naziv": "Prijatelji",
+      "originalniNaziv": "Friends",
+      "godina": 2025,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "75 × 65 cm",
+      "kategorija": "rodni-grad",
+      "istaknuto": true,
+      "opis": "Dva psa na zelenoj livadi u Cetinju, pred rascvjetalim žbunjem i kućama u pozadini.",
+      "paleta": [
+        "#90866E",
+        "#796D4E",
+        "#4D453C",
+        "#6F5D45",
+        "#5C594C"
+      ],
+      "slika": "img/radovi/prijatelji.jpg",
+      "slikaVelika": "img/radovi/velike/prijatelji.jpg",
+      "sirinaPx": 1204,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Friends",
+        "opis": "Two dogs on a green meadow in Cetinje, in front of flowering shrubs, with houses in the background.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "staro-groblje",
+      "naziv": "Staro groblje",
+      "originalniNaziv": "Old cemetery",
+      "godina": 2025,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "45 × 40 cm",
+      "kategorija": "rodni-grad",
+      "istaknuto": true,
+      "opis": "Kapela na starom groblju, okružena nadgrobnim pločama i tamnim drvećem.",
+      "paleta": [
+        "#494335",
+        "#585244",
+        "#352F23",
+        "#6F6657",
+        "#968A7A"
+      ],
+      "slika": "img/radovi/staro-groblje.jpg",
+      "slikaVelika": "img/radovi/velike/staro-groblje.jpg",
+      "sirinaPx": 1227,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Old Cemetery",
+        "opis": "A chapel in an old cemetery, surrounded by gravestones and dark trees.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "jutarnje-svjetlo",
+      "naziv": "Jutarnje svjetlo",
+      "originalniNaziv": "Morning light",
+      "godina": 2025,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "40 × 30 cm",
+      "kategorija": "rodni-grad",
+      "istaknuto": false,
+      "opis": "Kamena kuća sa narandžastim krovom i golo drvo pred njom, u prvom jutarnjem svjetlu.",
+      "paleta": [
+        "#413326",
+        "#694E35",
+        "#8A664A",
+        "#A37853",
+        "#BA9B7F"
+      ],
+      "slika": "img/radovi/jutarnje-svjetlo.jpg",
+      "slikaVelika": "img/radovi/velike/jutarnje-svjetlo.jpg",
+      "sirinaPx": 1035,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Morning Light",
+        "opis": "A stone house with an orange roof and a bare tree in front of it, in the first light of morning.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "svjetlo-u-sumrak",
+      "naziv": "Svjetlo u sumrak",
+      "originalniNaziv": "Dusk light",
+      "godina": 2025,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "55 × 45 cm",
+      "kategorija": "rodni-grad",
+      "istaknuto": false,
+      "opis": "Mala kuća pod ljubičastim večernjim nebom, iza kamenog zida i ogoljenih grana.",
+      "paleta": [
+        "#625A4E",
+        "#3E382C",
+        "#917F7A",
+        "#A89592",
+        "#BAA8A7"
+      ],
+      "slika": "img/radovi/svjetlo-u-sumrak.jpg",
+      "slikaVelika": "img/radovi/velike/svjetlo-u-sumrak.jpg",
+      "sirinaPx": 1258,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Dusk Light",
+        "opis": "A small house under a violet evening sky, behind a stone wall and bare branches.",
+        "tehnika": "Oil on canvas"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    }
+  ]
+}

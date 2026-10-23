@@ -1,0 +1,1284 @@
+/* =========================================================
+   Marko Dumnić — base.css
+   Reset, tipografija, layout, zaglavlje, podnožje, komponente.
+   Koristi SAMO tokene iz css/tokens.css. Bez novih boja, bez hex kodova.
+   ========================================================= */
+
+
+/* === Lokalne mjere (nisu boje, samo layout) === */
+
+:root {
+  /* Visina trake zaglavlja — koristi se za sticky offset i mobilni panel. */
+  --h-zaglavlje: 4.75rem;
+}
+
+
+/* === Reset === */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Da sticky zaglavlje ne prekrije cilj skok-linka. */
+  scroll-padding-top: calc(var(--h-zaglavlje) + var(--s-4));
+}
+
+/* Mekano skrolovanje samo ako korisnik nije tražio manje pokreta. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body,
+h1, h2, h3, h4, h5, h6,
+p, figure, figcaption, blockquote,
+dl, dd, ol, ul, fieldset, legend {
+  margin: 0;
+  padding: 0;
+}
+
+ul[class],
+ol[class] {
+  list-style: none;
+}
+
+img,
+picture,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* <picture> oko slika djela samo bira fajl (AVIF/WebP/JPEG, alati/slike.py):
+   ne pravi svoju kutiju, pa <img> ostaje u rasporedu roditelja (grid, flex,
+   aspect-ratio + height: 100%) kao da omotača nema. <source> zato mora
+   biti display: none — inače postaje prazna stavka grida i dobija gap. */
+picture {
+  display: contents;
+}
+
+picture > source {
+  display: none;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+}
+
+fieldset {
+  border: 0;
+  min-width: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+}
+
+/* Ne lomiti duge riječi nasilno, ali ne dozvoliti ni prelivanje. */
+h1, h2, h3, h4, h5, h6, p, li, dd, figcaption {
+  overflow-wrap: break-word;
+}
+
+
+/* === Tijelo dokumenta === */
+
+body {
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: var(--t-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body > main {
+  flex: 1 0 auto;
+}
+
+
+/* === Fokus === */
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Default outline gasimo samo tamo gdje ga browser crta bez potrebe. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+
+/* === Pristupačnost — skriveni pomoćnici === */
+
+.vizuelno-skriveno {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.preskoci {
+  position: absolute;
+  top: var(--s-2);
+  left: var(--s-2);
+  z-index: 200;
+  padding: var(--s-3) var(--s-5);
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  font-size: var(--t-sm);
+  line-height: 1.2;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform var(--dur) var(--ease);
+}
+
+.preskoci:focus {
+  transform: translateY(0);
+}
+
+
+/* === Linkovi u tekućem tekstu === */
+
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 0.2em;
+  transition: color var(--dur) var(--ease),
+              text-decoration-color var(--dur) var(--ease);
+}
+
+a:hover {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+}
+
+
+/* === Omot (kontejner) === */
+
+.omot {
+  width: 100%;
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.omot--sirok {
+  max-width: var(--max-w-wide);
+}
+
+
+/* === Sekcija (vertikalni ritam) === */
+
+.sekcija {
+  padding-block: var(--s-7);
+}
+
+.sekcija--toplo {
+  background: var(--paper-warm);
+}
+
+@media (min-width: 820px) {
+  .sekcija {
+    padding-block: var(--s-9);
+  }
+}
+
+
+/* === Zaglavlje === */
+
+.zaglavlje {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Poluprovidna varijanta samo tamo gdje blur stvarno radi. */
+@supports (backdrop-filter: blur(6px)) and
+          (background: color-mix(in srgb, currentColor, transparent)) {
+  .zaglavlje {
+    background: color-mix(in srgb, var(--paper) 84%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+}
+
+.zaglavlje__traka {
+  width: 100%;
+  /* Ista širina kao .omot — logotip stoji na istoj lijevoj ivici kao sadržaj. */
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  min-height: var(--h-zaglavlje);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+}
+
+
+/* === Logotip === */
+
+.logotip {
+  display: inline-grid;
+  gap: var(--s-1);
+  text-decoration: none;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.logotip__ime {
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--ink);
+}
+
+.logotip__uloga {
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-xwide);
+  color: var(--ink-muted);
+}
+
+
+/* === Navigacija — mobilno (osnovno stanje) === */
+
+.navigacija {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-5) var(--gutter) var(--s-7);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease),
+              transform var(--dur) var(--ease),
+              visibility var(--dur) var(--ease);
+}
+
+.je-otvoren .navigacija {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.navigacija a {
+  position: relative;
+  justify-self: start;
+  padding-block: var(--s-2);
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+}
+
+.navigacija a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur) var(--ease);
+}
+
+.navigacija a:hover,
+.navigacija a:focus-visible,
+.navigacija a[aria-current="page"] {
+  color: var(--ink);
+}
+
+.navigacija a:hover::after,
+.navigacija a:focus-visible::after,
+.navigacija a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* Dok je mobilni meni otvoren, strana se ne skroluje. */
+body.je-otvoren {
+  overflow: hidden;
+}
+
+
+/* === Meni dugme (hamburger → X) === */
+
+.meni-dugme {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-right: calc(var(--s-3) * -1);
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.meni-dugme__linija {
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--ink);
+  transition: transform var(--dur) var(--ease),
+              opacity var(--dur) var(--ease);
+}
+
+.je-otvoren .meni-dugme__linija:nth-child(1) {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.je-otvoren .meni-dugme__linija:nth-child(2) {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+
+/* === Navigacija — desktop === */
+
+@media (min-width: 820px) {
+  .meni-dugme {
+    display: none;
+  }
+
+  .navigacija {
+    position: static;
+    display: flex;
+    align-items: center;
+    gap: var(--s-6);
+    padding: 0;
+    background: none;
+    border: 0;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .navigacija a {
+    justify-self: auto;
+    padding-block: var(--s-1);
+    font-family: var(--font-ui);
+    font-size: var(--t-sm);
+  }
+
+  body.je-otvoren {
+    overflow: visible;
+  }
+}
+
+
+/* === Tipografija === */
+
+.naslov-1 {
+  font-family: var(--font-display);
+  font-size: var(--t-3xl);
+  font-weight: 400;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.naslov-2 {
+  font-family: var(--font-display);
+  font-size: var(--t-xl);
+  font-weight: 400;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+
+.naslov-3 {
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+
+/* Naslovi se lome u ujednačene redove, bez jedne riječi u zadnjem redu. */
+.naslov-1,
+.naslov-2,
+.naslov-3 {
+  text-wrap: balance;
+}
+
+.uvodni {
+  max-width: var(--measure);
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+p {
+  max-width: var(--measure);
+}
+
+p + p {
+  margin-top: var(--s-4);
+}
+
+strong,
+b {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+small {
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+}
+
+blockquote {
+  max-width: var(--measure);
+  padding-left: var(--s-5);
+  border-left: 1px solid var(--rule);
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+}
+
+figcaption {
+  margin-top: var(--s-3);
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+
+
+/* === Oznaka (sitna verzalna oznaka) === */
+
+.oznaka {
+  display: block;
+  max-width: none;
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  text-transform: uppercase;
+  letter-spacing: var(--track-xwide);
+  color: var(--ink-muted);
+}
+
+.oznaka::before {
+  content: "\2014";
+  margin-right: var(--s-2);
+  letter-spacing: 0;
+}
+
+/* Veliki naslov sa crticom ispred (umjesto posebne oznake iznad). */
+.naslov--crta::before {
+  content: "\2014";
+  margin-right: 0.3em;
+}
+
+/* Varijanta bez vodeće crtice. */
+.oznaka--gola::before {
+  content: none;
+  margin-right: 0;
+}
+
+
+/* === Dugmad === */
+
+.dugme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-5);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              color var(--dur) var(--ease);
+}
+
+.dugme:hover {
+  border-color: var(--ink);
+  background-color: var(--paper-warm);
+  color: var(--ink);
+}
+
+.dugme--puno {
+  background-color: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.dugme--puno:hover {
+  background-color: var(--accent-deep);
+  border-color: var(--accent-deep);
+  color: var(--paper);
+}
+
+.dugme--tekst {
+  position: relative;
+  padding-inline: 0;
+  padding-block: var(--s-2);
+  border-color: transparent;
+  background: none;
+  color: var(--ink);
+}
+
+.dugme--tekst::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: var(--s-1);
+  width: 1.75rem;
+  height: 1px;
+  background: var(--accent);
+  transition: width var(--dur) var(--ease);
+}
+
+.dugme--tekst:hover,
+.dugme--tekst:focus-visible {
+  background: none;
+  border-color: transparent;
+  color: var(--ink);
+}
+
+.dugme--tekst:hover::after,
+.dugme--tekst:focus-visible::after {
+  width: 100%;
+}
+
+.dugme[disabled],
+.dugme[aria-disabled="true"] {
+  color: var(--ink-faint);
+  border-color: var(--rule);
+  background: none;
+  cursor: not-allowed;
+}
+
+
+/* === Linija (vlasasti razdjelnik) === */
+
+.linija {
+  display: block;
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background: var(--rule);
+}
+
+
+/* === Šrafura (potpis sajta) === */
+
+.srafura {
+  position: relative;
+  isolation: isolate;
+}
+
+.srafura::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--hatch);
+  background-repeat: repeat;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* Gušća varijanta — ukršteni potez iz tuš-crteža. */
+.srafura--ukrstena::before {
+  background-image: var(--hatch-cross);
+  opacity: 0.12;
+}
+
+/* Za prazna stanja i razdjelnike — dublji papir pod šrafurom. */
+.srafura--papir {
+  background-color: var(--paper-deep);
+}
+
+
+/* === Mreža === */
+
+.mreza {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.mreza--2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+}
+
+.mreza--3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+
+/* === Tiho pojavljivanje (uz js/base.js) === */
+
+/* Element počinje nevidljiv, ali se sam otkriva ako ga niko ne otkrije.
+
+   Ranije je jedina zaštita bila `@media (scripting: none)`. Ta zaštita
+   pokriva samo potpuno isključen JavaScript. Ako je JS uključen ali
+   `js/base.js` ne stigne — blokira ga ad-blocker, padne mreža, CSP odbije
+   skriptu, ili pukne ranija skripta — `scripting: none` NE važi, klasa
+   `.je-vidljiv` se nikad ne doda i sadržaj zauvijek ostane na opacity: 0.
+   Izmjereno na naslovnoj: svih 5 sekcija nevidljivo, skrolovanje ne pomaže.
+
+   Rješenje je odgođena animacija: ako za 1.6s niko nije preuzeo kontrolu,
+   sadržaj se otkrije sam. Kad js/base.js proradi, on postavi `.js-pojavi`
+   na <html> i time ugasi ovaj spas — pa nema ni treperenja ni dvostruke
+   animacije. Najgori ishod je sada izostala animacija, ne izostao sadržaj. */
+
+[data-pojavi] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--dur-slow) var(--ease),
+              transform var(--dur-slow) var(--ease);
+  animation: pojavi-spas var(--dur-slow) var(--ease) 1.6s forwards;
+}
+
+@keyframes pojavi-spas {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* js/base.js je živ i preuzima otkrivanje — spas više nije potreban. */
+.js-pojavi [data-pojavi] {
+  animation: none;
+}
+
+[data-pojavi].je-vidljiv {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Bez JavaScripta sadržaj je vidljiv odmah, bez čekanja na spas. */
+@media (scripting: none) {
+  [data-pojavi] {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+
+/* === Podnožje === */
+
+.podnozje {
+  background: var(--paper-warm);
+  border-top: 1px solid var(--rule);
+}
+
+.podnozje__unutra {
+  width: 100%;
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding: var(--s-8) var(--gutter) var(--s-7);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-7);
+}
+
+.podnozje__blok {
+  display: grid;
+  gap: var(--s-2);
+  align-content: start;
+  justify-items: start;
+}
+
+.podnozje__ime {
+  max-width: none;
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--ink);
+}
+
+.podnozje__meta {
+  max-width: 36ch;
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-muted);
+}
+
+/* Dva reda podataka jedan uz drugi (umjesto `p + p` razmaka iz teksta). */
+.podnozje__meta + .podnozje__meta {
+  margin-top: var(--s-1);
+}
+
+.podnozje__napomena {
+  margin-top: var(--s-3);
+  font-size: var(--t-xs);
+  color: var(--ink-muted);
+}
+
+.podnozje__blok a {
+  position: relative;
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+}
+
+.podnozje__blok a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur) var(--ease);
+}
+
+.podnozje__blok a:hover,
+.podnozje__blok a:focus-visible,
+.podnozje__blok a[aria-current="page"] {
+  color: var(--ink);
+}
+
+.podnozje__blok a:hover::after,
+.podnozje__blok a:focus-visible::after,
+.podnozje__blok a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+.podnozje__potpis {
+  /* Linija iznad je široka koliko i sadržaj (bez bočnog razmaka .omot-a). */
+  width: calc(100% - 2 * var(--gutter));
+  max-width: calc(var(--max-w) - 2 * var(--gutter));
+  margin-inline: auto;
+  padding: var(--s-5) 0;
+  border-top: 1px solid var(--rule);
+  font-size: var(--t-xs);
+  line-height: var(--leading-snug);
+  text-align: center;
+  color: var(--ink-muted);
+}
+
+@media (min-width: 820px) {
+  .podnozje__unutra {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-6);
+    padding-block: var(--s-9) var(--s-8);
+  }
+}
+
+
+/* === Pomoćne klase === */
+
+.tekst-centar {
+  text-align: center;
+}
+
+.tekst-centar p,
+.tekst-centar .uvodni {
+  margin-inline: auto;
+}
+
+.mt-4 { margin-top: var(--s-4); }
+.mt-5 { margin-top: var(--s-5); }
+.mt-6 { margin-top: var(--s-6); }
+.mt-7 { margin-top: var(--s-7); }
+
+.mb-4 { margin-bottom: var(--s-4); }
+.mb-5 { margin-bottom: var(--s-5); }
+.mb-6 { margin-bottom: var(--s-6); }
+.mb-7 { margin-bottom: var(--s-7); }
+
+
+/* === Manje pokreta === */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  /* Ovdje je ovo i spas: gornje pravilo gasi trajanje animacije, pa bi
+     `pojavi-spas` ionako skočio na kraj. Ali ne oslanjamo se na to —
+     tražimo vidljivost izričito. */
+  [data-pojavi] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+
+/* === Štampa === */
+
+@media print {
+  .preskoci,
+  .meni-dugme,
+  .navigacija,
+  .podnozje__blok a {
+    display: none;
+  }
+
+  html {
+    scroll-padding-top: 0;
+  }
+
+  body {
+    background: white;
+    color: black;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .zaglavlje {
+    position: static;
+    background: white;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-bottom: 1px solid black;
+  }
+
+  .logotip,
+  .logotip__ime,
+  .logotip__uloga,
+  .naslov-1,
+  .naslov-2,
+  .naslov-3,
+  .uvodni,
+  .oznaka,
+  .podnozje__ime,
+  .podnozje__meta,
+  .podnozje__potpis,
+  small,
+  figcaption,
+  blockquote {
+    color: black;
+  }
+
+  .sekcija,
+  .sekcija--toplo,
+  .podnozje,
+  .srafura {
+    background: white;
+  }
+
+  /* Tamna soba se u štampi vraća na papir.
+     .soba-tamna redefiniše --ink, --ink-soft i --paper na tamnu paletu.
+     Na papiru to znači svijetli tekst na bijelom: pri štampi BEZ pozadina
+     (podrazumijevano u svakom browseru) naslov "Virtuelna galerija" i
+     "Ulaz u salu" postaju gotovo nevidljivi — izmjereno 1.23:1.
+     Vraćanjem tokena tekst ponovo postaje taman. */
+  .soba-tamna {
+    --paper:      white;
+    --paper-warm: white;
+    --paper-deep: white;
+    --ink:        black;
+    --ink-soft:   black;
+    --ink-muted:  black;
+    --ink-faint:  black;
+    --rule:       rgba(0, 0, 0, 0.3);
+    --rule-strong: black;
+    background: white;
+  }
+
+  /* Puno dugme je papir-na-mastilu; bez štampanih pozadina ostaje
+     bijeli tekst na bijelom (1.16:1). U štampi je ionako samo oznaka. */
+  .dugme,
+  .dugme--puno {
+    background: none;
+    border: 1px solid black;
+    color: black;
+  }
+
+  .sekcija {
+    padding-block: var(--s-5);
+  }
+
+  .srafura::before {
+    display: none;
+  }
+
+  .linija,
+  hr {
+    background: black;
+  }
+
+  [data-pojavi] {
+    opacity: 1;
+    transform: none;
+  }
+
+  a {
+    color: black;
+    text-decoration: none;
+  }
+}
+
+/* Instagram u podnožju: JEDAN link — natpis, a ispod njega ikonica.
+   Bila su dva susjedna linka na istu adresu (tekst + ikonica), pa je
+   čitač ekrana i tastatura prolazila dvaput kroz isto. Izgled je isti:
+   natpis gore, ikonica (44 × 44 dodirna meta) ispod, razmak --s-2 kao
+   između stavki bloka. Podvlaka ide samo ispod natpisa. */
+.podnozje__blok a.podnozje__insta {
+  display: grid;
+  gap: var(--s-2);
+  justify-items: start;
+}
+
+.podnozje__blok a.podnozje__insta::after { display: none; }
+
+.podnozje__insta-tekst {
+  position: relative;
+}
+
+.podnozje__insta-tekst::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur) var(--ease);
+}
+
+.podnozje__blok a.podnozje__insta:hover .podnozje__insta-tekst::after,
+.podnozje__blok a.podnozje__insta:focus-visible .podnozje__insta-tekst::after {
+  transform: scaleX(1);
+}
+
+/* Ikonica Instagrama ispod natpisa u podnožju */
+.podnozje__insta .podnozje__ikona {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-left: -10px;             /* ikonica u liniji sa tekstom iznad */
+  color: var(--ink-soft);
+  transition: color var(--dur) var(--ease);
+}
+
+.podnozje__blok a.podnozje__insta:hover .podnozje__ikona,
+.podnozje__blok a.podnozje__insta:focus-visible .podnozje__ikona { color: var(--accent); }
+
+/* Štampa sakriva sve linkove podnožja (gore); ovo pravilo je jače od
+   tamošnjeg `.podnozje__blok a`, pa se ponavlja. */
+@media print {
+  .podnozje__blok a.podnozje__insta { display: none; }
+}
+
+
+/* === Prekidač jezika (zastavice) ===
+   Stoji u zaglavlju između navigacije i dugmeta za meni, pa je vidljiv
+   i na telefonu, bez otvaranja menija. Obje zastave su istog oblika
+   (3:2), veličine i boja; trenutni jezik se vidi po crti ispod.
+   Oba su dodirne mete od 44 px. */
+
+.logotip { margin-right: auto; }
+.zaglavlje__traka { justify-content: flex-start; }
+
+/* Mobilno (uz hamburger): dugme sa zastavom trenutnog jezika i
+   strelicom otvara malu listu oba jezika. */
+.jezik {
+  position: relative;
+  order: 2;
+  margin-right: var(--s-1);
+}
+
+.jezik__dugme {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-wide);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.jezik__strelica {
+  width: 10px;
+  height: 6px;
+  transition: transform var(--dur) var(--ease);
+}
+.jezik__dugme[aria-expanded="true"] .jezik__strelica { transform: rotate(180deg); }
+
+.jezik__lista {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 20;
+  display: grid;
+  min-width: 11rem;
+  padding: var(--s-1);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility var(--dur) var(--ease);
+}
+.jezik.je-otvoren .jezik__lista {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+}
+
+.jezik__veza {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 var(--s-3);
+  border-radius: var(--radius);
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.jezik__veza:hover,
+.jezik__veza:focus-visible { background: var(--paper-warm); color: var(--ink); }
+.jezik__veza[aria-current="true"] { color: var(--ink); font-weight: 500; }
+
+.jezik__kod { display: none; }
+.jezik__dugme .jezik__kod { display: inline; }
+.jezik__kvacica { width: 12px; height: 10px; margin-left: auto; color: var(--accent); visibility: hidden; }
+.jezik__veza[aria-current="true"] .jezik__kvacica { visibility: visible; }
+
+/* Ista mjera i okvir za obje zastave. */
+.jezik__zastava {
+  display: block;
+  flex: none;
+  width: 24px;
+  height: 16px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+/* Od 820px (navigacija u nizu): obje zastave stoje jedna do druge,
+   trenutni jezik ima zlatnu crtu ispod. */
+@media (min-width: 820px) {
+  .jezik { margin: 0 0 0 var(--s-5); padding-left: var(--s-4); border-left: 1px solid var(--rule); }
+  .jezik__dugme { display: none; }
+  .jezik__lista {
+    position: static;
+    display: flex;
+    gap: 2px;
+    min-width: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .jezik__veza {
+    position: relative;
+    gap: 6px;
+    min-width: 44px;
+    padding: 0 6px;
+    justify-content: center;
+    font-size: var(--t-xs);
+    font-weight: 500;
+    letter-spacing: var(--track-wide);
+    color: var(--ink-muted);
+  }
+  .jezik__veza:hover,
+  .jezik__veza:focus-visible { background: none; }
+  .jezik__veza::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform var(--dur) var(--ease);
+  }
+  .jezik__veza:hover::after,
+  .jezik__veza:focus-visible::after,
+  .jezik__veza[aria-current="true"]::after { transform: scaleX(1); }
+  .jezik__kod { display: inline; }
+  .jezik__ime {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .jezik__kvacica { display: none; }
+}
+
+.logotip__ime { white-space: nowrap; }
+.navigacija a { white-space: nowrap; }
+.meni-dugme { order: 3; }
+@media (max-width: 359px) {
+  .logotip__ime { font-size: calc(var(--t-md) * 0.9); }
+}
+
+/* Uži desktop (tablet položeno): zbijenija navigacija, zastave bez koda */
+@media (min-width: 820px) and (max-width: 1099px) {
+  .navigacija { gap: var(--s-5); }
+  .jezik { margin-left: var(--s-3); padding-left: var(--s-2); }
+  .jezik__kod { display: none; }
+}
+
+/* Dodir: logotip i veze u navigaciji imaju bar 44px visine za prst. */
+@media (pointer: coarse) {
+  .logotip { min-height: 44px; align-content: center; }
+  .navigacija a { display: inline-flex; align-items: center; min-height: 44px; }
+  .navigacija a::after { bottom: 6px; }
+}
+
+/* Telefon: lista jezika samo sa zastavama (nazivi ostaju za čitače
+   ekrana); trenutni jezik ima zlatnu crtu ispod, kao na desktopu. */
+@media (max-width: 819px) {
+  .jezik__dugme .jezik__kod { display: none; }
+  .jezik__lista { min-width: 0; padding: 4px; }
+  .jezik__veza { position: relative; justify-content: center; min-width: 52px; padding: 0 var(--s-2); }
+  .jezik__ime {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .jezik__kvacica { display: none; }
+  /* Iste zastave u dugmetu i u listi. */
+  .jezik__zastava { width: 27px; height: 18px; }
+  .jezik__veza::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 6px;
+    height: 1.5px;
+    background: var(--accent);
+    transform: scaleX(0);
+  }
+  .jezik__veza[aria-current="true"]::after { transform: scaleX(1); }
+}
+
+/* Štampa: bez prekidača jezika, adrese spoljnih veza i mejla se ispisuju,
+   naslovi i parovi podataka se ne odvajaju od sadržaja ispod. */
+@media print {
+  .jezik { display: none !important; }
+  main a[href^="http"]:not(.dugme)::after,
+  main a[href^="mailto:"]:not(.dugme)::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    overflow-wrap: anywhere;
+  }
+  h1, h2, h3, .naslov-1, .naslov-2, .naslov-3, .oznaka { break-after: avoid; }
+  figure, picture, .kartica-djelo, .djelo__par, .podnozje { break-inside: avoid; }
+  .djelo__podaci dt { break-after: avoid; }
+  img { max-height: 25cm; }
+}
+
+/* Visok kontrast (Windows): linije hamburgera, okvir zastava i oznaka
+   trenutne stranice/jezika crtaju se sistemskim bojama. */
+@media (forced-colors: active) {
+  .meni-dugme__linija { background: ButtonText; forced-color-adjust: none; }
+  .jezik__zastava { box-shadow: none; outline: 1px solid CanvasText; outline-offset: 0; }
+  .navigacija a::after,
+  .jezik__veza::after { background: CanvasText; forced-color-adjust: none; }
+}

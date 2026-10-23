@@ -1,0 +1,146 @@
+/* =========================================================
+   Marko Dumnić — dizajn tokeni
+   Izvedeni iz palete njegovih ulja i tuš-crteža.
+   NE DODAVATI NOVE BOJE. Komponente koriste samo var(--...).
+   ========================================================= */
+
+/* fontovi — generiše alati/fontovi.py, ne mijenjati ručno.
+   Inter (Rasmus Andersson) i EB Garamond (Georg Duffner, Octavio Pardo),
+   oba pod SIL Open Font License 1.1 — vidi fonts/OFL-*.txt. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('../fonts/inter-var.woff2?v=a58fe3a39d') format('woff2');
+  unicode-range: U+0020-007E, U+00A0, U+00A7, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E7, U+0106-0107, U+010C-010D, U+0110-0111, U+015A-015B, U+0160-0161, U+0179-017A, U+017D-017E, U+2013-2014, U+2018-201A, U+201C-201E, U+2026, U+20AC, U+2190-2193, U+2212;
+}
+
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('../fonts/eb-garamond-var.woff2?v=c342854703') format('woff2');
+  unicode-range: U+0020-007E, U+00A0, U+00A7, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E7, U+0106-0107, U+010C-010D, U+0110-0111, U+015A-015B, U+0160-0161, U+0179-017A, U+017D-017E, U+2013-2014, U+2018-201A, U+201C-201E, U+2026, U+20AC, U+2190-2193, U+2212;
+}
+
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/eb-garamond-italic.woff2?v=03aaa439de') format('woff2');
+  unicode-range: U+0020-007E, U+00A0, U+00A7, U+00A9, U+00AB, U+00B0, U+00B7, U+00BB, U+00D7, U+00E7, U+0106-0107, U+010C-010D, U+0110-0111, U+015A-015B, U+0160-0161, U+0179-017A, U+017D-017E, U+2013-2014, U+2018-201A, U+201C-201E, U+2026, U+20AC, U+2190-2193, U+2212;
+}
+/* /fontovi */
+
+:root {
+  /* --- Papir / podloga (toplo, nikad #fff) --- */
+  --paper:        #F3EEE4;  /* lan — glavna pozadina */
+  --paper-warm:   #EDE5D7;  /* topliji ton — alternativne sekcije */
+  --paper-deep:   #E3D9C7;  /* najdublji papir — razdjelnici, prazna stanja */
+  --paper-ink:    #15120E;  /* tamna soba za 3D galeriju */
+
+  /* --- Mastilo (toplo crno, nikad #000) --- */
+  --ink:          #1E1A15;  /* naslovi, glavni tekst */
+  --ink-soft:     #4A4238;  /* tekući tekst */
+  /* Bio #8A8073 — padao je na 3.35:1 na --paper, 3.10:1 na --paper-warm i
+     2.77:1 na --paper-deep, a nosi STVARAN tekst (.oznaka, .podnozje__meta,
+     figcaption, .rad__meta, .djelo__par dt …), ne ukras. Potamnjen uz isti
+     topli taupe ton (R−B = 19, bilo 23): sada 5.52 / 5.10 / 4.56 — AA na sva
+     tri papira. */
+  --ink-muted:    #665E53;  /* sekundarno, metapodaci */
+  /* Ostaje svijetao — koristi se SAMO kao ukras i za nedostupna stanja
+     (linije, .dugme[disabled], ::placeholder, aria-pressed="false"), nikad
+     za tekst koji se mora pročitati. Vidi izvještaj, tačka 4. */
+  --ink-faint:    #B6AC9C;  /* linije, disabled */
+
+  /* --- Zemlja (akcenti — JEDAN po ekranu) --- */
+  --ochre:        #BE8B3C;  /* oker — primarni akcent */
+  --sienna:       #A3562E;  /* pečena sijena — sekundarni akcent */
+  --terracotta:   #B06749;
+  --olive:        #5E6A46;
+  --pine:         #35412C;
+  --slate:        #74879A;  /* prašnjavo plava — more, nebo */
+
+  /* --- Semantika --- */
+  --accent:       var(--ochre);
+  --accent-deep:  var(--sienna);
+  --rule:         rgba(30, 26, 21, 0.14);   /* vlasaste linije */
+  --rule-strong:  rgba(30, 26, 21, 0.28);
+  --focus:        var(--sienna);
+
+  /* --- Tipografija --- */
+  /* Redoslijed ide od najbliže zamjene ka najdaljoj. macOS i Windows su
+     bili pokriveni (Iowan Old Style / Palatino Linotype / Georgia), ali
+     Linux nije imao nijedno od tih imena pa je padao skroz na
+     'Times New Roman' — uski, oštri Times koji ne liči na Garamond.
+     Dodata su imena Palatino klonova koje Linux distribucije stvarno
+     isporučuju; provjereno u ovom sandboxu: 'TeX Gyre Pagella' postoji,
+     a Times NR se bira tek ako ništa od toga nema. */
+  --font-display: 'EB Garamond', 'Iowan Old Style', 'Palatino Linotype',
+                  Palatino, 'Book Antiqua', 'TeX Gyre Pagella', P052,
+                  'URW Palladio L', Georgia, 'Liberation Serif',
+                  'Times New Roman', serif;
+  --font-ui:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                  Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Skala — modularna, odnos 1.28 */
+  --t-xs:    0.78rem;
+  --t-sm:    0.9rem;
+  --t-base:  1.0625rem;
+  --t-md:    1.33rem;
+  --t-lg:    1.75rem;
+  --t-xl:    2.4rem;
+  --t-2xl:   3.4rem;
+  --t-3xl:   clamp(3rem, 8vw, 6.5rem);
+
+  --leading-tight: 1.12;
+  --leading-snug:  1.35;
+  --leading-body:  1.68;
+
+  --track-wide:  0.08em;   /* logotip, oznake */
+  --track-xwide: 0.18em;   /* sitne verzalne oznake */
+
+  /* --- Prostor (osnova 8px, velikodušno) --- */
+  --s-1:  0.25rem;
+  --s-2:  0.5rem;
+  --s-3:  0.75rem;
+  --s-4:  1rem;
+  --s-5:  1.5rem;
+  --s-6:  2rem;
+  --s-7:  3rem;
+  --s-8:  4rem;
+  --s-9:  6rem;
+  --s-10: 9rem;
+
+  /* --- Mjere --- */
+  --measure:     66ch;            /* širina čitljivog teksta */
+  --max-w:       1240px;          /* glavni kontejner */
+  --max-w-wide:  1560px;
+  --gutter:      clamp(1.25rem, 5vw, 4rem);
+
+  /* --- Ostalo --- */
+  --radius:      2px;             /* skoro oštro, nikad preko 2px */
+  --ease:        cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur:         280ms;
+  --dur-slow:    520ms;
+
+  /* --- Šrafura (potpis sajta, izveden iz tuš-crteža) --- */
+  --hatch: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M-2 10 L10 -2 M0 14 L14 0 M2 18 L18 2' stroke='%231E1A15' stroke-width='0.9' fill='none'/%3E%3C/svg%3E");
+  --hatch-cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M-2 12 L12 -2 M0 16 L16 0' stroke='%231E1A15' stroke-width='0.8' fill='none'/%3E%3Cpath d='M-2 2 L12 16 M0 -2 L16 14' stroke='%231E1A15' stroke-width='0.5' fill='none' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* Tamna soba — koristi se samo unutar 3D galerije, ne za cio sajt */
+.soba-tamna {
+  --paper:      #15120E;
+  --paper-warm: #1C1813;
+  --paper-deep: #241F18;
+  --ink:        #EFE7D8;
+  --ink-soft:   #C9BEAB;
+  --ink-muted:  #8E8474;
+  --ink-faint:  #5C5447;
+  --rule:       rgba(239, 231, 216, 0.16);
+  --rule-strong:rgba(239, 231, 216, 0.3);
+}

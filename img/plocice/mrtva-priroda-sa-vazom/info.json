@@ -1,0 +1,44 @@
+{
+  "napomena": "Pločice su isječene iz fotografije djela u punoj rezoluciji (img/radovi/velike/mrtva-priroda-sa-vazom.jpg). Svaka pločica je sirina × visina piksela svog nivoa, plus preklop.",
+  "id": "mrtva-priroda-sa-vazom",
+  "naziv": "Mrtva priroda sa vazom",
+  "tehnika": "Ulje na platnu",
+  "dimenzije": "50 × 60 cm",
+  "godina": 2023,
+  "rezerva": "img/radovi/mrtva-priroda-sa-vazom.jpg",
+  "sadrzaj": {
+    "sirina": 600,
+    "visina": 498
+  },
+  "plocica": {
+    "sirina": 600,
+    "visina": 498
+  },
+  "preklop": 2,
+  "nivoa": 3,
+  "nivoi": [
+    {
+      "nivo": 0,
+      "kolona": 1,
+      "redova": 1,
+      "sirina": 600,
+      "visina": 498
+    },
+    {
+      "nivo": 1,
+      "kolona": 2,
+      "redova": 2,
+      "sirina": 1200,
+      "visina": 996
+    },
+    {
+      "nivo": 2,
+      "kolona": 4,
+      "redova": 4,
+      "sirina": 2400,
+      "visina": 1992
+    }
+  ],
+  "obrazac": "{nivo}/{kolona}_{red}.jpg",
+  "ukupno_plocica": 21
+}

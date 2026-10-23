@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="sr-Latn-ME">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kontakt — Marko Dumnić</title>
+<meta name="description" content="Kontakt sa slikarom Markom Dumnićem — kupovina radova, izložbe i saradnje. E-pošta i Instagram. Cetinje · Lavis (Trento).">
+<!-- fontovi -->
+<link rel="preload" href="fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<!-- /fontovi -->
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/strane.css">
+
+<!--
+  Degradiranje bez JavaScripta:
+  forma nema server (action je prazan) i slanje radi isključivo js/kontakt.js
+  koji sastavlja `mailto:`. Bez JS-a dugme ne bi radilo ništa, a napomene bi
+  tvrdile nešto neistinito — zato se cijela forma i te napomene sklanjaju,
+  a na njihovo mjesto staje blok sa direktnim putem do autora.
+-->
+<noscript>
+  <style>
+    .forma,
+    .napomena-forme--iznad,
+    .napomena-forme--ispod,
+    .uvodni-sa-js { display: none; }
+    .forma-bez-js,
+    .uvodni-bez-js { display: block; }
+  </style>
+</noscript>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F3EEE4">
+<meta property="og:title" content="Kontakt — Marko Dumnić">
+<meta property="og:description" content="Upiti o kupovini radova, izložbama i saradnji.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://markodumnic.art/img/og/sajt.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<!-- hreflang -->
+<link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/kontakt">
+<link rel="alternate" hreflang="en" href="https://markodumnic.art/en/kontakt">
+<link rel="alternate" hreflang="x-default" href="https://markodumnic.art/kontakt">
+<link rel="canonical" href="https://markodumnic.art/kontakt">
+<meta property="og:url" content="https://markodumnic.art/kontakt">
+<meta property="og:locale" content="sr_ME">
+<meta property="og:locale:alternate" content="en_GB">
+<!-- /hreflang -->
+</head>
+<body>
+
+<a class="preskoci" href="#glavno">Preskoči na sadržaj</a>
+
+<header class="zaglavlje">
+  <div class="zaglavlje__traka">
+    <a class="logotip" href="index.html">
+      <span class="logotip__ime">Marko Dumnić</span>
+      <span class="logotip__uloga">Slikar</span>
+    </a>
+
+    <button class="meni-dugme" type="button" aria-expanded="false" aria-controls="glavna-navigacija">
+      <span class="meni-dugme__linija"></span>
+      <span class="meni-dugme__linija"></span>
+      <span class="vizuelno-skriveno">Meni</span>
+    </button>
+
+    <nav class="navigacija" id="glavna-navigacija" aria-label="Glavna navigacija">
+      <a href="index.html">Početna</a>
+      <a href="o-autoru.html">O autoru</a>
+      <a href="radovi.html">Radovi</a>
+      <a href="galerija.html">Galerija</a>
+      <a href="kontakt.html" aria-current="page">Kontakt</a>
+    </nav>
+
+    <!-- jezik -->
+    <div class="jezik">
+      <button class="jezik__dugme" type="button" aria-expanded="false" aria-controls="jezik-lista"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><svg class="jezik__strelica" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vizuelno-skriveno"> Jezik: crnogorski. Promijeni jezik</span></button>
+      <nav class="jezik__lista" id="jezik-lista" aria-label="Jezik">
+        <a class="jezik__veza" href="kontakt.html" hreflang="sr-ME" lang="sr-Latn-ME" aria-current="true"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><span class="jezik__ime">Crnogorski</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="en/kontakt.html" hreflang="en" lang="en"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><span class="jezik__ime">English</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+    <!-- /jezik -->
+  </div>
+</header>
+
+<main id="glavno">
+
+  <section class="sekcija">
+    <div class="omot">
+      <h1 class="naslov-1">Kontakt</h1>
+      <p class="uvodni uvodni-sa-js mt-6">
+        Za upite o kupovini radova, izložbama i saradnji. Poruku možete sastaviti
+        ispod, pisati direktno e-poštom ili se javiti preko Instagrama.
+      </p>
+      <p class="uvodni uvodni-bez-js mt-6">
+        Za upite o kupovini radova, izložbama i saradnji. Javite se e-poštom ili
+        preko Instagrama.
+      </p>
+      <!-- Namjerno bez obećanja o roku odgovora — autor ga nije dao. -->
+
+      <div class="kontakt-raspored mt-7">
+
+        <!-- ===== Forma ===== -->
+        <div class="kontakt-forma">
+
+          <!-- Red koji se pojavljuje kad korisnik dođe sa stranice djela (?djelo=id). -->
+          <p class="upit-djelo" id="upit-djelo" hidden></p>
+
+          <!-- Vidi se SAMO bez JavaScripta (uključuje ga <noscript> u <head>). -->
+          <div class="forma-bez-js">
+            <p class="forma-bez-js__naslov">Forma zahtijeva JavaScript</p>
+            <p class="forma-bez-js__tekst">
+              Sajt nema server koji bi primio poruku — formu sastavlja skripta u
+              vašem browseru, pa bez JavaScripta ne može da radi. Javite se
+              direktno:
+            </p>
+            <ul class="forma-bez-js__spisak">
+              <li>
+                poruka na Instagramu —
+                <a href="https://www.instagram.com/marko.mapko/" rel="noopener">@marko.mapko</a>
+              </li>
+              <li>
+                e-poštom — <a href="mailto:mfnlulu@gmail.com">mfnlulu@gmail.com</a>
+              </li>
+            </ul>
+            <p class="forma-bez-js__tekst">
+              Ili uključite JavaScript i osvježite stranu.
+            </p>
+          </div>
+
+          <!-- Forma je statička: nema backend, zato je `action` prazan,
+               a slanje preuzima skripta na dnu strane (mailto). -->
+          <form class="forma" id="forma-kontakt" action="" method="post" novalidate>
+
+            <!-- Popunjava skripta iz ?djelo= parametra; korisnik ga ne dira. -->
+            <input type="hidden" name="djelo" id="polje-djelo" value="">
+
+            <div class="polje">
+              <label class="oznaka oznaka--gola polje__oznaka" for="ime">Ime i prezime</label>
+              <input class="polje__unos" type="text" id="ime" name="ime"
+                     autocomplete="name" required
+                     aria-describedby="greska-ime">
+              <p class="polje__greska" id="greska-ime"></p>
+            </div>
+
+            <div class="polje">
+              <label class="oznaka oznaka--gola polje__oznaka" for="eposta">E-pošta</label>
+              <input class="polje__unos" type="email" id="eposta" name="eposta"
+                     autocomplete="email" required
+                     aria-describedby="greska-eposta">
+              <p class="polje__greska" id="greska-eposta"></p>
+            </div>
+
+            <div class="polje">
+              <label class="oznaka oznaka--gola polje__oznaka" for="poruka">Poruka</label>
+              <textarea class="polje__unos polje__unos--tekst" id="poruka" name="poruka"
+                        rows="7" required
+                        aria-describedby="greska-poruka"></textarea>
+              <p class="polje__greska" id="greska-poruka"></p>
+            </div>
+
+            <!-- Skupna poruka o greškama / potvrdi. Čita je čitač ekrana. -->
+            <div class="forma__status" id="status-forme" role="status" aria-live="polite"></div>
+
+            <div class="forma__dno">
+              <button class="dugme dugme--puno" type="submit">Sastavi poruku</button>
+            </div>
+          </form>
+
+          <p class="napomena-forme napomena-forme--ispod">
+            Forma nije povezana sa serverom, pa poruka ne odlazi sa sajta — dugme
+            samo otvara vašu aplikaciju za e-poštu. Ako je nemate podešenu, pišite
+            direktno na <a href="mailto:mfnlulu@gmail.com">mfnlulu@gmail.com</a>.
+          </p>
+
+          <!-- ZA KORISNIKA — kako da forma stvarno šalje poruke:
+               1) Formspree — napravi formu na formspree.io i stavi njen endpoint u
+                  action="https://formspree.io/f/XXXX" uz method="post"; obriši JS za mailto.
+               2) Netlify Forms — ako je sajt na Netlifyju, dodaj atribut `netlify`
+                  na <form> i skriveno polje <input type="hidden" name="form-name" value="...">.
+               3) Cloudflare Worker — mali Worker koji prima POST i šalje mejl preko
+                  servisa (npr. MailChannels ili Resend); u action stavi URL Workera.
+               U sva tri slučaja ukloniti blok sa mailto skriptom i napomenu ispod forme. -->
+        </div>
+
+        <!-- ===== Podaci ===== -->
+        <aside class="kontakt-podaci" aria-label="Podaci za kontakt">
+          <div class="podatak">
+            <p class="oznaka oznaka--gola">Instagram</p>
+            <p class="podatak__vrijednost">
+              <a href="https://www.instagram.com/marko.mapko/" rel="noopener">@marko.mapko</a>
+            </p>
+          </div>
+
+          <div class="podatak">
+            <p class="oznaka oznaka--gola">E-pošta</p>
+            <!-- Ista adresa stoji i u konstanti ADRESA u js/kontakt.js —
+                 kad se mijenja, mijenja se na oba mjesta. -->
+            <p class="podatak__vrijednost">
+              <a href="mailto:mfnlulu@gmail.com">mfnlulu@gmail.com</a>
+            </p>
+          </div>
+
+          <div class="podatak">
+            <p class="oznaka oznaka--gola">Živi i radi</p>
+            <p class="podatak__vrijednost">Cetinje · Lavis (Trento)</p>
+          </div>
+
+          <!-- Namjerno samo gradovi: adresa ateljea, telefon i WhatsApp se
+               ne objavljuju na sajtu. -->
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="podnozje">
+  <div class="podnozje__unutra">
+    <div class="podnozje__blok">
+      <p class="podnozje__ime">Marko Dumnić</p>
+      <p class="podnozje__meta">Slikar · Cetinje, Crna Gora</p>
+      <p class="podnozje__meta">Accademia Albertina di Belle Arti, Torino</p>
+    </div>
+    <nav class="podnozje__blok" aria-label="Podnožje">
+      <a href="index.html">Početna</a>
+      <a href="o-autoru.html">O autoru</a>
+      <a href="radovi.html">Radovi</a>
+      <a href="galerija.html">Virtuelna galerija</a>
+      <a href="kontakt.html" aria-current="page">Kontakt</a>
+    </nav>
+    <div class="podnozje__blok">
+      <a class="podnozje__insta" href="https://www.instagram.com/marko.mapko/" rel="noopener">
+        <span class="podnozje__insta-tekst">Instagram</span><span class="vizuelno-skriveno"> — @marko.mapko</span>
+        <span class="podnozje__ikona" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <p class="podnozje__potpis">© <span data-godina>2026</span> Marko Dumnić. Sva prava zadržana.</p>
+</footer>
+
+<script src="js/base.js"></script>
+<script src="js/kontakt.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+# robots.txt — Marko Dumnić
+# Domen se mijenja na dva mjesta u ovom fajlu (red "Sitemap" ispod)
+# i u sitemap.xml. Vidi IZVJESTAJ-seo.md, odjeljak "Gdje se mijenja domen".
+
+User-agent: *
+Allow: /
+
+# --- djelo.html: klijentski template, ne indeksirati ---------------------
+# Čita ?id= iz URL-a i popunjava se JavaScriptom. U izvornom HTML-u nema
+# sadržaja, a svih 13 djela bi dijelilo isti naslov, opis i canonical.
+# Prave stranice su u /djelo/<id>.html i one se indeksiraju normalno.
+#
+# PAŽNJA pri izmjeni: poklapanje je po PREFIKSU. "Disallow: /djelo" bi
+# oborio i /djelo/prijatelji, dakle svih 13 pravih stranica.
+# Zato oba pravila ispod imaju kraj putanje ("$") ili puno ime fajla.
+#
+# Vercel (cleanUrls) i Cloudflare Pages preusmjeravaju /djelo.html na /djelo (308), pa se zabranjuju OBA oblika: ono što crawler zatekne u
+# starim vezama (.html) i ono na šta ga Pages odvede (bez ekstenzije).
+Disallow: /djelo.html
+Disallow: /djelo$
+Disallow: /en/djelo.html
+Disallow: /en/djelo$
+Disallow: /djelo?
+Disallow: /en/djelo?
+
+# Eksplicitno propuštanje stranica djela — da ostane jasno i ako neko
+# kasnije doda šire pravilo iznad.
+Allow: /djelo/
+Allow: /en/djelo/
+
+# --- Nije sadržaj za indeks ----------------------------------------------
+Disallow: /data/
+Disallow: /alati/
+
+Sitemap: https://markodumnic.art/sitemap.xml

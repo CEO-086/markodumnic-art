@@ -1,0 +1,743 @@
+/* =========================================================
+   Marko Dumnić — strane.css
+   Stilovi za o-autoru.html i kontakt.html.
+   Samo tokeni iz css/tokens.css — bez novih boja i bez hex kodova.
+   ========================================================= */
+
+
+/* =========================================================
+   ZAJEDNIČKO
+   ========================================================= */
+
+/* --- KONTRAST ---------------------------------------------
+   `--ink-muted` daje 3.35:1 na --paper, 3.10:1 na --paper-warm i 2.77:1 na
+   --paper-deep — ispod praga 4.5:1 za tekst. Zato se na ovim dvjema stranama
+   za SVAKI čitljivi tekst koristi `--ink-soft` (8.54 / 7.89 / 7.06:1).
+   `--ink-muted` ostaje samo za ivice i poteze, gdje je prag 3:1.
+   Token se ne mijenja — tokens.css je tuđi fajl; mijenja se samo upotreba.
+   --------------------------------------------------------- */
+
+/* Sitne verzalne oznake iz base.css nose --ink-muted; na ovim stranama
+   ih podižemo na --ink-soft. Vrijedi samo gdje je uključen strane.css. */
+.oznaka {
+  color: var(--ink-soft);
+}
+
+/* Tekući tekst strane — drži mjeru čitljivosti i tiši ton. */
+.tekst p {
+  max-width: var(--measure);
+  color: var(--ink-soft);
+}
+
+.strana-uvod .uvodni {
+  color: var(--ink);
+}
+
+
+/* === Blok (tekstualna kolona u mreži) === */
+
+.blok {
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule-strong);
+}
+
+.blok p {
+  color: var(--ink-soft);
+}
+
+
+/* === Prazno stanje (npr. izložbe) === */
+
+.prazno {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 11rem;
+  padding: var(--s-7) var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-deep);
+  text-align: center;
+}
+
+/* Na --paper-deep bi --ink-muted dao 2.77:1 — zato --ink-soft (7.06:1). */
+.prazno__poruka {
+  max-width: 34ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+}
+
+
+/* =========================================================
+   O AUTORU — spisak motiva
+   ========================================================= */
+
+.spisak-motiva {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+
+.spisak-motiva__stavka {
+  display: grid;
+  gap: var(--s-1);
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--rule);
+}
+
+.spisak-motiva__ime {
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+}
+
+.spisak-motiva__opis {
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+}
+
+@media (min-width: 720px) {
+  .spisak-motiva__stavka {
+    grid-template-columns: minmax(14rem, 18rem) 1fr;
+    align-items: baseline;
+    gap: var(--s-6);
+    padding-block: var(--s-5);
+  }
+}
+
+/* Varijanta bez opisa — samo nazivi motiva, jedna kolona na svim širinama. */
+@media (min-width: 720px) {
+  .spisak-motiva--gola .spisak-motiva__stavka {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =========================================================
+   O AUTORU — uvod sa portretom
+   ========================================================= */
+
+.autor-uvod {
+  display: grid;
+  gap: var(--s-7);
+  align-items: end;
+}
+
+.autor-portret {
+  margin: 0;
+  max-width: 26rem;
+}
+
+/* Portret je fotografija, ne djelo — mirna ivica papira, bez sjenke. */
+.autor-portret img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  outline: 1px solid var(--rule);
+  outline-offset: -1px;
+}
+
+@media (min-width: 900px) {
+  .autor-uvod {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: var(--s-9);
+  }
+
+  .autor-portret {
+    justify-self: end;
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   O AUTORU — izjava umjetnika
+   ========================================================= */
+
+.izjava {
+  display: grid;
+  gap: var(--s-7);
+}
+
+/* Istaknuti citat — veliki kurziv, kao na zidu izložbene sale. */
+.citat {
+  max-width: 20ch;
+  /* Bez margin-top: razmak iznad daje pomoćna klasa .mt-* u HTML-u. */
+  margin-inline: 0;
+  margin-bottom: 0;
+  font-family: var(--font-display);
+  font-size: var(--t-xl);
+  font-style: italic;
+  line-height: var(--leading-tight);
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.citat::before {
+  content: "";
+  display: block;
+  width: var(--s-8);
+  height: 1px;
+  margin-bottom: var(--s-5);
+  background: var(--accent);
+}
+
+/* Cio tekst izjave — bez ivice iz base.css; citatnost nosi glava pored. */
+.izjava__citat {
+  max-width: var(--measure);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: var(--t-md);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.izjava__citat p {
+  max-width: none;
+}
+
+.izjava__citat p + p {
+  margin-top: var(--s-5);
+}
+
+.izjava__potpis {
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  font-style: italic;
+  color: var(--ink);
+}
+
+.izjava__izvor {
+  margin-top: var(--s-2);
+  font-size: var(--t-xs);
+  color: var(--ink-soft);
+}
+
+/* Kad su glava i tekst jedno ispod drugog, istaknuti citat bi samo
+   ponovio prvu rečenicu izjave odmah ispod — tada ga ne prikazujemo. */
+@media (max-width: 899px) {
+  .izjava__glava .citat {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .izjava {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--s-9);
+  }
+
+  .izjava__glava {
+    position: sticky;
+    top: calc(var(--h-zaglavlje) + var(--s-6));
+    align-self: start;
+  }
+}
+
+
+/* =========================================================
+   O AUTORU — serije
+   ========================================================= */
+
+.serije {
+  display: grid;
+  gap: var(--s-7) var(--s-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  /* Bez margin-top: razmak iznad daje .mt-* u HTML-u. */
+  margin-inline: 0;
+  margin-bottom: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.serija__veza {
+  display: grid;
+  gap: var(--s-2);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.serija__slika {
+  display: block;
+  margin-bottom: var(--s-3);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--paper-deep);
+}
+
+.serija__slika img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.serija__veza:hover .serija__slika img,
+.serija__veza:focus-visible .serija__slika img {
+  transform: scale(1.025);
+}
+
+.serija__godina {
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 500;
+  letter-spacing: var(--track-xwide);
+  color: var(--ink-soft);
+}
+
+.serija__naslov {
+  font-family: var(--font-display);
+  font-size: var(--t-lg);
+  line-height: var(--leading-tight);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.18em;
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+
+.serija__veza:hover .serija__naslov,
+.serija__veza:focus-visible .serija__naslov {
+  text-decoration-color: var(--accent);
+}
+
+.serija__original {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.serija__meta {
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+}
+
+
+/* =========================================================
+   O AUTORU — životopis (obrazovanje i izložbe)
+   Muzejski CV: kolona godine + unos (naziv, ispod prostor i grad).
+   ========================================================= */
+
+.zivotopis {
+  display: grid;
+  gap: var(--s-8);
+}
+
+.zivotopis__naslov {
+  margin-bottom: var(--s-4);
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--track-xwide);
+  color: var(--ink);
+}
+
+.spisak-izlozbi {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.spisak-izlozbi__stavka {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--s-4);
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--rule);
+}
+
+.spisak-izlozbi__godina {
+  font-family: var(--font-display);
+  font-size: var(--t-base);
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--ink-soft);
+}
+
+.spisak-izlozbi__unos {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.spisak-izlozbi__ime {
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+}
+
+.spisak-izlozbi__mjesto {
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+}
+
+@media (min-width: 900px) {
+  .zivotopis__grupa {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+
+  .zivotopis__naslov {
+    margin-bottom: 0;
+    padding-top: var(--s-4);
+  }
+
+  .spisak-izlozbi__stavka {
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: var(--s-6);
+    padding-block: var(--s-5);
+  }
+}
+
+
+/* =========================================================
+   KONTAKT — raspored
+   ========================================================= */
+
+.kontakt-raspored {
+  display: grid;
+  gap: var(--s-8);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .kontakt-raspored {
+    grid-template-columns: minmax(0, 1.5fr) minmax(16rem, 1fr);
+    gap: var(--s-9);
+  }
+}
+
+.kontakt-forma {
+  min-width: 0;
+}
+
+
+/* === Linija "Upit za djelo: ..." === */
+
+.upit-djelo {
+  max-width: var(--measure);
+  margin: 0 0 var(--s-5);
+  padding: var(--s-3) var(--s-4);
+  border-left: 2px solid var(--accent);
+  background: var(--paper-warm);
+  font-family: var(--font-display);
+  font-size: var(--t-base);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+}
+
+.upit-djelo[hidden] {
+  display: none;
+}
+
+
+/* === Forma bez JavaScripta ===
+   Sakriveno po pravilu; <noscript> u <head> ga prikazuje i sklanja formu.
+   Tako korisnik bez JS-a ne dobije mrtvo dugme ni netačnu napomenu. */
+
+.forma-bez-js {
+  display: none;
+  max-width: var(--measure);
+  padding: var(--s-5) var(--s-5) var(--s-6);
+  border: 1px solid var(--ink-muted);
+  border-left: 2px solid var(--accent-deep);
+  border-radius: var(--radius);
+  background: var(--paper-warm);
+}
+
+.forma-bez-js__naslov {
+  margin: 0 0 var(--s-3);
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+}
+
+.forma-bez-js__tekst {
+  margin: 0;
+  font-size: var(--t-sm);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/* base.css gasi tačke pravilom `ul[class]` (specifičnost 0,1,1), pa se ovdje
+   selektor mora izjednačiti po težini — otuda ul[class] u selektoru. */
+ul[class].forma-bez-js__spisak {
+  margin: var(--s-4) 0;
+  padding-left: var(--s-5);
+  list-style: disc;
+  font-size: var(--t-sm);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.forma-bez-js__spisak li + li {
+  margin-top: var(--s-2);
+}
+
+/* Uvodna rečenica upućuje na formu ispod — bez JS-a forme nema, pa se
+   mijenja varijanta teksta (obje stoje u HTML-u, jedna je uvijek skrivena). */
+.uvodni-bez-js {
+  display: none;
+}
+
+
+/* === Napomene oko forme === */
+
+.napomena-forme {
+  max-width: var(--measure);
+  margin: 0 0 var(--s-6);
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+}
+
+.napomena-forme--ispod {
+  margin: var(--s-5) 0 0;
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+
+/* =========================================================
+   KONTAKT — forma
+   Polja: bez radiusa preko 2px, pozadina --paper-warm,
+   donja linija deblja od ostalih, na fokus postaje --accent.
+   ========================================================= */
+
+.forma {
+  display: grid;
+  gap: var(--s-6);
+  max-width: var(--measure);
+}
+
+.polje {
+  display: grid;
+  gap: var(--s-2);
+}
+
+/* Labela je nosilac značenja polja — mora biti čitljiva, ne tiha. */
+.polje__oznaka {
+  color: var(--ink-soft);
+}
+
+/* Ivice polja: `--rule` (1.32:1) i `--rule-strong` (1.80:1) su prozirne
+   linije ispod praga 3:1 za kontrole. Granica polja se zato crta
+   `--ink-muted` (3.35:1 na --paper) — još uvijek vlasasta, ali vidljiva. */
+.polje__unos {
+  width: 100%;
+  padding: var(--s-3) var(--s-4);
+  background: var(--paper-warm);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--t-base);
+  line-height: var(--leading-snug);
+  border: 1px solid var(--ink-muted);
+  border-bottom: 2px solid var(--ink-soft);
+  border-radius: var(--radius);
+  transition: border-color var(--dur) var(--ease),
+              background-color var(--dur) var(--ease);
+}
+
+.polje__unos--tekst {
+  resize: vertical;
+  min-height: 9rem;
+  line-height: var(--leading-body);
+}
+
+/* `--ink-faint` daje 1.79:1 — nečitljivo. Placeholder nosi --ink-soft,
+   ali ni tada ne smije biti jedini nosilac uputstva (zato ga i nema u HTML-u). */
+.polje__unos::placeholder {
+  color: var(--ink-soft);
+  opacity: 1;
+}
+
+.polje__unos:hover {
+  border-color: var(--ink-soft);
+  border-bottom-color: var(--ink);
+}
+
+/* Na fokus donja linija postaje tamna; `--accent` (oker) daje samo 2.42:1
+   na --paper-warm, pa ne može sam da nosi stanje fokusa. Vidljivost fokusa
+   drži outline u --focus (sijena, 4.62:1). */
+.polje__unos:focus {
+  outline: none;
+  border-color: var(--ink-soft);
+  border-bottom-color: var(--ink);
+  background: var(--paper);
+}
+
+.polje__unos:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-bottom-color: var(--ink);
+}
+
+/* Polje sa greškom — debela donja linija u dubljem akcentu (4.27:1 na
+   --paper-warm, iznad 3:1 za kontrole). Boja nikad nije jedini signal:
+   uz nju ide tekstualna poruka i aria-invalid. */
+.polje__unos.je-greska {
+  border-color: var(--accent-deep);
+  border-bottom-color: var(--accent-deep);
+  border-bottom-width: 3px;
+}
+
+
+/* === Poruke o grešci === */
+
+.polje__greska {
+  max-width: var(--measure);
+  min-height: 0;
+  margin: 0;
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--accent-deep);
+}
+
+.polje__greska:empty {
+  display: none;
+}
+
+/* Prije poruke stoji sitna crtica — greška se čita i bez boje. */
+.polje__greska:not(:empty)::before {
+  content: "\2014";
+  margin-right: var(--s-2);
+}
+
+
+/* === Status forme (aria-live) === */
+
+.forma__status {
+  max-width: var(--measure);
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  color: var(--ink-soft);
+}
+
+.forma__status:empty {
+  display: none;
+}
+
+.forma__status:not(:empty) {
+  padding: var(--s-3) var(--s-4);
+  border-left: 2px solid var(--ink-soft);
+  background: var(--paper-warm);
+}
+
+.forma__status--greska:not(:empty) {
+  border-left-color: var(--accent-deep);
+  color: var(--ink);
+}
+
+.forma__dno {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  align-items: center;
+}
+
+
+/* =========================================================
+   KONTAKT — blok sa podacima
+   ========================================================= */
+
+.kontakt-podaci {
+  display: grid;
+  gap: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule-strong);
+}
+
+.podatak {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.podatak__vrijednost {
+  max-width: 32ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  color: var(--ink);
+}
+
+/* Podatak koji još nije postavljen — drugi font i manji stepen, da se ne
+   čita kao tvrdnja, ali čitljive boje (--ink-muted bi dao 3.35:1). */
+.podatak__vrijednost--prazno {
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  line-height: var(--leading-snug);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 900px) {
+  .kontakt-podaci {
+    position: sticky;
+    top: calc(var(--h-zaglavlje) + var(--s-6));
+  }
+}
+
+
+/* =========================================================
+   ŠTAMPA
+   ========================================================= */
+
+@media print {
+  .forma,
+  .napomena-forme,
+  .forma__status {
+    display: none;
+  }
+
+  .prazno {
+    background: none;
+    border: 1px solid black;
+  }
+
+  .kontakt-podaci,
+  .blok,
+  .spisak-motiva,
+  .spisak-izlozbi,
+  .spisak-izlozbi__stavka {
+    border-color: black;
+  }
+
+  .kontakt-podaci {
+    position: static;
+  }
+
+  .spisak-motiva__ime,
+  .spisak-izlozbi__ime,
+  .citat,
+  .izjava__citat,
+  .serija__naslov,
+  .podatak__vrijednost,
+  .prazno__poruka {
+    color: black;
+  }
+
+  .upit-djelo {
+    background: none;
+    border-left: 2px solid black;
+  }
+}
