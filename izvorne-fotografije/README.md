@@ -1,7 +1,8 @@
 # Izvorne fotografije radova
 
 Originalne fotografije slika, u punoj rezoluciji, onakve kakve su stigle od autora (fajlovi nijesu mijenjani, samo preimenovani po radu).
-Iz njih su napravljene web verzije u `img/radovi/`, `img/reljef/` i `img/sala/` (vidi `alati/slike.py` i `alati/teksture.py`).
+Ovo je samo baza: sajt ove fajlove nikad ne učitava. Koristi web verzije napravljene od njih u `img/radovi/`, `img/radovi/w/`, `img/reljef/` i `img/sala/`.
+Za novo djelo stavi original ovdje kao `<id>.jpg` i pokreni redom `python3 alati/izvorne.py`, `python3 alati/slike.py` i `python3 alati/teksture.py`.
 
 Ovaj folder se ne objavljuje na sajtu (naveden je u `.vercelignore`).
 
