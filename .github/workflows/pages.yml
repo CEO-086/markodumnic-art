@@ -24,6 +24,8 @@ jobs:
       url: ${{ steps.objava.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
+      - id: pages
+        uses: actions/configure-pages@v5
       - name: Samo fajlovi sajta
         run: |
           mkdir _site
@@ -31,8 +33,9 @@ jobs:
           # isto što se ne objavljuje ni na Vercelu, plus git i Vercel podešavanja
           while read -r p; do [ -n "$p" ] && rm -rf "_site/$p"; done < .vercelignore
           rm -rf _site/.github _site/.gitignore _site/.vercelignore _site/vercel.json
+          # bez domena sajt je pod /<ime repoa>/ — adrese od korijena se dopune
+          python3 alati/podputanja.py _site "${{ steps.pages.outputs.base_path }}"
           du -sh _site
-      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
       - id: objava
         uses: actions/deploy-pages@v4

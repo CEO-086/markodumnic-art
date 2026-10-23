@@ -2706,6 +2706,16 @@ function pogodak(x, y) {
    Unos
    --------------------------------------------------------- */
 const slusaoci = [];
+function pokaziSalu() {
+  const p = el.platno;
+  if (!p || !p.getClientRects().length) { return; }
+  const r = p.getBoundingClientRect();
+  const vidi = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+  if (vidi >= Math.min(r.height, window.innerHeight) * 0.6) { return; }
+  try { p.scrollIntoView({ block: 'nearest' }); }
+  catch (e) { p.scrollIntoView(false); }
+}
+
 function slusaj(cilj, tip, f, opcije) {
   cilj.addEventListener(tip, f, opcije);
   slusaoci.push([cilj, tip, f, opcije]);
@@ -3097,6 +3107,18 @@ function vezi() {
   }
   if (el.lupa) {
     slusaj(el.lupa, 'click', function () { postaviLupu(!S.lupa.na); });
+  }
+  /* Telefon: dugmad i mapa su ispod sale. Kad dugme promijeni pogled
+     (ili uključi lupu), sala se vrati u kadar — inače se čini da ništa
+     nije urađeno. Izbliza je preko cijelog ekrana, a gašenje lupe ne
+     treba salu, pa ta dva ne pomjeraju stranu. */
+  if (el.alati) {
+    slusaj(el.alati, 'click', function (e) {
+      const d = e.target.closest && e.target.closest('button, [data-mapa-djelo]');
+      if (!d || d.getAttribute('data-ugao') === 'izbliza' || d.closest('.galerija-mapa__prekidac')) { return; }
+      if (d === el.lupa && !S.lupa.na) { return; }
+      setTimeout(pokaziSalu, 0);
+    });
   }
 
   if (el.pregled) {

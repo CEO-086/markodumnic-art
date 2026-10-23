@@ -8,6 +8,13 @@
 (function () {
   'use strict';
 
+  /* Korijen sajta iz adrese ove skripte (js/base.js): „/” na domenu,
+     „/markodumnic-art/” kad je sajt u podfolderu (GitHub Pages). */
+  var korijenSajta = (function () {
+    var s = document.currentScript;
+    try { return s && s.src ? new URL('../', s.src).pathname : '/'; } catch (e) { return '/'; }
+  }());
+
   var telo = document.body;
   var tiho = window.matchMedia
     ? window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -74,9 +81,10 @@
      (crnogorski). Ako je tražena adresa pod /en/, prebaci na englesku. */
 
   (function engleski404() {
+    var put = window.location.pathname;
     if (document.body && document.body.getAttribute('data-stranica') === '404' &&
-        /^\/en(\/|$)/.test(window.location.pathname)) {
-      window.location.replace('/en/404');
+        (put === korijenSajta + 'en' || put.indexOf(korijenSajta + 'en/') === 0)) {
+      window.location.replace(korijenSajta + 'en/404');
     }
   }());
 
