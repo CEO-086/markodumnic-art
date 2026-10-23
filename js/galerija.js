@@ -2485,6 +2485,11 @@ function pokaziSavjete() {
   if (prvo) {
     try { prvo.focus({ preventScroll: true }); } catch (e) { prvo.focus(); }
   }
+  /* Na telefonu sala počinje niže na strani — prozor mora cio da se vidi */
+  const r = el.savjeti.getBoundingClientRect();
+  if (r.bottom > window.innerHeight || r.top < 0) {
+    try { el.savjeti.scrollIntoView({ block: 'nearest' }); } catch (e) { /* stari pregledači */ }
+  }
 }
 
 function zatvoriSavjete(vratiFokus) {

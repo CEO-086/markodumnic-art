@@ -1721,6 +1721,7 @@ html.galerija-izbliza-otvoreno { overflow: hidden; }
 
 @media (pointer: coarse) {
   .galerija-savjeti__sam { min-height: 44px; }
+  .galerija-panel__link { display: inline-flex; min-height: 44px; }
 }
 
 /* ---------------------------------------------------------
