@@ -9,4 +9,5 @@ Bez build koraka: HTML, CSS i JavaScript se služe takvi kakvi jesu.
   - `python3 alati/slike.py` — AVIF/WebP veličine slika radova
   - `python3 alati/teksture.py` — teksture za 3D galeriju
   - `python3 alati/fontovi.py` — fontovi sa sajta (podskup znakova)
-- `alati/`, `_headers` i ovaj README se ne objavljuju na sajtu (`.vercelignore`).
+- `izvorne-fotografije/` — originalne fotografije svih 13 radova u punoj rezoluciji (spisak u `izvorne-fotografije/README.md`).
+- `alati/`, `izvorne-fotografije/`, `_headers` i ovaj README se ne objavljuju na sajtu (`.vercelignore`).
