@@ -1,6 +1,8 @@
 # Izvorne fotografije radova
 
 Originalne fotografije slika, u punoj rezoluciji, onakve kakve su stigle od autora (fajlovi nijesu mijenjani, samo preimenovani po radu).
+
+**Same fotografije nijesu u repou** (repo je javan). Čuvaju se na autorovom Mac-u (`~/Desktop/dumic`) i u fajlovima projekta; za alate ih stavi ovdje lokalno pod imenima iz tabele (`.gitignore` ih ne pušta u repo).
 Ovo je samo baza: sajt ove fajlove nikad ne učitava. Koristi web verzije napravljene od njih u `img/radovi/`, `img/radovi/w/`, `img/reljef/` i `img/sala/`.
 Za novo djelo stavi original ovdje kao `<id>.jpg` i pokreni redom `python3 alati/izvorne.py`, `python3 alati/slike.py` i `python3 alati/teksture.py`.
 
