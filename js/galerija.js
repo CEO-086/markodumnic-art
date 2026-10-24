@@ -63,7 +63,8 @@ const TEKST = EN ? {
   djeloBr: function (i) { return 'Work ' + i; },
   idiDo: 'Go to the work: ',
   sakrijMapu: 'Hide the floor plan', prikaziMapu: 'Show the floor plan',
-  crtez: 'Drawing', ulje: 'Oil painting'
+  crtez: 'Drawing', ulje: 'Oil painting',
+  karticaVise: 'Show the details of the work', karticaManje: 'Hide the details of the work'
 } : {
   izbliza: 'Izbliza: ', djelo: 'djelo', zatvori: 'Zatvori',
   savjetPuna: 'Prevucite ili koristite strelice za kretanje po slici · klik ili Enter vraća cijelu sliku',
@@ -86,7 +87,8 @@ const TEKST = EN ? {
   djeloBr: function (i) { return 'Djelo ' + i; },
   idiDo: 'Idi do djela: ',
   sakrijMapu: 'Sakrij mapu sale', prikaziMapu: 'Prikaži mapu sale',
-  crtez: 'Crtež', ulje: 'Ulje'
+  crtez: 'Crtež', ulje: 'Ulje',
+  karticaVise: 'Prikaži podatke o djelu', karticaManje: 'Sakrij podatke o djelu'
 };
 
 /* ---------------------------------------------------------
@@ -2153,8 +2155,9 @@ function pokreni(djela) {
   osvjeziDugmeTure();
   uvod();
   petlja();
-  /* Prvi ulazak: kratko uputstvo u tri sličice */
-  if (citaj(KLJUC_SAVJETA) !== 'da') { pokaziSavjete(); return; }
+  /* Svaki ulazak, na svakom uređaju: kratko uputstvo u tri sličice i
+     pitanje „sa vodičem ili sam“. Fokus tada ide na prvo dugme u njemu. */
+  if (el.savjeti) { pokaziSavjete(); return; }
 
   /* Fokus na platno: tipke rade odmah, bez Taba i bez klika.
      preventScroll — inače pregledač skoči na salu i otme mjesto čitanja. */
@@ -2184,7 +2187,7 @@ function mjeri() {
 }
 
 /* ---------------------------------------------------------
-   Vođena tura, mapa sale, savjeti pri prvom ulasku
+   Vođena tura, mapa sale, savjeti pri svakom ulasku
    --------------------------------------------------------- */
 
 /* VOĐENA TURA: kamera sama ide od djela do djela (i kroz prolaz u
@@ -2194,9 +2197,6 @@ function mjeri() {
    ima prednost — a dugme je nastavlja od djela pred kojim stoji. */
 const TURA = { zadrziMin: 7000, zadrziMax: 13000, poRijeci: 120, kruzenje: 6 * Math.PI / 180, primicanje: 0.07 };
 
-/* Ključ za „savjeti su već viđeni“ — samo pogodnost, bez nje se savjeti
-   pokažu ponovo, ništa se ne kvari. */
-const KLJUC_SAVJETA = 'dumnic-galerija-savjeti-v1';
 const KLJUC_MAPE = 'dumnic-galerija-mapa';
 
 function citaj(kljuc) {
@@ -2462,7 +2462,7 @@ function osvjeziMapu() {
   }
 }
 
-/* SAVJETI: tri sličice pri prvom ulasku. Isti prozor otvara i
+/* SAVJETI: tri sličice pri svakom ulasku. Isti prozor otvara i
    dugme „?“ u gornjoj traci. */
 /* Dok su savjeti otvoreni, ostatak sale (platno, gornja traka, panel,
    traka ispod) je `inert` — ni Tab ni čitač ekrana ne odlaze iza prozora. */
@@ -2500,7 +2500,6 @@ function zatvoriSavjete(vratiFokus) {
   el.savjeti.hidden = true;
   korijen.removeAttribute('data-savjeti');
   iza(false);
-  pisi(KLJUC_SAVJETA, 'da');
   const cilj = S.savjetiPovratak && S.savjetiPovratak.isConnected ? S.savjetiPovratak : (S.render && S.render.domElement);
   S.savjetiPovratak = null;
   if (vratiFokus !== false && (vratiFokus || unutra) && cilj) {
@@ -2663,6 +2662,7 @@ function otvoriPanel(djelo) {
   el.pDimenzije.textContent = djelo.dimenzije || '—';
   el.pOpis.textContent = djelo.opis || '';
   el.pLink.setAttribute('href', 'djelo/' + encodeURIComponent(djelo.id || '') + '.html');
+  postaviKarticu(false);
   korijen.setAttribute('data-panel', 'otvoren');
   /* Petlja se namjerno NE pauzira dok je panel otvoren — sala ostaje živa iza njega. */
 }
@@ -2685,6 +2685,70 @@ function zatvoriPanel(vratiFokus) {
 
 function panelOtvoren() {
   return korijen.getAttribute('data-panel') === 'otvoren';
+}
+
+/* Kartica djela na uspravnom telefonu (panel odozdo): svako novo djelo
+   je otvara SKLOPLJENU — vide se serija i naziv, a slika ostaje
+   slobodna. Strelica, dodir na naziv ili prevlačenje nagore je
+   izvlači. Na ostalim ekranima panel je sa strane i CSS ovo stanje
+   ne koristi (strelica se tamo ni ne prikazuje). */
+function postaviKarticu(puna) {
+  korijen.setAttribute('data-kartica', puna ? 'puna' : 'sklopljena');
+  if (el.panelVise) {
+    el.panelVise.setAttribute('aria-expanded', puna ? 'true' : 'false');
+    el.panelVise.lastChild.textContent = puna ? TEKST.karticaManje : TEKST.karticaVise;
+  }
+  if (!puna && el.panel) { el.panel.scrollTop = 0; }
+}
+
+function karticaPuna() {
+  return korijen.getAttribute('data-kartica') === 'puna';
+}
+
+/* Da li je panel sada kartica odozdo — strelica postoji samo tada */
+function karticaSeSklapa() {
+  return !!(el.panelVise && el.panelVise.getClientRects().length);
+}
+
+function pripremiKarticu() {
+  if (!el.panel || !el.panelZatvori) { return; }
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'galerija-panel__vise';
+  b.setAttribute('aria-controls', 'galerija-panel');
+  b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6" /></svg>' +
+    '<span class="vizuelno-skriveno"></span>';
+  el.panelZatvori.insertAdjacentElement('afterend', b);
+  el.panelVise = b;
+  /* Dodir na tekst panela bi fokus spustio na <body>, a fokusIzasao to
+     čita kao odlazak iz sale i zatvara panel. Panel zato prima fokus sam
+     (tabindex -1: klikom da, Tabom ne). */
+  el.panel.setAttribute('tabindex', '-1');
+  postaviKarticu(false);
+  b.addEventListener('click', function () { postaviKarticu(!karticaPuna()); });
+
+  /* Dodir bilo gdje na sklopljenoj kartici je izvlači; na punoj, dodir
+     na seriju ili naziv je vraća. Dugmad i veza rade svoje. */
+  el.panel.addEventListener('click', function (e) {
+    if (!karticaSeSklapa() || (e.target.closest && e.target.closest('a, button'))) { return; }
+    if (!karticaPuna()) { postaviKarticu(true); }
+    else if (e.target.closest('.galerija-panel__oznaka, .galerija-panel__naziv')) { postaviKarticu(false); }
+  });
+
+  /* Prevlačenje: nagore izvlači, nadolje sklapa — ali samo kad tekst
+     u kartici nije odskrolovan, da skrol opisa ne sklopi karticu. */
+  let dodir = null;
+  el.panel.addEventListener('touchstart', function (e) {
+    dodir = e.touches.length === 1 && karticaSeSklapa()
+      ? { y: e.touches[0].clientY, vrh: el.panel.scrollTop } : null;
+  }, { passive: true });
+  el.panel.addEventListener('touchend', function (e) {
+    if (!dodir || !e.changedTouches.length) { dodir = null; return; }
+    const dy = e.changedTouches[0].clientY - dodir.y;
+    if (dy < -30 && !karticaPuna()) { postaviKarticu(true); }
+    else if (dy > 30 && karticaPuna() && dodir.vrh <= 0) { postaviKarticu(false); }
+    dodir = null;
+  }, { passive: true });
 }
 
 /* Raycaster: koje je djelo pod pokazivačem.
@@ -3138,7 +3202,7 @@ function vezi() {
      panelu) znači da posjetilac preuzima — obilazak staje. */
   slusaj(korijen, 'click', function (e) {
     const b = e.target.closest && e.target.closest('button');
-    if (!b || b === el.tura || (el.savjeti && el.savjeti.contains(b)) || b.classList.contains('galerija-mapa__prekidac')) { return; }
+    if (!b || b === el.tura || b === el.panelVise || (el.savjeti && el.savjeti.contains(b)) || b.classList.contains('galerija-mapa__prekidac')) { return; }
     pauzirajTuru();
   }, true);
   slusaj(document, 'visibilitychange', function () { if (document.hidden) { pauzirajTuru(); } });
@@ -3314,6 +3378,7 @@ if (korijen) {
   if (el.panelZatvori) {
     el.panelZatvori.addEventListener('click', function () { naPregled(true); });
   }
+  pripremiKarticu();
 
   /* FPS brojač se može isključiti */
   if (el.fpsPrekidac) {

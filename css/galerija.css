@@ -482,6 +482,10 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   visibility: visible;
 }
 
+/* Panel prima fokus na klik (vidi js/galerija.js), ali nije stanica za
+   Tab — okvir fokusa oko cijelog panela bi samo smetao. */
+.galerija-panel:focus { outline: none; }
+
 .galerija-panel__zatvori {
   appearance: none;
   position: absolute;
@@ -506,6 +510,10 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
+
+/* Strelica koja izvlači i sklapa karticu — postoji samo na uspravnom
+   telefonu, gdje je panel odozdo (upit niže). Pravi je js/galerija.js. */
+.galerija-panel__vise { display: none; }
 
 .galerija-panel__oznaka {
   margin: 0 0 var(--s-2);
@@ -890,6 +898,113 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
     min-width: 44px;
     padding: var(--s-3);
   }
+}
+
+/* Uspravni telefon: kartica djela odozdo je SKLOPLJENA — vide se samo
+   serija i naziv, a slika ostaje slobodna. Strelica, dodir na karticu
+   ili prevlačenje nagore je izvlači (js/galerija.js, data-kartica).
+   Visinu kartice nosi --visina-panela, pa je platno, HUD i poruka
+   prate same. Položen telefon ima panel sa strane i ovo ga ne dira. */
+@media (max-width: 720px) and (orientation: portrait),
+       (max-width: 720px) and (min-height: 501px) {
+  .galerija { --visina-trake: 5.25rem; }
+  .galerija[data-kartica="sklopljena"] { --visina-panela: var(--visina-trake); }
+  .galerija[data-kartica="puna"]       { --visina-panela: 55%; }
+
+  .galerija-panel {
+    padding-top: var(--s-4);
+    overflow: hidden;
+    touch-action: none;        /* prevlačenje pomjera karticu, ne stranicu */
+    transition: transform var(--dur) var(--ease), visibility var(--dur) var(--ease),
+                height var(--dur) var(--ease);
+  }
+  .galerija[data-kartica="sklopljena"] .galerija-panel { cursor: pointer; }
+  .galerija[data-kartica="puna"] .galerija-panel {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;       /* opis se skroluje prstom */
+  }
+
+  /* Ručica na vrhu: znak da se kartica vuče */
+  .galerija-panel::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    width: 2.5rem;
+    height: 4px;
+    margin-left: -1.25rem;
+    border-radius: 2px;
+    background-color: var(--rule-strong);
+  }
+
+  /* Desno dvije mete od 44px: strelica pa ×. Serija i naziv staju u
+     jedan red, sa „…“ ako su duži. */
+  .galerija-panel__zatvori { inset: var(--s-3) var(--s-3) auto auto; }
+  .galerija-panel__vise {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: var(--s-3) calc(var(--s-3) + 44px + var(--s-2)) auto auto;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background-color: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .galerija-panel__vise:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .galerija-panel__vise svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform var(--dur) var(--ease);
+  }
+  .galerija-panel__vise[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+  .galerija-panel__oznaka,
+  .galerija-panel__naziv {
+    padding-right: calc(88px + var(--s-3));
+  }
+  .galerija-panel__naziv { max-width: none; }
+  .galerija-panel__oznaka {
+    margin-bottom: var(--s-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .galerija[data-kartica="sklopljena"] .galerija-panel__naziv {
+    margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Sklopljena: podaci, opis i veza su ispod ivice — i nevidljivi,
+     da do njih ne dođe ni Tab ni čitač ekrana dok se ne izvuku. */
+  .galerija[data-kartica="sklopljena"] .galerija-panel__meta,
+  .galerija[data-kartica="sklopljena"] .galerija-panel__opis,
+  .galerija[data-kartica="sklopljena"] .galerija-panel__link,
+  .galerija[data-kartica="sklopljena"] .galerija-panel__napomena {
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 720px) and (orientation: portrait) and (prefers-reduced-motion: reduce),
+       (max-width: 720px) and (min-height: 501px) and (prefers-reduced-motion: reduce) {
+  .galerija-panel,
+  .galerija-panel__vise svg { transition: none; }
 }
 
 /* Vrlo uski ekrani (do 380px): gap i padding se skupljaju da trake ne
@@ -1429,7 +1544,7 @@ html.galerija-izbliza-otvoreno { overflow: hidden; }
 .galerija:not([data-stanje="soba"]) .galerija-poruka { display: none; }
 .galerija[data-panel="otvoren"] .galerija-poruka { left: calc((100% - var(--sirina-panela)) / 2); }
 
-/* Savjeti pri prvom ulasku */
+/* Savjeti pri svakom ulasku */
 .galerija-savjeti {
   position: absolute;
   inset: 0;
