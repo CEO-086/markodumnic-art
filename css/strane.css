@@ -1,6 +1,7 @@
 /* =========================================================
    Marko Dumnić — strane.css
-   Stilovi za o-autoru.html i kontakt.html.
+   Stilovi za o-autoru.html i kontakt.html (forma i podaci za kontakt su
+   u css/kontakt.css, jer ih ima i početna strana).
    Samo tokeni iz css/tokens.css — bez novih boja i bez hex kodova.
    ========================================================= */
 
@@ -409,312 +410,15 @@
 
 
 /* =========================================================
-   KONTAKT — raspored
-   ========================================================= */
-
-.kontakt-raspored {
-  display: grid;
-  gap: var(--s-8);
-  align-items: start;
-}
-
-@media (min-width: 900px) {
-  .kontakt-raspored {
-    grid-template-columns: minmax(0, 1.5fr) minmax(16rem, 1fr);
-    gap: var(--s-9);
-  }
-}
-
-.kontakt-forma {
-  min-width: 0;
-}
-
-
-/* === Linija "Upit za djelo: ..." === */
-
-.upit-djelo {
-  max-width: var(--measure);
-  margin: 0 0 var(--s-5);
-  padding: var(--s-3) var(--s-4);
-  border-left: 2px solid var(--accent);
-  background: var(--paper-warm);
-  font-family: var(--font-display);
-  font-size: var(--t-base);
-  line-height: var(--leading-snug);
-  color: var(--ink);
-}
-
-.upit-djelo[hidden] {
-  display: none;
-}
-
-
-/* === Forma bez JavaScripta ===
-   Sakriveno po pravilu; <noscript> u <head> ga prikazuje i sklanja formu.
-   Tako korisnik bez JS-a ne dobije mrtvo dugme ni netačnu napomenu. */
-
-.forma-bez-js {
-  display: none;
-  max-width: var(--measure);
-  padding: var(--s-5) var(--s-5) var(--s-6);
-  border: 1px solid var(--ink-muted);
-  border-left: 2px solid var(--accent-deep);
-  border-radius: var(--radius);
-  background: var(--paper-warm);
-}
-
-.forma-bez-js__naslov {
-  margin: 0 0 var(--s-3);
-  font-family: var(--font-display);
-  font-size: var(--t-md);
-  line-height: var(--leading-snug);
-  color: var(--ink);
-}
-
-.forma-bez-js__tekst {
-  margin: 0;
-  font-size: var(--t-sm);
-  line-height: var(--leading-body);
-  color: var(--ink-soft);
-}
-
-/* base.css gasi tačke pravilom `ul[class]` (specifičnost 0,1,1), pa se ovdje
-   selektor mora izjednačiti po težini — otuda ul[class] u selektoru. */
-ul[class].forma-bez-js__spisak {
-  margin: var(--s-4) 0;
-  padding-left: var(--s-5);
-  list-style: disc;
-  font-size: var(--t-sm);
-  line-height: var(--leading-body);
-  color: var(--ink-soft);
-}
-
-.forma-bez-js__spisak li + li {
-  margin-top: var(--s-2);
-}
-
-/* Uvodna rečenica upućuje na formu ispod — bez JS-a forme nema, pa se
-   mijenja varijanta teksta (obje stoje u HTML-u, jedna je uvijek skrivena). */
-.uvodni-bez-js {
-  display: none;
-}
-
-
-/* === Napomene oko forme === */
-
-.napomena-forme {
-  max-width: var(--measure);
-  margin: 0 0 var(--s-6);
-  font-size: var(--t-sm);
-  line-height: var(--leading-snug);
-  color: var(--ink-soft);
-}
-
-.napomena-forme--ispod {
-  margin: var(--s-5) 0 0;
-  padding-top: var(--s-5);
-  border-top: 1px solid var(--rule);
-}
-
-
-/* =========================================================
-   KONTAKT — forma
-   Polja: bez radiusa preko 2px, pozadina --paper-warm,
-   donja linija deblja od ostalih, na fokus postaje --accent.
-   ========================================================= */
-
-.forma {
-  display: grid;
-  gap: var(--s-6);
-  max-width: var(--measure);
-}
-
-.polje {
-  display: grid;
-  gap: var(--s-2);
-}
-
-/* Labela je nosilac značenja polja — mora biti čitljiva, ne tiha. */
-.polje__oznaka {
-  color: var(--ink-soft);
-}
-
-/* Ivice polja: `--rule` (1.32:1) i `--rule-strong` (1.80:1) su prozirne
-   linije ispod praga 3:1 za kontrole. Granica polja se zato crta
-   `--ink-muted` (3.35:1 na --paper) — još uvijek vlasasta, ali vidljiva. */
-.polje__unos {
-  width: 100%;
-  padding: var(--s-3) var(--s-4);
-  background: var(--paper-warm);
-  color: var(--ink);
-  font-family: var(--font-ui);
-  font-size: var(--t-base);
-  line-height: var(--leading-snug);
-  border: 1px solid var(--ink-muted);
-  border-bottom: 2px solid var(--ink-soft);
-  border-radius: var(--radius);
-  transition: border-color var(--dur) var(--ease),
-              background-color var(--dur) var(--ease);
-}
-
-.polje__unos--tekst {
-  resize: vertical;
-  min-height: 9rem;
-  line-height: var(--leading-body);
-}
-
-/* `--ink-faint` daje 1.79:1 — nečitljivo. Placeholder nosi --ink-soft,
-   ali ni tada ne smije biti jedini nosilac uputstva (zato ga i nema u HTML-u). */
-.polje__unos::placeholder {
-  color: var(--ink-soft);
-  opacity: 1;
-}
-
-.polje__unos:hover {
-  border-color: var(--ink-soft);
-  border-bottom-color: var(--ink);
-}
-
-/* Na fokus donja linija postaje tamna; `--accent` (oker) daje samo 2.42:1
-   na --paper-warm, pa ne može sam da nosi stanje fokusa. Vidljivost fokusa
-   drži outline u --focus (sijena, 4.62:1). */
-.polje__unos:focus {
-  outline: none;
-  border-color: var(--ink-soft);
-  border-bottom-color: var(--ink);
-  background: var(--paper);
-}
-
-.polje__unos:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 3px;
-  border-bottom-color: var(--ink);
-}
-
-/* Polje sa greškom — debela donja linija u dubljem akcentu (4.27:1 na
-   --paper-warm, iznad 3:1 za kontrole). Boja nikad nije jedini signal:
-   uz nju ide tekstualna poruka i aria-invalid. */
-.polje__unos.je-greska {
-  border-color: var(--accent-deep);
-  border-bottom-color: var(--accent-deep);
-  border-bottom-width: 3px;
-}
-
-
-/* === Poruke o grešci === */
-
-.polje__greska {
-  max-width: var(--measure);
-  min-height: 0;
-  margin: 0;
-  font-size: var(--t-sm);
-  line-height: var(--leading-snug);
-  color: var(--accent-deep);
-}
-
-.polje__greska:empty {
-  display: none;
-}
-
-/* Prije poruke stoji sitna crtica — greška se čita i bez boje. */
-.polje__greska:not(:empty)::before {
-  content: "\2014";
-  margin-right: var(--s-2);
-}
-
-
-/* === Status forme (aria-live) === */
-
-.forma__status {
-  max-width: var(--measure);
-  font-size: var(--t-sm);
-  line-height: var(--leading-snug);
-  color: var(--ink-soft);
-}
-
-.forma__status:empty {
-  display: none;
-}
-
-.forma__status:not(:empty) {
-  padding: var(--s-3) var(--s-4);
-  border-left: 2px solid var(--ink-soft);
-  background: var(--paper-warm);
-}
-
-.forma__status--greska:not(:empty) {
-  border-left-color: var(--accent-deep);
-  color: var(--ink);
-}
-
-.forma__dno {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-4);
-  align-items: center;
-}
-
-
-/* =========================================================
-   KONTAKT — blok sa podacima
-   ========================================================= */
-
-.kontakt-podaci {
-  display: grid;
-  gap: var(--s-6);
-  padding-top: var(--s-5);
-  border-top: 1px solid var(--rule-strong);
-}
-
-.podatak {
-  display: grid;
-  gap: var(--s-2);
-}
-
-.podatak__vrijednost {
-  max-width: 32ch;
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--t-md);
-  line-height: var(--leading-snug);
-  color: var(--ink);
-}
-
-/* Podatak koji još nije postavljen — drugi font i manji stepen, da se ne
-   čita kao tvrdnja, ali čitljive boje (--ink-muted bi dao 3.35:1). */
-.podatak__vrijednost--prazno {
-  font-family: var(--font-ui);
-  font-size: var(--t-sm);
-  line-height: var(--leading-snug);
-  font-style: italic;
-  color: var(--ink-soft);
-}
-
-@media (min-width: 900px) {
-  .kontakt-podaci {
-    position: sticky;
-    top: calc(var(--h-zaglavlje) + var(--s-6));
-  }
-}
-
-
-/* =========================================================
    ŠTAMPA
    ========================================================= */
 
 @media print {
-  .forma,
-  .napomena-forme,
-  .forma__status {
-    display: none;
-  }
-
   .prazno {
     background: none;
     border: 1px solid black;
   }
 
-  .kontakt-podaci,
   .blok,
   .spisak-motiva,
   .spisak-izlozbi,
@@ -722,22 +426,13 @@ ul[class].forma-bez-js__spisak {
     border-color: black;
   }
 
-  .kontakt-podaci {
-    position: static;
-  }
-
   .spisak-motiva__ime,
   .spisak-izlozbi__ime,
   .citat,
   .izjava__citat,
   .serija__naslov,
-  .podatak__vrijednost,
   .prazno__poruka {
     color: black;
   }
 
-  .upit-djelo {
-    background: none;
-    border-left: 2px solid black;
-  }
 }

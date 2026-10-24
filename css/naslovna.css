@@ -360,6 +360,17 @@
 }
 
 /* ---------------------------------------------------------
+   7 · Kontakt — forma na dnu početne (izgled forme: css/kontakt.css)
+   --------------------------------------------------------- */
+
+.kontakt-pocetna__naslov { margin: 0; }
+
+.kontakt-pocetna .uvodni {
+  max-width: 62ch;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------
    6 · Kratko o autoru
    --------------------------------------------------------- */
 

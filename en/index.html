@@ -15,6 +15,19 @@
 <link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/base.css">
 <link rel="stylesheet" href="../css/naslovna.css">
+<link rel="stylesheet" href="../css/kontakt.css">
+<!-- Bez JavaScripta forma ne radi (nema servera): sklanja se, a ostaju
+     direktni putevi do autora. Isto kao na stranici Kontakt. -->
+<noscript>
+  <style>
+    .forma,
+    .napomena-forme--iznad,
+    .napomena-forme--ispod,
+    .uvodni-sa-js { display: none; }
+    .forma-bez-js,
+    .uvodni-bez-js { display: block; }
+  </style>
+</noscript>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -415,6 +428,128 @@
     </div>
   </section>
 
+  <!-- 7 · Kontakt — ista forma kao na stranici Kontakt (js/kontakt.js,
+       css/kontakt.css). Javno su samo e-pošta i Instagram. -->
+  <section class="sekcija kontakt-pocetna" id="kontakt" aria-labelledby="kontakt-naslov" data-pojavi>
+    <div class="omot">
+      <h2 class="naslov-2 naslov--crta kontakt-pocetna__naslov" id="kontakt-naslov">Contact</h2>
+      <p class="uvodni uvodni-sa-js mt-6">
+        For enquiries about purchasing works, exhibitions and collaborations. You can
+        compose a message below, write directly by email or get in touch on Instagram.
+      </p>
+      <p class="uvodni uvodni-bez-js mt-6">
+        For enquiries about purchasing works, exhibitions and collaborations. Please
+        get in touch by email or on Instagram.
+      </p>
+
+      <div class="kontakt-raspored mt-7">
+
+        <!-- ===== Forma ===== -->
+        <div class="kontakt-forma">
+
+          <!-- Red koji se pojavljuje kad korisnik dođe sa stranice djela (?djelo=id). -->
+          <p class="upit-djelo" id="upit-djelo" hidden></p>
+
+          <!-- Vidi se SAMO bez JavaScripta (uključuje ga <noscript> u <head>). -->
+          <div class="forma-bez-js">
+            <p class="forma-bez-js__naslov">The form requires JavaScript</p>
+            <p class="forma-bez-js__tekst">
+              The site has no server to receive messages — the form is put together by
+              a script in your browser, so it cannot work without JavaScript. Please
+              get in touch directly:
+            </p>
+            <ul class="forma-bez-js__spisak">
+              <li>
+                a message on Instagram —
+                <a href="https://www.instagram.com/marko.mapko/" rel="noopener">@marko.mapko</a>
+              </li>
+              <li>
+                by email — <a href="mailto:mfnlulu@gmail.com">mfnlulu@gmail.com</a>
+              </li>
+            </ul>
+            <p class="forma-bez-js__tekst">
+              Or enable JavaScript and reload the page.
+            </p>
+          </div>
+
+          <!-- Forma je statička: nema backend, zato je `action` prazan,
+               a slanje preuzima skripta na dnu strane (mailto). -->
+          <form class="forma" id="forma-kontakt" action="" method="post" novalidate>
+
+            <!-- Popunjava skripta iz ?djelo= parametra; korisnik ga ne dira. -->
+            <input type="hidden" name="djelo" id="polje-djelo" value="">
+
+            <div class="polje">
+              <label class="oznaka oznaka--gola polje__oznaka" for="ime">Full name</label>
+              <input class="polje__unos" type="text" id="ime" name="ime"
+                     autocomplete="name" required
+                     aria-describedby="greska-ime">
+              <p class="polje__greska" id="greska-ime"></p>
+            </div>
+
+            <div class="polje">
+              <label class="oznaka oznaka--gola polje__oznaka" for="eposta">Email</label>
+              <input class="polje__unos" type="email" id="eposta" name="eposta"
+                     autocomplete="email" required
+                     aria-describedby="greska-eposta">
+              <p class="polje__greska" id="greska-eposta"></p>
+            </div>
+
+            <div class="polje">
+              <label class="oznaka oznaka--gola polje__oznaka" for="poruka">Message</label>
+              <textarea class="polje__unos polje__unos--tekst" id="poruka" name="poruka"
+                        rows="7" required
+                        aria-describedby="greska-poruka"></textarea>
+              <p class="polje__greska" id="greska-poruka"></p>
+            </div>
+
+            <!-- Skupna poruka o greškama / potvrdi. Čita je čitač ekrana. -->
+            <div class="forma__status" id="status-forme" role="status" aria-live="polite"></div>
+
+            <div class="forma__dno">
+              <button class="dugme dugme--puno" type="submit">Compose message</button>
+            </div>
+          </form>
+
+          <p class="napomena-forme napomena-forme--ispod">
+            The form is not connected to a server, so the message does not leave the
+            site — the button simply opens your email application. If you do not have
+            one set up, please write directly to
+            <a href="mailto:mfnlulu@gmail.com">mfnlulu@gmail.com</a>.
+          </p>
+        </div>
+
+        <!-- ===== Podaci ===== -->
+        <aside class="kontakt-podaci" aria-label="Contact details">
+          <div class="podatak">
+            <p class="oznaka oznaka--gola">Instagram</p>
+            <p class="podatak__vrijednost">
+              <a href="https://www.instagram.com/marko.mapko/" rel="noopener">@marko.mapko</a>
+            </p>
+          </div>
+
+          <div class="podatak">
+            <p class="oznaka oznaka--gola">Email</p>
+            <!-- Ista adresa stoji i u konstanti ADRESA u js/kontakt.js —
+                 kad se mijenja, mijenja se na oba mjesta (i u ../kontakt.html). -->
+            <p class="podatak__vrijednost">
+              <a href="mailto:mfnlulu@gmail.com">mfnlulu@gmail.com</a>
+            </p>
+          </div>
+
+          <div class="podatak">
+            <p class="oznaka oznaka--gola">Lives and works</p>
+            <p class="podatak__vrijednost">Cetinje · Lavis (Trento)</p>
+          </div>
+
+          <!-- Namjerno samo gradovi: adresa ateljea, telefon i WhatsApp se
+               ne objavljuju na sajtu. -->
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
 
 </main>
 
@@ -443,5 +578,6 @@
 </footer>
 
 <script src="../js/base.js"></script>
+<script src="../js/kontakt.js"></script>
 </body>
 </html>
