@@ -839,6 +839,25 @@ figcaption {
   color: var(--ink-muted);
 }
 
+/* „Powered by“ — drugi red potpisa, tiši od imena, veza čitljiva */
+.podnozje__pokrece {
+  display: block;
+  margin-top: var(--s-1);
+}
+
+.podnozje__pokrece a {
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 2px;
+}
+
+.podnozje__pokrece a:hover,
+.podnozje__pokrece a:focus-visible {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+}
+
 @media (min-width: 820px) {
   .podnozje__unutra {
     grid-template-columns: repeat(3, minmax(0, 1fr));
