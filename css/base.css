@@ -768,12 +768,13 @@ figcaption {
 }
 
 .podnozje__znak img {
-  width: 96px;
-  height: auto;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius);
 }
 
 @media (min-width: 820px) {
-  .podnozje__znak img { width: 120px; }
+  .podnozje__znak img { width: 80px; height: 80px; }
 }
 
 .podnozje__blok {
