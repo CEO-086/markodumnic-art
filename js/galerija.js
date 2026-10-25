@@ -64,7 +64,9 @@ const TEKST = EN ? {
   idiDo: 'Go to the work: ',
   sakrijMapu: 'Hide the floor plan', prikaziMapu: 'Show the floor plan',
   crtez: 'Drawing', ulje: 'Oil painting',
-  karticaVise: 'Show the details of the work', karticaManje: 'Hide the details of the work'
+  karticaVise: 'Show the details of the work', karticaManje: 'Hide the details of the work',
+  opcije: 'Options', iliDodir: 'or tap a painting', oDjelu: 'About the work',
+  cistoSavjet: 'Tap the painting to hide the buttons', cistoNazad: 'Tap the painting again for the buttons'
 } : {
   izbliza: 'Izbliza: ', djelo: 'djelo', zatvori: 'Zatvori',
   savjetPuna: 'Prevucite ili koristite strelice za kretanje po slici · klik ili Enter vraća cijelu sliku',
@@ -88,7 +90,9 @@ const TEKST = EN ? {
   idiDo: 'Idi do djela: ',
   sakrijMapu: 'Sakrij mapu sale', prikaziMapu: 'Prikaži mapu sale',
   crtez: 'Crtež', ulje: 'Ulje',
-  karticaVise: 'Prikaži podatke o djelu', karticaManje: 'Sakrij podatke o djelu'
+  karticaVise: 'Prikaži podatke o djelu', karticaManje: 'Sakrij podatke o djelu',
+  opcije: 'Opcije', iliDodir: 'ili dodirnite sliku', oDjelu: 'O djelu',
+  cistoSavjet: 'Dodir na sliku sakriva dugmad', cistoNazad: 'Dodirnite sliku da vratite dugmad'
 };
 
 /* ---------------------------------------------------------
@@ -367,6 +371,7 @@ const S = {
 /* Postavlja stanje prikaza: 'ulaz' | 'ucitavanje' | 'soba' | '2d' */
 function stanje(novo) {
   korijen.setAttribute('data-stanje', novo);
+  osvjeziUronjeno();
 }
 
 /* Prelazak na 2D mrežu, sa razlogom koji CSS otkriva.
@@ -1992,6 +1997,7 @@ function izaberi(i) {
   postaviLupu(false);
   korijen.setAttribute('data-izabrano', 'da');
   otvoriPanel(S.mjesta[k].djelo);
+  savjetCisto();
   najavi(S.mjesta[k].djelo);
   osvjeziKretanje();
 }
@@ -2015,6 +2021,7 @@ function naPregled(vratiFokus) {
   postaviBocno(false);
   postaviLupu(false);
   korijen.removeAttribute('data-izabrano');
+  korijen.removeAttribute('data-cisto');
   const c = pozicijaPregleda();
   kreniKa(c.poz, c.cilj);
   zatvoriPanel(vratiFokus);
@@ -2069,6 +2076,7 @@ function osvjeziKretanje() {
     el.sala.textContent = S.sala === 2 ? TEKST.salaNazad : TEKST.salaDruga;
     el.sala.hidden = !S.mjesta.some(function (m) { return m.soba === 2; });
   }
+  osvjeziMob();
 }
 
 /* ---------------------------------------------------------
@@ -2227,11 +2235,13 @@ function osvjeziDugmeTure() {
     el.tura.setAttribute('aria-pressed', 'false');
     el.tura.style.setProperty('--napredak', '0');
     korijen.removeAttribute('data-tura');
+    osvjeziMob();
     return;
   }
   tekst.textContent = (t.pauza ? TEKST.nastavi : TEKST.pauza) + ' · ' + Math.min(n, t.korak + 1) + '/' + n;
   el.tura.setAttribute('aria-pressed', t.pauza ? 'false' : 'true');
   korijen.setAttribute('data-tura', t.pauza ? 'pauza' : 'radi');
+  osvjeziMob();
 }
 
 function trajanjeZadrzavanja(djelo) {
@@ -2751,6 +2761,194 @@ function pripremiKarticu() {
   }, { passive: true });
 }
 
+/* ---------------------------------------------------------
+   TELEFON: sala preko cijelog ekrana, slika u centru
+   Na uskom ekranu (i na položenom telefonu) sala čim se uđe prekrije
+   cijeli ekran, a dugmad su svedena na dvije tanke trake preko kadra:
+   gore „Izađi“ i „?“, dolje ◀ naziv ▶ i „Opcije“. Sve ostalo (obilazak,
+   pregled, druga sala, uglovi, bočno svjetlo, lupa, mapa) je isti
+   blok .galerija-alati, samo izvučen kao list odozdo na „Opcije“.
+   Kartica djela se ne otvara sama — dodir na naziv je izvlači.
+   Dodir na izabranu sliku sakrije i trake, pa ostaje samo slika
+   (data-cisto). Nova dugmad samo okidaju postojeća, pa logika ostaje
+   na jednom mjestu.
+   --------------------------------------------------------- */
+const UZAK_EKRAN = '(max-width: 720px), (max-height: 500px) and (pointer: coarse)';
+
+function uronjeno() {
+  return document.documentElement.classList.contains('galerija-uronjena');
+}
+
+function osvjeziUronjeno() {
+  const st = korijen.getAttribute('data-stanje');
+  const da = (st === 'soba' || st === 'ucitavanje') &&
+    !!(window.matchMedia && window.matchMedia(UZAK_EKRAN).matches);
+  document.documentElement.classList.toggle('galerija-uronjena', da);
+  if (!da) {
+    postaviOpcije(false);
+    korijen.removeAttribute('data-cisto');
+  }
+}
+
+/* Fokus iz lista ili kartice koji se upravo sakriva ide na vidljivo
+   dugme u traci. Inače padne na <body>, a fokusIzasao to čita kao
+   odlazak iz sale i vraća na pregled. */
+function fokusUTraku(iz, na) {
+  if (!iz || !na || !iz.contains(document.activeElement)) { return; }
+  try { na.focus({ preventScroll: true }); } catch (e) { na.focus(); }
+}
+
+function postaviOpcije(otvori) {
+  if (otvori) { korijen.setAttribute('data-opcije', 'otvorene'); }
+  else {
+    korijen.removeAttribute('data-opcije');
+    if (el.mob) { fokusUTraku(el.alati, el.mob.opcije); }
+  }
+  if (el.mob) { el.mob.opcije.setAttribute('aria-expanded', otvori ? 'true' : 'false'); }
+}
+
+function prebaciCisto() {
+  const cisto = korijen.getAttribute('data-cisto') !== 'da';
+  if (cisto) {
+    korijen.setAttribute('data-cisto', 'da');
+    postaviOpcije(false);
+    postaviKarticu(false);
+    poruka(TEKST.cistoNazad, 2200);
+  } else {
+    korijen.removeAttribute('data-cisto');
+  }
+}
+
+/* Prvi izbor djela na telefonu, jednom po posjeti: kratko „dodir na
+   sliku sakriva dugmad“ — inače se taj pokret ne bi ni otkrio. */
+function savjetCisto() {
+  if (!uronjeno() || S.cistoRecen || S.tura) { return; }
+  S.cistoRecen = true;
+  poruka(TEKST.cistoSavjet, 2600);
+}
+
+const IKONA = {
+  lijevo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>',
+  desno: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>',
+  x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>',
+  opcije: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></svg>',
+  info: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7.5v.01" /></svg>',
+  kreni: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z" /></svg>'
+};
+
+function pripremiMob() {
+  const scena = korijen.querySelector('.galerija-scena');
+  if (!scena || !el.alati) { return; }
+  const tekstOd = function (b, rezerva) {
+    const s = b && b.querySelector('.vizuelno-skriveno');
+    return (s && s.textContent.trim()) || (b && b.getAttribute('aria-label')) || (b && b.textContent.trim()) || rezerva;
+  };
+  const m = document.createElement('div');
+  m.className = 'galerija-mob';
+  m.innerHTML =
+    '<div class="galerija-mob__vrh">' +
+      '<button class="galerija-mob__dugme galerija-mob__izadji" type="button" data-mob="izadji">' + IKONA.x + '<span></span></button>' +
+      '<span class="galerija-mob__gdje"></span>' +
+      '<button class="galerija-mob__dugme galerija-mob__krug" type="button" data-mob="pomoc">?</button>' +
+    '</div>' +
+    '<div class="galerija-mob__dno">' +
+      '<button class="galerija-mob__tura" type="button" data-mob="tura" hidden></button>' +
+      '<div class="galerija-mob__red">' +
+        '<button class="galerija-mob__dugme galerija-mob__strelica" type="button" data-mob="prethodni">' + IKONA.lijevo + '</button>' +
+        '<button class="galerija-mob__natpis" type="button" data-mob="natpis">' +
+          '<span class="galerija-mob__kreni">' + IKONA.kreni + '</span>' +
+          '<span class="galerija-mob__tekst"><span class="galerija-mob__naziv"></span><span class="galerija-mob__meta"></span></span>' +
+          '<span class="galerija-mob__info">' + IKONA.info + '</span>' +
+        '</button>' +
+        '<button class="galerija-mob__dugme galerija-mob__strelica" type="button" data-mob="sljedeci">' + IKONA.desno + '</button>' +
+        '<button class="galerija-mob__dugme galerija-mob__opcije" type="button" data-mob="opcije" aria-expanded="false" aria-controls="galerija-alati">' + IKONA.opcije + '</button>' +
+      '</div>' +
+    '</div>' +
+    '<button class="galerija-mob__zastor" type="button" data-mob="zastor" tabindex="-1" aria-hidden="true"></button>';
+  scena.appendChild(m);
+
+  const d = function (ime) { return m.querySelector('[data-mob="' + ime + '"]'); };
+  el.mob = {
+    korijen: m,
+    gdje: m.querySelector('.galerija-mob__gdje'),
+    natpis: d('natpis'),
+    naziv: m.querySelector('.galerija-mob__naziv'),
+    meta: m.querySelector('.galerija-mob__meta'),
+    tura: d('tura'),
+    opcije: d('opcije')
+  };
+  d('izadji').lastChild.textContent = (el.izadji && el.izadji.textContent.trim()) || TEKST.zatvori;
+  d('pomoc').setAttribute('aria-label', tekstOd(el.pomoc, '?'));
+  d('prethodni').setAttribute('aria-label', tekstOd(el.prethodni, '◀'));
+  d('sljedeci').setAttribute('aria-label', tekstOd(el.sljedeci, '▶'));
+  el.mob.opcije.setAttribute('aria-label', TEKST.opcije);
+
+  /* Nova dugmad okidaju postojeća — ista logika, isto pauziranje ture */
+  const okini = function (b) { return function () { if (b) { b.click(); } }; };
+  d('izadji').addEventListener('click', okini(el.izadji));
+  d('pomoc').addEventListener('click', okini(el.pomoc));
+  d('prethodni').addEventListener('click', okini(el.prethodni));
+  d('sljedeci').addEventListener('click', okini(el.sljedeci));
+  el.mob.tura.addEventListener('click', okini(el.tura));
+  el.mob.natpis.addEventListener('click', function () {
+    if (S.izabrano >= 0) { postaviKarticu(!karticaPuna()); }
+    else if (el.tura) { el.tura.click(); }
+  });
+  el.mob.opcije.addEventListener('click', function () {
+    postaviKarticu(false);
+    postaviOpcije(korijen.getAttribute('data-opcije') !== 'otvorene');
+  });
+  d('zastor').addEventListener('click', function () { postaviOpcije(false); });
+
+  /* Glava lista „Opcije“: naslov i ×. Na većim ekranima je skrivena. */
+  const glava = document.createElement('div');
+  glava.className = 'galerija-alati__glava';
+  glava.innerHTML = '<span class="galerija-alati__naslov"></span>' +
+    '<button class="galerija-mob__dugme galerija-mob__krug" type="button" data-mob="zatvori-opcije">' + IKONA.x + '</button>';
+  glava.firstChild.textContent = TEKST.opcije;
+  glava.lastChild.setAttribute('aria-label', TEKST.zatvori);
+  glava.lastChild.addEventListener('click', function () { postaviOpcije(false); });
+  el.alati.insertBefore(glava, el.alati.firstChild);
+  /* Izbor u listu ga zatvara — posjetilac odmah vidi šta je uradio */
+  el.alati.addEventListener('click', function (e) {
+    if (!uronjeno() || !e.target.closest) { return; }
+    const b = e.target.closest('button, [data-mapa-djelo]');
+    if (b && !b.hasAttribute('data-mob')) { postaviOpcije(false); }
+  });
+
+  if (window.matchMedia) {
+    const mq = window.matchMedia(UZAK_EKRAN);
+    const promjena = function () { osvjeziUronjeno(); };
+    if (mq.addEventListener) { mq.addEventListener('change', promjena); }
+    else if (mq.addListener) { mq.addListener(promjena); }
+  }
+  osvjeziMob();
+}
+
+function osvjeziMob() {
+  const m = el.mob;
+  if (!m) { return; }
+  const n = S.mjesta.length;
+  const tura = el.tura && (el.tura.querySelector('.galerija-tura__tekst') || el.tura).textContent;
+  m.gdje.textContent = S.sala === 2 ? TEKST.sala2 : TEKST.sala1;
+  const djelo = S.izabrano >= 0 && S.mjesta[S.izabrano] ? S.mjesta[S.izabrano].djelo : null;
+  if (djelo) {
+    m.naziv.textContent = djelo.naziv || '—';
+    m.meta.textContent = [djelo.godina, (S.izabrano + 1) + ' / ' + n]
+      .filter(function (v) { return v != null && v !== ''; }).join(' · ');
+    m.natpis.setAttribute('aria-label', (djelo.naziv || '') + ' — ' + TEKST.oDjelu);
+    m.natpis.setAttribute('aria-controls', 'galerija-panel');
+  } else {
+    m.naziv.textContent = tura || TEKST.tura;
+    m.meta.textContent = TEKST.iliDodir;
+    m.natpis.removeAttribute('aria-label');
+    m.natpis.removeAttribute('aria-controls');
+  }
+  m.tura.hidden = !(S.tura && djelo);
+  if (S.tura && djelo) { m.tura.textContent = tura; }
+  m.tura.setAttribute('aria-pressed', S.tura && !S.tura.pauza ? 'true' : 'false');
+}
+
 /* Raycaster: koje je djelo pod pokazivačem.
    Gleda SAMO S.platna — odrazi u podu nisu u tom nizu, pa klik
    na odraz ne otvara ništa. */
@@ -3035,6 +3233,10 @@ function pokazivacGore(e) {
     return;
   }   /* prevlačenje, ne klik */
   const i = pogodak(e.clientX, e.clientY);
+  if (i >= 0 && i === S.izabrano && uronjeno()) {
+    prebaciCisto();
+    return;
+  }
   if (i >= 0) {
     izaberi(i);
     return;
@@ -3202,7 +3404,7 @@ function vezi() {
      panelu) znači da posjetilac preuzima — obilazak staje. */
   slusaj(korijen, 'click', function (e) {
     const b = e.target.closest && e.target.closest('button');
-    if (!b || b === el.tura || b === el.panelVise || (el.savjeti && el.savjeti.contains(b)) || b.classList.contains('galerija-mapa__prekidac')) { return; }
+    if (!b || b === el.tura || b === el.panelVise || b.hasAttribute('data-mob') || (el.savjeti && el.savjeti.contains(b)) || b.classList.contains('galerija-mapa__prekidac')) { return; }
     pauzirajTuru();
   }, true);
   slusaj(document, 'visibilitychange', function () { if (document.hidden) { pauzirajTuru(); } });
@@ -3239,6 +3441,8 @@ function izadji() {
   zatvoriIzbliza();
   zavrsiTuru(true);
   zatvoriSavjete(false);
+  postaviOpcije(false);
+  korijen.removeAttribute('data-cisto');
   if (el.mapa) { el.mapa.textContent = ''; }
   S.mapaJa = null;
   S.mapaTacke = [];
@@ -3376,9 +3580,17 @@ if (korijen) {
      Zatvaranje panela vraća i kameru na pregled — panel i izabrano
      djelo su jedno stanje, ne dva. */
   if (el.panelZatvori) {
-    el.panelZatvori.addEventListener('click', function () { naPregled(true); });
+    el.panelZatvori.addEventListener('click', function () {
+      if (uronjeno()) {
+        if (el.mob) { fokusUTraku(el.panel, el.mob.natpis); }
+        postaviKarticu(false);
+        return;
+      }
+      naPregled(true);
+    });
   }
   pripremiKarticu();
+  pripremiMob();
 
   /* FPS brojač se može isključiti */
   if (el.fpsPrekidac) {

@@ -1879,3 +1879,369 @@ html.galerija-izbliza-otvoreno { overflow: hidden; }
     border-color: HighlightText;
   }
 }
+
+/* ---------------------------------------------------------
+   TELEFON: sala preko cijelog ekrana, slika u centru
+   html.galerija-uronjena postavlja js/galerija.js (osvjeziUronjeno)
+   dok je sala otvorena na uskom ekranu ili položenom telefonu. Sala
+   tada pokrije cijeli ekran (zaglavlje i stranica ostaju ispod), a od
+   dugmadi ostaju dvije tanke, providne trake preko kadra. Sve ostale
+   opcije su ista .galerija-alati traka, ovdje list odozdo na „Opcije“.
+   Pravila su namjerno pod html.galerija-uronjena, pa pobjeđuju sve
+   ranije telefonske rasporede bez diranja u njih.
+   --------------------------------------------------------- */
+
+.galerija-mob,
+.galerija-alati__glava { display: none; }
+
+html.galerija-uronjena,
+html.galerija-uronjena body { overflow: hidden; }
+
+html.galerija-uronjena .galerija {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  z-index: 900;                 /* iznad zaglavlja, ispod prikaza Izbliza (1000) */
+  --visina-sale: 100vh;
+  background-color: #0E0C0A;
+}
+@supports (height: 100dvh) {
+  html.galerija-uronjena .galerija { --visina-sale: 100dvh; }
+}
+html.galerija-uronjena .galerija[data-stanje] { --visina-sale: 100vh; }
+@supports (height: 100dvh) {
+  html.galerija-uronjena .galerija[data-stanje] { --visina-sale: 100dvh; }
+}
+
+html.galerija-uronjena .galerija-scena {
+  height: var(--visina-sale);
+  border: 0;
+  border-radius: 0;
+}
+html.galerija-uronjena .galerija-platno canvas { border-radius: 0; }
+
+/* Stari HUD, strelica kartice i ručica su zamijenjeni trakama */
+html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-hud,
+html.galerija-uronjena .galerija-panel__vise,
+html.galerija-uronjena .galerija-panel::before { display: none; }
+
+/* Platno se ne pomjera dok je kartica sklopljena — slika stoji u sredini */
+html.galerija-uronjena .galerija[data-izabrano][data-panel="otvoren"] .galerija-platno { transform: none; }
+
+/* --- Trake preko kadra --- */
+html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-mob {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;         /* prevlačenje po kadru ide na platno */
+  color: #F3EEE4;
+  font-family: var(--font-ui);
+  transition: opacity var(--dur) var(--ease);
+}
+
+.galerija-mob__vrh,
+.galerija-mob__dno {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  pointer-events: none;
+}
+.galerija-mob__vrh {
+  top: 0;
+  justify-content: space-between;
+  background: linear-gradient(rgba(14, 12, 10, 0.55), rgba(14, 12, 10, 0));
+}
+.galerija-mob__dno {
+  bottom: 0;
+  flex-direction: column;
+  align-items: stretch;
+  padding-bottom: max(var(--s-3), env(safe-area-inset-bottom));
+  background: linear-gradient(rgba(14, 12, 10, 0), rgba(14, 12, 10, 0.6) 45%);
+}
+.galerija-mob__vrh > *,
+.galerija-mob__dno > *,
+.galerija-mob__red > * { pointer-events: auto; }
+.galerija-mob__red { display: flex; align-items: center; gap: var(--s-2); }
+
+.galerija-mob__dugme,
+.galerija-mob__natpis,
+.galerija-mob__tura {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 var(--s-3);
+  border: 1px solid rgba(243, 238, 228, 0.18);
+  border-radius: 22px;
+  background-color: rgba(21, 18, 14, 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.galerija-mob__dugme:focus-visible,
+.galerija-mob__natpis:focus-visible,
+.galerija-mob__tura:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.galerija-mob__dugme:active,
+.galerija-mob__natpis:active { background-color: rgba(21, 18, 14, 0.8); }
+
+.galerija-mob__dugme svg,
+.galerija-mob__natpis svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.galerija-mob__krug,
+.galerija-mob__strelica,
+.galerija-mob__opcije { width: 44px; padding: 0; }
+.galerija-mob__krug { font-size: 17px; }
+.galerija-mob__izadji { padding-right: var(--s-4); }
+
+.galerija-mob__gdje {
+  font-size: 11px;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: rgba(243, 238, 228, 0.75);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  pointer-events: none !important;
+}
+
+/* Natpis: naziv i godina · redni broj; dodir otvara karticu djela.
+   U pregledu sale je to dugme za obilazak. */
+.galerija-mob__natpis {
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: flex-start;
+  padding: 6px var(--s-3) 6px var(--s-4);
+  text-align: left;
+}
+.galerija-mob__tekst { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
+.galerija-mob__naziv,
+.galerija-mob__meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.galerija-mob__naziv {
+  font-family: var(--font-display, var(--font-serif, serif));
+  font-size: 17px;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+.galerija-mob__meta { font-size: 11.5px; line-height: 1.3; color: rgba(243, 238, 228, 0.7); }
+.galerija-mob__kreni,
+.galerija-mob__info { display: inline-flex; flex: none; }
+.galerija-mob__kreni svg { fill: var(--accent); stroke: none; }
+.galerija[data-izabrano] .galerija-mob__kreni,
+.galerija:not([data-izabrano]) .galerija-mob__info { display: none; }
+.galerija:not([data-izabrano]) .galerija-mob__natpis { border-color: rgba(190, 139, 60, 0.6); }
+.galerija:not([data-izabrano]) .galerija-mob__naziv {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.galerija[data-tura="radi"]:not([data-izabrano]) .galerija-mob__kreni { display: none; }
+
+/* Obilazak u toku, pred djelom: mala pilula iznad reda (pauza/nastavak) */
+.galerija-mob__tura {
+  align-self: center;
+  min-height: 36px;
+  border-color: rgba(190, 139, 60, 0.6);
+  color: var(--accent);
+  font-size: 12px;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+}
+.galerija-mob__tura[hidden] { display: none; }
+
+.galerija-mob__opcije[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }
+
+/* Samo slika: dodir na izabrano djelo sakrije trake */
+html.galerija-uronjena .galerija[data-cisto="da"] .galerija-mob { opacity: 0; }
+html.galerija-uronjena .galerija[data-cisto="da"] .galerija-mob * { pointer-events: none !important; }
+
+/* Poruke stoje iznad donje trake, ne preko nje */
+html.galerija-uronjena .galerija-poruka { bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+html.galerija-uronjena .galerija[data-panel="otvoren"] .galerija-poruka { left: 50%; }
+html.galerija-uronjena .galerija[data-cisto="da"] .galerija-poruka { bottom: var(--s-5); }
+
+/* Zastor iza lista „Opcije“: dodir pored lista ga zatvara */
+.galerija-mob__zastor {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(14, 12, 10, 0.35);
+  pointer-events: auto;
+}
+html.galerija-uronjena .galerija[data-opcije] .galerija-mob__zastor { display: block; }
+
+/* --- List „Opcije“ (ista .galerija-alati traka) --- */
+html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-alati {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 8;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--s-3) var(--s-4);
+  max-height: 75%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: var(--s-3) var(--s-4) max(var(--s-5), env(safe-area-inset-bottom));
+  border: 0;
+  border-top: 1px solid rgba(243, 238, 228, 0.16);
+  border-radius: 14px 14px 0 0;
+  background-color: #15120E;
+  transform: translateY(101%);
+  visibility: hidden;
+  transition: transform var(--dur) var(--ease), visibility var(--dur) var(--ease);
+}
+html.galerija-uronjena .galerija[data-opcije] .galerija-alati {
+  transform: translateY(0);
+  visibility: visible;
+}
+html.galerija-uronjena .galerija-alati__glava {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.galerija-alati__naslov {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.galerija-alati__glava .galerija-mob__krug { color: #F3EEE4; }
+
+/* ◀ ▶ su već u donjoj traci */
+html.galerija-uronjena .galerija-alati #galerija-prethodni,
+html.galerija-uronjena .galerija-alati #galerija-sljedeci { display: none; }
+
+html.galerija-uronjena .galerija-alati .galerija-kretanje { grid-column: 1; grid-row: 2; }
+html.galerija-uronjena .galerija-alati .galerija-mapa {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: start;
+  width: 6.5rem;
+}
+html.galerija-uronjena .galerija-alati .galerija-ugao {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+/* Naslov grupe uglova je njen aria-label — isti tekst na oba jezika */
+html.galerija-uronjena .galerija-alati .galerija-ugao::before {
+  content: attr(aria-label);
+  flex: 0 0 100%;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+html.galerija-uronjena .galerija-alati .galerija-kretanje__dugme {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+html.galerija-uronjena .galerija-alati .galerija-kretanje { flex-direction: column; align-items: stretch; }
+
+/* --- Kartica djela: skrivena dok se ne dodirne naziv --- */
+html.galerija-uronjena .galerija[data-stanje] .galerija-panel {
+  z-index: 5;
+  inset: auto 0 0 0;
+  width: 100%;
+  height: 55%;
+  padding: var(--s-5) var(--s-5) max(var(--s-6), env(safe-area-inset-bottom));
+  border-left: 0;
+  border-top: 1px solid rgba(243, 238, 228, 0.16);
+  border-radius: 14px 14px 0 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  transform: translateY(101%);
+  visibility: hidden;
+}
+html.galerija-uronjena .galerija[data-stanje][data-panel="otvoren"][data-kartica="puna"] .galerija-panel {
+  transform: translateY(0);
+  visibility: visible;
+}
+html.galerija-uronjena .galerija[data-izabrano][data-panel="otvoren"][data-kartica="puna"] .galerija-platno {
+  transform: translateY(-24%);
+}
+html.galerija-uronjena .galerija-panel__zatvori { inset: var(--s-3) var(--s-3) auto auto; }
+html.galerija-uronjena .galerija-panel__oznaka,
+html.galerija-uronjena .galerija-panel__naziv { padding-right: calc(44px + var(--s-3)); }
+html.galerija-uronjena .galerija-panel__naziv { white-space: normal; }
+
+/* Položen telefon: kartica i opcije sa desne strane, slika lijevo */
+@media (orientation: landscape) and (max-height: 500px) {
+  .galerija-mob__vrh { padding: var(--s-2) var(--s-3); }
+  .galerija-mob__dno { padding: var(--s-2) var(--s-3); }
+  .galerija-mob__red { width: min(34rem, 100%); align-self: center; }
+  html.galerija-uronjena .galerija[data-stanje] .galerija-panel {
+    inset: 0 0 0 auto;
+    width: min(24rem, 50%);
+    height: 100%;
+    border-top: 0;
+    border-left: 1px solid rgba(243, 238, 228, 0.16);
+    border-radius: 0;
+    transform: translateX(101%);
+  }
+  html.galerija-uronjena .galerija[data-stanje][data-panel="otvoren"][data-kartica="puna"] .galerija-panel { transform: translateX(0); }
+  html.galerija-uronjena .galerija[data-izabrano][data-panel="otvoren"][data-kartica="puna"] .galerija-platno {
+    transform: translateX(-25%);
+  }
+  html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-alati {
+    left: auto;
+    top: 0;
+    width: min(26rem, 60%);
+    max-height: none;
+    border-top: 0;
+    border-left: 1px solid rgba(243, 238, 228, 0.16);
+    border-radius: 0;
+    transform: translateX(101%);
+  }
+  html.galerija-uronjena .galerija[data-opcije] .galerija-alati { transform: translateX(0); }
+}
+
+html.galerija-uronjena .galerija-savjeti { z-index: 9; }
+
+@media (prefers-reduced-motion: reduce) {
+  .galerija-mob,
+  html.galerija-uronjena .galerija-alati,
+  html.galerija-uronjena .galerija-panel { transition: none !important; }
+}
