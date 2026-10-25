@@ -75,8 +75,8 @@ def obradi(rel):
     lista_ime = {'me': 'Jezik', 'en': 'Language', 'it': 'Lingua'}[jezik]
     veze = ''
     for kod, hl, lang, ime in (('me', 'sr-ME', 'sr-Latn-ME', 'Crnogorski'),
-                               ('en', 'en', 'en', 'English'),
-                               ('it', 'it', 'it', 'Italiano')):
+                               ('it', 'it', 'it', 'Italiano'),
+                               ('en', 'en', 'en', 'English')):
         veze += ('        <a class="jezik__veza" href="%s" hreflang="%s" lang="%s"%s>%s<span class="jezik__kod">%s</span><span class="jezik__ime">%s</span>%s</a>\n' % (
             href[kod], hl, lang, ' aria-current="true"' if kod == jezik else '', zastave[kod], kod.upper(), ime, kvacica))
     blok = ('<!-- jezik -->\n'
