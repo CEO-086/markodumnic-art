@@ -24,6 +24,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Android (Chrome) pri dodiru boji element plavim pravougaonikom.
+     Gasi se svuda; fokus sa tastature i dalje crta :focus-visible. */
+  -webkit-tap-highlight-color: transparent;
   /* Da sticky zaglavlje ne prekrije cilj skok-linka. */
   scroll-padding-top: calc(var(--h-zaglavlje) + var(--s-4));
 }
