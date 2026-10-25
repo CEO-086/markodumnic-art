@@ -1856,6 +1856,13 @@ function postaviBocno(ukljuci) {
      ravnomjerno svjetlo ispuni sjenke poteza i reljef nestane. */
   if (S.ambijent) { S.ambijent.intensity = S.bocno ? 0.15 : 0.55; }
   if (S.polulopta) { S.polulopta.intensity = S.bocno ? 0.1 : 0.35; }
+  osvjeziSjenke();   /* reflektor je promijenio mjesto */
+}
+
+/* Mapa sjenke se crta u sljedećem kadru. Na telefonu je to jedini
+   put do nove sjenke; na većim ekranima se ionako crta svaki kadar. */
+function osvjeziSjenke() {
+  if (S.render) { S.render.shadowMap.needsUpdate = true; }
 }
 
 /* Pokretanje klizanja (ili skoka, uz smanjeno kretanje) */
@@ -2103,7 +2110,9 @@ function pokreni(djela) {
   S.render = new T.WebGLRenderer({
     antialias: true, alpha: false, powerPreference: 'high-performance'
   });
-  S.render.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  /* Telefon: 1.75× umjesto 2× — na malom ekranu razlika se ne vidi,
+     a grafika crta oko četvrtinu piksela manje. */
+  S.render.setPixelRatio(Math.min(window.devicePixelRatio || 1, TELEFON ? 1.75 : 2));
   S.render.setSize(sirina, visina, false);
 
   /* Boja i tone mapping — veliki dobitak za malo koda.
@@ -2116,6 +2125,14 @@ function pokreni(djela) {
   /* Sjenke. PCFSoftShadowMap je UKLONJEN u r186 — koristi se PCFShadowMap. */
   S.render.shadowMap.enabled = true;
   S.render.shadowMap.type = T.PCFShadowMap;
+  /* Telefon: sala stoji, pa se mapa sjenke ne crta u svakom kadru,
+     nego samo kad se nešto u sceni promijeni (vidi osvjeziSjenke).
+     Sjenka izgleda isto, a grafika ima manje posla. */
+  if (TELEFON) {
+    S.render.shadowMap.autoUpdate = false;
+    S.render.shadowMap.needsUpdate = true;
+    S.sjenkeDjeca = -1;
+  }
 
   el.platno.appendChild(S.render.domElement);
   /* Kratko ime; uputstvo za tastaturu je u skrivenom elementu na koji
@@ -2605,6 +2622,11 @@ function petlja() {
   S.kamera.position.copy(S.poz);
   S.kamera.lookAt(sParalaksom());
 
+  /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova */
+  if (TELEFON && S.scena.children.length !== S.sjenkeDjeca) {
+    S.sjenkeDjeca = S.scena.children.length;
+    osvjeziSjenke();
+  }
   S.render.render(S.scena, S.kamera);
   if (S.lupa.na) { osvjeziLupu(); }
 
