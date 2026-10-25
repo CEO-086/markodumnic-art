@@ -765,16 +765,18 @@ figcaption {
   grid-column: 1 / -1;
   justify-self: center;
   line-height: 0;
+  margin-top: calc(-1 * var(--s-5));   /* bliže gornjoj ivici podnožja */
 }
 
 .podnozje__znak img {
-  width: 72px;
-  height: 72px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius);
 }
 
 @media (min-width: 820px) {
-  .podnozje__znak img { width: 80px; height: 80px; }
+  .podnozje__znak { margin-top: calc(-1 * var(--s-7)); }
+  .podnozje__znak img { width: 56px; height: 56px; }
 }
 
 .podnozje__blok {
