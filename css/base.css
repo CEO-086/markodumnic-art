@@ -760,6 +760,22 @@ figcaption {
   gap: var(--s-7);
 }
 
+/* Monogram MD, naslikan četkom — na sredini, iznad kolona */
+.podnozje__znak {
+  grid-column: 1 / -1;
+  justify-self: center;
+  line-height: 0;
+}
+
+.podnozje__znak img {
+  width: 96px;
+  height: auto;
+}
+
+@media (min-width: 820px) {
+  .podnozje__znak img { width: 120px; }
+}
+
 .podnozje__blok {
   display: grid;
   gap: var(--s-2);
