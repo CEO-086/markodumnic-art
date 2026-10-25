@@ -765,18 +765,18 @@ figcaption {
   grid-column: 1 / -1;
   justify-self: center;
   line-height: 0;
-  margin-top: calc(-1 * var(--s-5));   /* bliže gornjoj ivici podnožja */
+  margin-top: -2.5rem;   /* bliže gornjoj ivici podnožja */
 }
 
 .podnozje__znak img {
-  width: 48px;
-  height: 48px;
+  width: 43px;
+  height: 43px;
   border-radius: var(--radius);
 }
 
 @media (min-width: 820px) {
-  .podnozje__znak { margin-top: calc(-1 * var(--s-7)); }
-  .podnozje__znak img { width: 56px; height: 56px; }
+  .podnozje__znak { margin-top: calc(-1 * var(--s-8)); }
+  .podnozje__znak img { width: 50px; height: 50px; }
 }
 
 .podnozje__blok {
