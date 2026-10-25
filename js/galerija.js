@@ -562,16 +562,21 @@ const MJESTA_DRUGE = 7;
 function rasporedDruge(n) {
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
   const z0 = POLA_Z + PROLAZ.zid;
+  /* Posjetilac ulazi kroz prolaz licem ka +z, pa mu je lijevo +x.
+     `red` je redoslijed obilaska kao u prvoj sali: lijevi zid od vrata
+     ka dnu, zadnji zid slijeva nadesno, desni zid od dna ka vratima —
+     ▶ uvijek vodi na djelo desno. Niz ispod je redoslijed popunjavanja
+     kad je djela manje od mjesta. */
   const sva = [
-    { x: -1.7, z: z0 + SD, rot: Math.PI },
-    { x: 0,    z: z0 + SD, rot: Math.PI },
-    { x: 1.7,  z: z0 + SD, rot: Math.PI },
-    { x: -SW / 2, z: z0 + SD * 0.36, rot: Math.PI / 2 },
-    { x:  SW / 2, z: z0 + SD * 0.36, rot: -Math.PI / 2 },
-    { x: -SW / 2, z: z0 + SD * 0.72, rot: Math.PI / 2 },
-    { x:  SW / 2, z: z0 + SD * 0.72, rot: -Math.PI / 2 }
+    { x: -1.7, z: z0 + SD, rot: Math.PI, red: 4 },
+    { x: 0,    z: z0 + SD, rot: Math.PI, red: 3 },
+    { x: 1.7,  z: z0 + SD, rot: Math.PI, red: 2 },
+    { x: -SW / 2, z: z0 + SD * 0.36, rot: Math.PI / 2, red: 6 },
+    { x:  SW / 2, z: z0 + SD * 0.36, rot: -Math.PI / 2, red: 0 },
+    { x: -SW / 2, z: z0 + SD * 0.72, rot: Math.PI / 2, red: 5 },
+    { x:  SW / 2, z: z0 + SD * 0.72, rot: -Math.PI / 2, red: 1 }
   ];
-  const mjesta = sva.slice(0, Math.max(0, n));
+  const mjesta = sva.slice(0, Math.max(0, n)).sort(function (a, b) { return a.red - b.red; });
   for (const m of mjesta) {
     m.y = VISINA_DJELA;
     m.nx = Math.sin(m.rot);
