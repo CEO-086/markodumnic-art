@@ -3089,6 +3089,11 @@ function fokusIzasao(e) {
   const ide = e && e.relatedTarget;
   if (ide && korijen.contains(ide)) { return; }
   if (S.izbliza) { return; }   /* fokus je u prikazu Izbliza — djelo ostaje izabrano */
+  /* Na telefonu sala pokriva cijeli ekran, pa se iz nje ne može kliknuti
+     „van“. iOS Safari pri dodiru dugmeta ne daje mu fokus nego ga skida
+     sa platna (relatedTarget je null) — bez ovoga je svaki dodir na
+     „Opcije“ ili traku vraćao kameru na pregled. */
+  if (uronjeno()) { return; }
   S.mis.x = 0;
   S.mis.y = 0;
   /* Panel i izabrano djelo su jedno stanje — zatvara se oboje */
