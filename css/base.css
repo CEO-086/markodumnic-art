@@ -1009,9 +1009,9 @@ figcaption {
    natpis gore, ikonica (44 × 44 dodirna meta) ispod, razmak --s-2 kao
    između stavki bloka. Podvlaka ide samo ispod natpisa. */
 .podnozje__blok a.podnozje__insta {
-  display: grid;
+  display: inline-grid;           /* širok koliko natpis, pa je ikonica na sredini */
   gap: var(--s-2);
-  justify-items: start;
+  justify-items: center;
 }
 
 .podnozje__blok a.podnozje__insta::after { display: none; }
@@ -1038,14 +1038,13 @@ figcaption {
   transform: scaleX(1);
 }
 
-/* Ikonica Instagrama ispod natpisa u podnožju */
+/* Ikonica Instagrama ispod natpisa u podnožju, centrirana ispod njega */
 .podnozje__insta .podnozje__ikona {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 44px;
   height: 44px;
-  margin-left: -10px;             /* ikonica u liniji sa tekstom iznad */
   color: var(--ink-soft);
   transition: color var(--dur) var(--ease);
 }
