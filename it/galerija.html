@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galleria virtuale — Marko Dumnić</title>
+<!-- Prije stilova: postavi <html data-js>, da skrivena 2D mreža ne preuzima slike (vidi js/rano.js) -->
+<script src="../js/rano.js"></script>
+<meta name="description" content="Una sala espositiva virtuale con i dipinti di Marko Dumnić: paesaggi torinesi, scorci dallo studio e Cettigne. Basta un clic su una tela e la telecamera vi si ferma davanti.">
+<!-- fontovi -->
+<link rel="preload" href="../fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<!-- /fontovi -->
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/galerija.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F3EEE4">
+<meta property="og:title" content="Galleria virtuale — Marko Dumnić">
+<meta property="og:description" content="Tredici opere in due sale 3D: basta un clic su una tela e la telecamera vi si ferma davanti.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://markodumnic.art/img/og/sajt.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Three.js r186 iz lokalnog vendor/three/ — bez CDN-a i bez inline
+     importmape (koju bi stroga CSP politika blokirala, pa sala nikad ne bi
+     proradila u produkciji). Modul se učitava TEK na klik "Uđi u salu",
+     dinamičkim import()-om u js/galerija.js. Addoni se namjerno ne koriste:
+     putanje im se mijenjaju između verzija, a sala ne smije zavisiti od toga.
+     Svi efekti su napisani ručno, samo nad jezgrom. -->
+<!-- hreflang -->
+<link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/galerija">
+<link rel="alternate" hreflang="en" href="https://markodumnic.art/en/galerija">
+<link rel="alternate" hreflang="it" href="https://markodumnic.art/it/galerija">
+<link rel="alternate" hreflang="x-default" href="https://markodumnic.art/galerija">
+<link rel="canonical" href="https://markodumnic.art/it/galerija">
+<meta property="og:url" content="https://markodumnic.art/it/galerija">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="sr_ME">
+<meta property="og:locale:alternate" content="en_GB">
+<!-- /hreflang -->
+</head>
+<body>
+
+<a class="preskoci" href="#glavno">Vai al contenuto</a>
+
+<header class="zaglavlje">
+  <div class="zaglavlje__traka">
+    <a class="logotip" href="index.html">
+      <span class="logotip__ime">Marko Dumnić</span>
+      <span class="logotip__uloga">Pittore</span>
+    </a>
+
+    <button class="meni-dugme" type="button" aria-expanded="false" aria-controls="glavna-navigacija">
+      <span class="meni-dugme__linija"></span>
+      <span class="meni-dugme__linija"></span>
+      <span class="vizuelno-skriveno">Menu</span>
+    </button>
+
+    <nav class="navigacija" id="glavna-navigacija" aria-label="Navigazione principale">
+      <a href="index.html">Home</a>
+      <a href="o-autoru.html">L’artista</a>
+      <a href="radovi.html">Opere</a>
+      <a href="galerija.html" aria-current="page">Galleria</a>
+      <a href="kontakt.html">Contatti</a>
+    </nav>
+
+    <!-- jezik -->
+    <div class="jezik">
+      <button class="jezik__dugme" type="button" aria-expanded="false" aria-controls="jezik-lista"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#F1F2F1"/><rect x="20" width="10" height="20" fill="#CE2B37"/></svg><span class="jezik__kod">IT</span><svg class="jezik__strelica" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vizuelno-skriveno"> Lingua: italiano. Cambia lingua</span></button>
+      <nav class="jezik__lista" id="jezik-lista" aria-label="Lingua">
+        <a class="jezik__veza" href="../galerija.html" hreflang="sr-ME" lang="sr-Latn-ME"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><span class="jezik__ime">Crnogorski</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="../en/galerija.html" hreflang="en" lang="en"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><span class="jezik__ime">English</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="../it/galerija.html" hreflang="it" lang="it" aria-current="true"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#F1F2F1"/><rect x="20" width="10" height="20" fill="#CE2B37"/></svg><span class="jezik__kod">IT</span><span class="jezik__ime">Italiano</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+    <!-- /jezik -->
+  </div>
+</header>
+
+<main id="glavno">
+
+  <section class="sekcija galerija-uvod">
+    <div class="omot">
+      <p class="oznaka">Mostra online</p>
+      <h1 class="naslov-1">Galleria virtuale</h1>
+      <p class="uvodni">
+        Tredici dipinti a olio tratti da tre serie — Paesaggi torinesi, Scorci dallo studio e
+        Fantasticherie sulla città natale — allestiti in due sale. Scopriteli al vostro
+        ritmo, oppure lasciate che la guida vi accompagni da un quadro all’altro.
+      </p>
+    </div>
+  </section>
+
+  <section class="sekcija" aria-labelledby="naslov-sale">
+    <div class="omot omot--sirok">
+
+      <!-- data-stanje postavlja js/galerija.js. Dok ga nema (JavaScript isključen,
+           pregledač bez ES modula ili skript nije stigao), CSS prikazuje 2D mrežu —
+           ne ulazni ekran sa dugmetom koje ne bi radilo. -->
+      <div class="galerija" id="galerija">
+
+        <!-- ================= TAMNA SOBA: ulaz, platno, HUD, panel ================= -->
+        <div class="galerija-scena soba-tamna">
+
+          <!-- Ulazni ekran. 3D se NE pokreće sam — Three.js se preuzima tek na klik. -->
+          <div class="galerija-ulaz" id="galerija-ulaz">
+            <p class="galerija-ulaz__oznaka">Due sale · 13 opere</p>
+            <h2 class="galerija-ulaz__naslov" id="naslov-sale">Ingresso</h2>
+
+            <p class="galerija-ulaz__uvod">
+              Accanto a ogni opera, come in un museo, c’è la didascalia con titolo, anno
+              e dimensioni. All’ingresso troverete alcune brevi indicazioni.
+            </p>
+
+            <button class="dugme dugme--puno galerija-ulaz__dugme" type="button" id="galerija-pokreni">
+              Entra nella sala
+            </button>
+
+            <p class="galerija-ulaz__napomena">
+              Dà il meglio di sé su computer o tablet, ma funziona anche sullo smartphone.
+            </p>
+
+            <!-- Smanjeno kretanje: sala RADI, samo bez klizanja. Poruka je čisto
+                 CSS-om vezana na media upit, pa se pojavljuje tačno jednom i
+                 tačno onima koje se tiče. -->
+            <p class="galerija-ulaz__napomena galerija-ulaz__napomena--kretanje">
+              È attiva la riduzione del movimento: la telecamera si sposta all’istante, senza transizioni.
+            </p>
+          </div>
+
+          <!-- Platno. Canvas ubacuje js/galerija.js. -->
+          <div class="galerija-platno" id="galerija-platno"></div>
+
+          <!-- Poruka tokom preuzimanja biblioteke i tekstura -->
+          <p class="galerija-ucitavanje" id="galerija-ucitavanje" role="status">Caricamento della sala e delle opere…</p>
+
+          <!-- HUD: izlaz, FPS, kretanje ka djelima, uglovi gledanja -->
+          <div class="galerija-hud" id="galerija-hud">
+            <div class="galerija-hud__traka">
+              <button class="galerija-hud__dugme" type="button" id="galerija-izadji">Esci</button>
+              <button class="galerija-hud__dugme" type="button" id="galerija-fps-prekidac" aria-pressed="true">FPS</button>
+              <button class="galerija-hud__dugme galerija-hud__pomoc" type="button" id="galerija-pomoc" aria-label="Come muoversi nella sala">?</button>
+              <output class="galerija-fps" id="galerija-fps" aria-live="off">— fps</output>
+            </div>
+          </div>
+
+          <!-- Kratka poruka preko sale (obilazak pauziran, kraj obilaska) -->
+          <p class="galerija-poruka" id="galerija-poruka" role="status" aria-live="polite"></p>
+
+          <!-- Savjeti i pitanje „sa vodičem ili sam“ pri svakom ulasku. Ponovo ih otvara dugme „?“. -->
+          <div class="galerija-savjeti" id="galerija-savjeti" role="dialog" aria-modal="true" aria-labelledby="galerija-savjeti-naslov" hidden>
+            <div class="galerija-savjeti__okvir">
+              <p class="galerija-savjeti__oznaka">Benvenuti</p>
+              <h2 class="galerija-savjeti__naslov" id="galerija-savjeti-naslov">Come muoversi nella sala</h2>
+              <ol class="galerija-savjeti__lista">
+                <li class="galerija-savjet">
+                  <svg class="galerija-savjet__ikona" viewBox="0 0 64 64" aria-hidden="true">
+                    <path d="M14 32h36M14 32l7-7M14 32l7 7M50 32l-7-7M50 32l-7 7" />
+                    <circle cx="32" cy="32" r="5" />
+                  </svg>
+                  <strong class="galerija-savjet__naslov"><span class="samo-mis">Trascinate con il mouse</span><span class="samo-prst">Scorrete con il dito</span></strong>
+                  <span class="galerija-savjet__opis">verso sinistra o verso destra per guardarvi intorno nella sala<span class="samo-mis"> — sul touchpad, con due dita</span></span>
+                </li>
+                <li class="galerija-savjet">
+                  <svg class="galerija-savjet__ikona" viewBox="0 0 64 64" aria-hidden="true">
+                    <rect x="14" y="12" width="36" height="28" rx="1" />
+                    <path d="M20 34l8-9 6 6 4-4 6 7" />
+                    <path d="M36 44l4 12 3-5 5 4 2-2-4-5 6-2z" class="ispuna" />
+                  </svg>
+                  <strong class="galerija-savjet__naslov"><span class="samo-mis">Fate clic su un’opera</span><span class="samo-prst">Toccate un’opera</span></strong>
+                  <span class="galerija-savjet__opis">per portarvi di fronte e scoprirne titolo, anno e la storia che la accompagna</span>
+                </li>
+                <li class="galerija-savjet">
+                  <svg class="galerija-savjet__ikona" viewBox="0 0 64 64" aria-hidden="true">
+                    <path d="M12 54V10h40v44" />
+                    <path d="M25 54V24h14v30" />
+                    <path d="M32 46v-14M32 32l-5 5M32 32l5 5" />
+                  </svg>
+                  <strong class="galerija-savjet__naslov">Varcate la soglia</strong>
+                  <span class="galerija-savjet__opis"><span class="samo-mis">fate clic sulla porta o sul pulsante «Alla seconda sala», oppure premete V</span><span class="samo-prst">toccate la porta o il pulsante «Alla seconda sala»</span></span>
+                </li>
+              </ol>
+              <div class="galerija-savjeti__akcije">
+                <button class="dugme dugme--puno" type="button" data-savjeti-tura>Visita guidata</button>
+                <button class="dugme dugme--tekst galerija-savjeti__sam" type="button" data-savjeti-zatvori>Visita libera</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel sa podacima o djelu. HTML, ne 3D tekst.
+               role="region", a ne "dialog": panel se otvara sam kad kamera stane
+               pred platno i NE otima fokus — da strelice i dalje rade. Panel NIJE
+               aria-live (čitao bi cio opis na svakom koraku ture); izabrano djelo
+               kratko javlja #galerija-najava ispod („naziv, godina“). -->
+          <aside class="galerija-panel" id="galerija-panel" role="region"
+                 aria-labelledby="galerija-panel-naziv">
+            <button class="galerija-panel__zatvori" type="button" id="galerija-panel-zatvori">
+              <span aria-hidden="true">×</span>
+              <span class="vizuelno-skriveno">Chiudi la scheda dell’opera</span>
+            </button>
+            <p class="oznaka galerija-panel__oznaka" id="galerija-panel-kat">Opera</p>
+            <h2 class="galerija-panel__naziv" id="galerija-panel-naziv">—</h2>
+            <dl class="galerija-panel__meta">
+              <dt>Anno</dt><dd id="galerija-panel-godina">—</dd>
+              <dt>Tecnica</dt><dd id="galerija-panel-tehnika">—</dd>
+              <dt>Dimensioni</dt><dd id="galerija-panel-dimenzije">—</dd>
+            </dl>
+            <p class="galerija-panel__opis" id="galerija-panel-opis">—</p>
+            <a class="dugme dugme--tekst galerija-panel__link" id="galerija-panel-link" href="djelo.html">Apri la pagina dell’opera</a>
+          </aside>
+          <!-- Kratka najava izabranog djela za čitače ekrana (puni js/galerija.js) -->
+          <p class="vizuelno-skriveno" id="galerija-najava" role="status"></p>
+
+        </div>
+        <!-- ================= /TAMNA SOBA ================= -->
+
+        <!-- Traka sa dugmadima ISPOD sale, ne preko slike: kretanje među
+             djelima i uglovi gledanja. Vidljiva samo dok je sala otvorena.
+             Ostaje unutar .galerija, pa tastatura i dalje radi. -->
+        <div class="galerija-alati soba-tamna" id="galerija-alati">
+          <div class="galerija-kretanje">
+            <button class="galerija-kretanje__dugme galerija-tura" type="button" id="galerija-tura" aria-pressed="false">
+              <span class="galerija-tura__tekst">Visita la mostra</span>
+            </button>
+            <button class="galerija-kretanje__dugme" type="button" id="galerija-pregled">Panoramica</button>
+            <button class="galerija-kretanje__dugme galerija-kretanje__dugme--strelica" type="button" id="galerija-prethodni">
+              <span aria-hidden="true">◀</span>
+              <span class="vizuelno-skriveno">Opera precedente</span>
+            </button>
+            <button class="galerija-kretanje__dugme galerija-kretanje__dugme--strelica" type="button" id="galerija-sljedeci">
+              <span aria-hidden="true">▶</span>
+              <span class="vizuelno-skriveno">Opera successiva</span>
+            </button>
+            <button class="galerija-kretanje__dugme" type="button" id="galerija-sala">Alla seconda sala</button>
+          </div>
+          <!-- Uglovi gledanja — vidljivi SAMO dok je djelo izabrano
+               (data-izabrano na .galerija postavlja js/galerija.js).
+               Na telefonu je ovo jedan red koji se skroluje vodoravno. -->
+          <div class="galerija-ugao" role="group" aria-label="Angolo di visione">
+            <button class="galerija-kretanje__dugme galerija-ugao__dugme galerija-ugao__prekidac" type="button" id="galerija-bocno" aria-pressed="false">Luce radente</button>
+            <button class="galerija-kretanje__dugme galerija-ugao__dugme" type="button" data-ugao="lijevo">Sinistra</button>
+            <button class="galerija-kretanje__dugme galerija-ugao__dugme" type="button" data-ugao="sprijeda">Di fronte</button>
+            <button class="galerija-kretanje__dugme galerija-ugao__dugme" type="button" data-ugao="desno">Destra</button>
+            <button class="galerija-kretanje__dugme galerija-ugao__dugme" type="button" data-ugao="izbliza">Da vicino</button>
+            <button class="galerija-kretanje__dugme galerija-ugao__dugme galerija-ugao__prekidac" type="button" id="galerija-lupa" aria-pressed="false">Lente</button>
+          </div>
+          <!-- Mapa sale: tlocrt, tačke djela, „vi ste ovdje“. Puni je js/galerija.js.
+               Stoji u traci ispod sale, ne preko slike. -->
+          <nav class="galerija-mapa" id="galerija-mapa" aria-label="Pianta delle sale"></nav>
+        </div>
+
+        <!-- ================= 2D ZAMJENA ================= -->
+        <!-- Markup je u HTML-u i sakriven preko CSS-a. JS samo mijenja data-stanje
+             na .galerija i otkriva tačan razlog ispod. Poruke stoje ISPOD okna
+             sale — nikad preko slike. -->
+        <div class="galerija-2d">
+          <div class="galerija-2d__poruka">
+            <h2 class="naslov-3">Non è possibile aprire qui la sala virtuale</h2>
+
+            <p class="galerija-2d__razlog galerija-2d__razlog--js">
+              Per visitare la sala occorre che JavaScript sia attivo. Qui sotto trovate una selezione delle opere; la raccolta completa è nella pagina <a href="radovi.html">Opere</a>.
+            </p>
+            <p class="galerija-2d__razlog" data-razlog="webgl">
+              Questo browser o dispositivo non supporta la visualizzazione 3D. Provate con una versione recente di Chrome, Safari, Firefox o Edge. Qui sotto trovate una selezione delle opere.
+            </p>
+            <p class="galerija-2d__razlog" data-razlog="fajl">
+              La pagina è stata aperta come file dal vostro disco, ma la sala funziona solo da un indirizzo web. Qui sotto trovate una selezione delle opere.
+            </p>
+            <p class="galerija-2d__razlog" data-razlog="cdn">
+              Non è stato possibile caricare la sala, probabilmente a causa di una connessione debole. Ricaricate la pagina tra qualche istante. Qui sotto trovate una selezione delle opere.
+            </p>
+            <p class="galerija-2d__razlog" data-razlog="podaci">
+              Le informazioni sulle opere non sono al momento disponibili. Ricaricate la pagina tra qualche istante. Qui sotto trovate una selezione delle opere.
+            </p>
+            <p class="galerija-2d__razlog" data-razlog="json">
+              Le informazioni sulle opere non sono al momento disponibili. Ricaricate la pagina tra qualche istante. Qui sotto trovate una selezione delle opere.
+            </p>
+            <p class="galerija-2d__razlog" data-razlog="prazno">
+              L’allestimento della mostra è in corso. Le opere sono qui sotto e nella pagina <a href="radovi.html">Opere</a>.
+            </p>
+          </div>
+
+          <ul class="mreza mreza--3 galerija-2d__mreza">
+            <li>
+              <figure class="galerija-2d__djelo">
+                <a href="djelo.html?id=aria-di-torino">
+                  <span class="galerija-2d__okvir">
+                    <picture>
+                      <source type="image/avif" srcset="../img/radovi/w/aria-di-torino-480.avif 480w, ../img/radovi/w/aria-di-torino-800.avif 800w, ../img/radovi/w/aria-di-torino-1200.avif 1200w, ../img/radovi/w/aria-di-torino-1600.avif 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <source type="image/webp" srcset="../img/radovi/w/aria-di-torino-480.webp 480w, ../img/radovi/w/aria-di-torino-800.webp 800w, ../img/radovi/w/aria-di-torino-1200.webp 1200w, ../img/radovi/w/aria-di-torino-1600.webp 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <img src="../img/radovi/aria-di-torino.jpg" width="1171" height="1400" alt="Aria di Torino — Una villa dal tetto rosso all’angolo di una strada e, sopra, un cielo di pennellate dense e vorticose di blu e di bianco." loading="lazy">
+                    </picture>
+                  </span>
+                </a>
+                <figcaption>
+                  <span class="galerija-2d__naziv">Aria di Torino</span>
+                  <span class="galerija-2d__meta">2024 · Olio su tela · 60 × 50 cm</span>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="galerija-2d__djelo">
+                <a href="djelo.html?id=piazza-castello-e-torre-littoria">
+                  <span class="galerija-2d__okvir">
+                    <picture>
+                      <source type="image/avif" srcset="../img/radovi/w/piazza-castello-e-torre-littoria-480.avif 480w, ../img/radovi/w/piazza-castello-e-torre-littoria-800.avif 800w, ../img/radovi/w/piazza-castello-e-torre-littoria-1181.avif 1181w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <source type="image/webp" srcset="../img/radovi/w/piazza-castello-e-torre-littoria-480.webp 480w, ../img/radovi/w/piazza-castello-e-torre-littoria-800.webp 800w, ../img/radovi/w/piazza-castello-e-torre-littoria-1181.webp 1181w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <img src="../img/radovi/piazza-castello-e-torre-littoria.jpg" width="1042" height="1400" alt="Piazza Castello e Torre Littoria — La Torre Littoria svetta sulle facciate di Piazza Castello; il cielo si frantuma in brevi pennellate di colore." loading="lazy">
+                    </picture>
+                  </span>
+                </a>
+                <figcaption>
+                  <span class="galerija-2d__naziv">Piazza Castello e Torre Littoria</span>
+                  <span class="galerija-2d__meta">2024 · Olio su tela · 40 × 30 cm</span>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="galerija-2d__djelo">
+                <a href="djelo.html?id=ponte-isabella">
+                  <span class="galerija-2d__okvir">
+                    <picture>
+                      <source type="image/avif" srcset="../img/radovi/w/ponte-isabella-480.avif 480w, ../img/radovi/w/ponte-isabella-800.avif 800w, ../img/radovi/w/ponte-isabella-1180.avif 1180w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <source type="image/webp" srcset="../img/radovi/w/ponte-isabella-480.webp 480w, ../img/radovi/w/ponte-isabella-800.webp 800w, ../img/radovi/w/ponte-isabella-1180.webp 1180w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <img src="../img/radovi/ponte-isabella.jpg" width="1180" height="857" alt="Ponte Isabella — Un ponte sul Po, con la sponda e la passeggiata in primo piano e le arcate che si specchiano nell’acqua." loading="lazy">
+                    </picture>
+                  </span>
+                </a>
+                <figcaption>
+                  <span class="galerija-2d__naziv">Ponte Isabella</span>
+                  <span class="galerija-2d__meta">2024 · Olio su tela · 40 × 30 cm</span>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="galerija-2d__djelo">
+                <a href="djelo.html?id=havanac-kastro">
+                  <span class="galerija-2d__okvir">
+                    <picture>
+                      <source type="image/avif" srcset="../img/radovi/w/havanac-kastro-480.avif 480w, ../img/radovi/w/havanac-kastro-800.avif 800w, ../img/radovi/w/havanac-kastro-1200.avif 1200w, ../img/radovi/w/havanac-kastro-1600.avif 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <source type="image/webp" srcset="../img/radovi/w/havanac-kastro-480.webp 480w, ../img/radovi/w/havanac-kastro-800.webp 800w, ../img/radovi/w/havanac-kastro-1200.webp 1200w, ../img/radovi/w/havanac-kastro-1600.webp 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <img src="../img/radovi/havanac-kastro.jpg" width="1398" height="1400" alt="Kastro, bichon avanese — Kastro, un bichon avanese, dorme su una coperta nello studio, tra cuscini e quadri appesi alla parete." loading="lazy">
+                    </picture>
+                  </span>
+                </a>
+                <figcaption>
+                  <span class="galerija-2d__naziv">Kastro, bichon avanese</span>
+                  <span class="galerija-2d__meta">2023 · Olio su tela · 60 × 60 cm</span>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="galerija-2d__djelo">
+                <a href="djelo.html?id=mrtva-priroda-sa-vazom">
+                  <span class="galerija-2d__okvir">
+                    <picture>
+                      <source type="image/avif" srcset="../img/radovi/w/mrtva-priroda-sa-vazom-480.avif 480w, ../img/radovi/w/mrtva-priroda-sa-vazom-800.avif 800w, ../img/radovi/w/mrtva-priroda-sa-vazom-1200.avif 1200w, ../img/radovi/w/mrtva-priroda-sa-vazom-1600.avif 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <source type="image/webp" srcset="../img/radovi/w/mrtva-priroda-sa-vazom-480.webp 480w, ../img/radovi/w/mrtva-priroda-sa-vazom-800.webp 800w, ../img/radovi/w/mrtva-priroda-sa-vazom-1200.webp 1200w, ../img/radovi/w/mrtva-priroda-sa-vazom-1600.webp 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <img src="../img/radovi/mrtva-priroda-sa-vazom.jpg" width="1400" height="1161" alt="Natura morta con vaso — Un vaso blu, una piantina fiorita e una scatola sul tavolo, davanti alla parete variopinta dello studio." loading="lazy">
+                    </picture>
+                  </span>
+                </a>
+                <figcaption>
+                  <span class="galerija-2d__naziv">Natura morta con vaso</span>
+                  <span class="galerija-2d__meta">2023 · Olio su tela · 50 × 60 cm</span>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="galerija-2d__djelo">
+                <a href="djelo.html?id=prijatelji">
+                  <span class="galerija-2d__okvir">
+                    <picture>
+                      <source type="image/avif" srcset="../img/radovi/w/prijatelji-480.avif 480w, ../img/radovi/w/prijatelji-800.avif 800w, ../img/radovi/w/prijatelji-1200.avif 1200w, ../img/radovi/w/prijatelji-1600.avif 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <source type="image/webp" srcset="../img/radovi/w/prijatelji-480.webp 480w, ../img/radovi/w/prijatelji-800.webp 800w, ../img/radovi/w/prijatelji-1200.webp 1200w, ../img/radovi/w/prijatelji-1600.webp 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <img src="../img/radovi/prijatelji.jpg" width="1204" height="1400" alt="Amici — Due cani su un prato verde a Cettigne, davanti a cespugli in fiore, con le case sullo sfondo." loading="lazy">
+                    </picture>
+                  </span>
+                </a>
+                <figcaption>
+                  <span class="galerija-2d__naziv">Amici</span>
+                  <span class="galerija-2d__meta">2025 · Olio su tela · 75 × 65 cm</span>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure class="galerija-2d__djelo">
+                <a href="djelo.html?id=staro-groblje">
+                  <span class="galerija-2d__okvir">
+                    <picture>
+                      <source type="image/avif" srcset="../img/radovi/w/staro-groblje-480.avif 480w, ../img/radovi/w/staro-groblje-800.avif 800w, ../img/radovi/w/staro-groblje-1200.avif 1200w, ../img/radovi/w/staro-groblje-1600.avif 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <source type="image/webp" srcset="../img/radovi/w/staro-groblje-480.webp 480w, ../img/radovi/w/staro-groblje-800.webp 800w, ../img/radovi/w/staro-groblje-1200.webp 1200w, ../img/radovi/w/staro-groblje-1600.webp 1600w"
+                              sizes="(min-width: 910px) min(28vw, 430px), (min-width: 570px) 41vw, 86vw">
+                      <img src="../img/radovi/staro-groblje.jpg" width="1227" height="1400" alt="Vecchio cimitero — Una cappella in un vecchio cimitero, circondata da lapidi e alberi scuri." loading="lazy">
+                    </picture>
+                  </span>
+                </a>
+                <figcaption>
+                  <span class="galerija-2d__naziv">Vecchio cimitero</span>
+                  <span class="galerija-2d__meta">2025 · Olio su tela · 45 × 40 cm</span>
+                </figcaption>
+              </figure>
+            </li>
+          </ul>
+        </div>
+        <!-- ================= /2D ZAMJENA ================= -->
+
+      </div>
+
+      <p class="galerija-svi-radovi">
+        Nella prima sala sono esposte sette opere; oltre la soglia, la seconda ne accoglie altre sei. Tutte le opere si trovano anche nella pagina <a href="radovi.html">Opere</a>.
+      </p>
+
+    </div>
+  </section>
+
+  <section class="sekcija sekcija--toplo" aria-labelledby="naslov-o-izlozbi">
+    <div class="omot">
+      <div class="mreza mreza--2 galerija-info">
+
+        <div>
+          <h2 class="naslov-2 naslov--crta" id="naslov-o-izlozbi">Tre serie, due sale</h2>
+          <p>
+            Marko Dumnić dipinge a olio su tela, con pennellate dense e vorticose.
+            I <a href="radovi.html#torino">Paesaggi torinesi</a> (2024) fissano i tetti, le piazze e
+            i ponti della città in cui ha concluso il biennio specialistico.
+            Gli <a href="radovi.html#atelje">Scorci dallo studio</a> (2023) riuniscono quiete nature
+            morte e ritratti nati nello spazio in cui i quadri prendono forma, mentre le
+            <a href="radovi.html#rodni-grad">Fantasticherie sulla città natale</a> (2025) tornano a
+            Cettigne così come sopravvive nel ricordo.
+          </p>
+          <p>
+            La prima sala presenta una selezione di opere da tutte e tre le serie; il
+            passaggio conduce alla seconda, che accoglie il resto della mostra.
+          </p>
+          <dl class="galerija-cinjenice">
+            <div><dt>Opere</dt><dd>13 oli su tela</dd></div>
+            <div><dt>Periodo</dt><dd>2023–2025</dd></div>
+            <div><dt>Artista</dt><dd><a href="o-autoru.html">Marko Dumnić</a></dd></div>
+          </dl>
+        </div>
+
+        <div>
+          <h2 class="naslov-2 naslov--crta">Mouse, touch o tastiera</h2>
+          <ul class="galerija-nacini">
+            <li><strong>Visita guidata.</strong> «Visita la mostra» vi accompagna attraverso entrambe le sale e si sofferma su ogni opera. Basta un tocco o un clic per metterla in pausa.</li>
+            <li><strong>Visita libera.</strong> Fate clic su un dipinto, o toccatelo, per portarvi di fronte. Trascinate per guardarvi intorno nella sala; davanti a un’opera, trascinando le girate attorno.</li>
+            <li><strong>Da vicino e con la lente.</strong> «Da vicino» apre il dipinto a schermo intero, mentre la lente ingrandisce la zona sotto il dito o il puntatore del mouse.</li>
+          </ul>
+          <table class="galerija-precice">
+            <caption>Scorciatoie da tastiera</caption>
+            <tbody>
+              <tr><th scope="row"><kbd>←</kbd> <kbd>→</kbd></th><td>opera precedente e successiva</td></tr>
+              <tr><th scope="row"><kbd>Spazio</kbd></th><td>avvio o pausa della visita</td></tr>
+              <tr><th scope="row"><kbd>V</kbd></th><td>alla seconda sala e ritorno</td></tr>
+              <tr><th scope="row"><kbd>A</kbd> <kbd>D</kbd></th><td>rotazione nella sala; davanti a un’opera, intorno al dipinto</td></tr>
+              <tr><th scope="row"><kbd>↑</kbd> <kbd>↓</kbd></th><td>più vicino o più lontano dall’opera</td></tr>
+              <tr><th scope="row"><kbd>L</kbd></th><td>luce radente sulla tela</td></tr>
+              <tr><th scope="row"><kbd>Esc</kbd></th><td>ritorno alla panoramica della sala</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <hr class="linija">
+
+      <div class="galerija-poziv">
+        <p class="galerija-poziv__tekst">Vi interessa un’opera, un acquisto o una mostra dal vivo?</p>
+        <a class="dugme dugme--puno" href="kontakt.html">Scrivete all’artista</a>
+        <a class="dugme dugme--tekst" href="radovi.html">Tutte le opere</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="podnozje">
+  <div class="podnozje__unutra">
+    <div class="podnozje__znak" aria-hidden="true"><img src="../img/md-znak-160.webp" srcset="../img/md-znak-160.webp 2x, ../img/md-znak-240.webp 3x" width="50" height="50" alt="" loading="lazy" decoding="async"></div>
+    <div class="podnozje__blok">
+      <p class="podnozje__ime">Marko Dumnić</p>
+      <p class="podnozje__meta">Pittore · Cettigne, Montenegro</p>
+      <p class="podnozje__meta">Accademia Albertina di Belle Arti, Torino</p>
+    </div>
+    <nav class="podnozje__blok" aria-label="Piè di pagina">
+      <a href="index.html">Home</a>
+      <a href="o-autoru.html">L’artista</a>
+      <a href="radovi.html">Opere</a>
+      <a href="galerija.html">Galleria virtuale</a>
+      <a href="kontakt.html">Contatti</a>
+    </nav>
+    <div class="podnozje__blok">
+      <a class="podnozje__insta" href="https://www.instagram.com/marko.mapko/" rel="noopener">
+        <span class="podnozje__insta-tekst">Instagram</span><span class="vizuelno-skriveno"> — @marko.mapko</span>
+        <span class="podnozje__ikona" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <p class="podnozje__potpis">© <span data-godina>2026</span> Marko Dumnić. Tutti i diritti riservati.
+    <span class="podnozje__pokrece">Powered by <a href="https://cryptogorac.com" rel="noopener">cryptogorac.com</a></span></p>
+</footer>
+
+<script src="../js/base.js"></script>
+<!-- NIJE type="module", i to je mjereno a ne nemar.
+     Modul-skript se povlači kao CORS zahtjev, pa se sa `file://` adrese
+     uopšte NE IZVRŠI — stranica otvorena duplim klikom ostala bi bez
+     `data-stanje`, pa bi umjesto poruke „otvoreno kao lokalni fajl“
+     posjetilac dobio poruku „JavaScript je isključen“, što nije istina.
+     Klasičan skript se izvrši i tamo, prepozna `file:` i kaže pravi razlog.
+     Dinamički `import('three')` unutra i dalje prolazi kroz importmapu —
+     provjereno u pregledaču, importmapa važi za cio dokument, ne samo za
+     modul-skripte. -->
+<script src="../js/galerija.js"></script>
+</body>
+</html>

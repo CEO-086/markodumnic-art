@@ -76,16 +76,20 @@
   }());
 
 
-  /* === 404 za engleske adrese ===
+  /* === 404 za engleske i italijanske adrese ===
      Vercel za svaku nepostojeću adresu služi samo korijenski 404.html
-     (crnogorski). Ako je tražena adresa pod /en/, prebaci na englesku. */
+     (crnogorski). Ako je tražena adresa pod /en/ ili /it/, prebaci na
+     stranicu tog jezika (osim ako to već jeste ta stranica). */
 
-  (function engleski404() {
+  (function strani404() {
     var put = window.location.pathname;
-    if (document.body && document.body.getAttribute('data-stranica') === '404' &&
-        (put === korijenSajta + 'en' || put.indexOf(korijenSajta + 'en/') === 0)) {
-      window.location.replace(korijenSajta + 'en/404');
-    }
+    if (!document.body || document.body.getAttribute('data-stranica') !== '404') { return; }
+    var jezik = document.documentElement.lang;
+    ['en', 'it'].forEach(function (j) {
+      if (jezik !== j && (put === korijenSajta + j || put.indexOf(korijenSajta + j + '/') === 0)) {
+        window.location.replace(korijenSajta + j + '/404');
+      }
+    });
   }());
 
 

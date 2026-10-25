@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,follow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un’opera da ogni angolazione — Marko Dumnić</title>
+<meta name="description" content="Una sola tela ripresa da molte angolazioni e mostrata come Gaussian splat — per vedere come la vernice e l’impasto catturano la luce quando le si gira intorno.">
+<!-- fontovi -->
+<link rel="preload" href="../fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<!-- /fontovi -->
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/splat.css">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F3EEE4">
+<meta property="og:title" content="Un’opera da ogni angolazione — Marko Dumnić">
+<meta property="og:description" content="Una sola tela ripresa da molte angolazioni: l’impasto e la vernice come li vede l’occhio nello studio.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://markodumnic.art/img/og/aria-di-torino.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- hreflang -->
+<link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/splat">
+<link rel="alternate" hreflang="en" href="https://markodumnic.art/en/splat">
+<link rel="alternate" hreflang="it" href="https://markodumnic.art/it/splat">
+<link rel="alternate" hreflang="x-default" href="https://markodumnic.art/splat">
+<meta property="og:url" content="https://markodumnic.art/it/splat">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="sr_ME">
+<meta property="og:locale:alternate" content="en_GB">
+<!-- /hreflang -->
+</head>
+<body>
+
+<a class="preskoci" href="#glavno">Vai al contenuto</a>
+
+<header class="zaglavlje">
+  <div class="zaglavlje__traka">
+    <a class="logotip" href="index.html">
+      <span class="logotip__ime">Marko Dumnić</span>
+      <span class="logotip__uloga">Pittore</span>
+    </a>
+
+    <button class="meni-dugme" type="button" aria-expanded="false" aria-controls="glavna-navigacija">
+      <span class="meni-dugme__linija"></span>
+      <span class="meni-dugme__linija"></span>
+      <span class="vizuelno-skriveno">Menu</span>
+    </button>
+
+    <nav class="navigacija" id="glavna-navigacija" aria-label="Navigazione principale">
+      <a href="index.html">Home</a>
+      <a href="o-autoru.html">L’artista</a>
+      <a href="radovi.html">Opere</a>
+      <a href="galerija.html">Galleria</a>
+      <a href="kontakt.html">Contatti</a>
+    </nav>
+
+    <!-- jezik -->
+    <div class="jezik">
+      <button class="jezik__dugme" type="button" aria-expanded="false" aria-controls="jezik-lista"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#F1F2F1"/><rect x="20" width="10" height="20" fill="#CE2B37"/></svg><span class="jezik__kod">IT</span><svg class="jezik__strelica" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vizuelno-skriveno"> Lingua: italiano. Cambia lingua</span></button>
+      <nav class="jezik__lista" id="jezik-lista" aria-label="Lingua">
+        <a class="jezik__veza" href="../splat.html" hreflang="sr-ME" lang="sr-Latn-ME"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><span class="jezik__ime">Crnogorski</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="../en/splat.html" hreflang="en" lang="en"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><span class="jezik__ime">English</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="../it/splat.html" hreflang="it" lang="it" aria-current="true"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#F1F2F1"/><rect x="20" width="10" height="20" fill="#CE2B37"/></svg><span class="jezik__kod">IT</span><span class="jezik__ime">Italiano</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+    <!-- /jezik -->
+  </div>
+</header>
+
+<main id="glavno">
+
+  <!-- ================= UVOD ================= -->
+  <section class="sekcija">
+    <div class="omot">
+      <p class="oznaka">Una prova a parte</p>
+      <h1 class="naslov-1">Un’opera da ogni angolazione</h1>
+
+      <div class="splat-uvod__mjera">
+        <p class="uvodni">
+          La fotografia di una tela mente sempre su una cosa: la luce. L’impasto spesso
+          e la vernice cambiano colore appena vi spostate — una pennellata che da un lato
+          appare scura, dall’altro si accende di un riflesso. Una sola immagine non può restituirlo.
+        </p>
+        <p>
+          Per questo una sola tela viene ripresa con il telefono da decine di angolazioni e
+          trasformata in un <b>Gaussian splat</b> — una nuvola di minuscoli punti sfumati che registra
+          sia il colore sia il modo in cui il colore cambia con l’angolo di visione. Al risultato si
+          può girare intorno come a un oggetto, invece di guardarlo come un quadro.
+        </p>
+        <p>
+          Tutto questo resta separato dalla <a href="galerija.html">sala espositiva virtuale</a>,
+          e di proposito — il motivo è spiegato più sotto, nella parte sulla luce impressa nella ripresa.
+        </p>
+      </div>
+
+      <ul class="splat-cinjenice">
+        <li><b>Formato</b> SPZ, PLY, SPLAT o KSPLAT</li>
+        <li><b>Dimensione consigliata</b> sotto i 15–30 MB</li>
+        <li><b>Download</b> solo al clic, nulla prima</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- ================= PRIKAZIVAČ ================= -->
+  <section class="sekcija" aria-labelledby="naslov-prikazivaca">
+    <div class="omot omot--sirok">
+
+      <h2 class="naslov-2" id="naslov-prikazivaca">Visualizzatore</h2>
+
+      <!-- data-stanje postavlja js/splat.js. Dok ga nema (JavaScript isključen
+           ili skript nije stigao), CSS prikazuje 2D zamjenu — ne dugme koje
+           ne bi radilo. -->
+      <div class="splat" id="splat">
+
+        <!-- ---------- TAMNA SOBA ---------- -->
+        <div class="splat-scena soba-tamna">
+
+          <!-- Ulazni ekran. Vidi se SAMO ako je splat fajl stvarno pronađen. -->
+          <div class="splat-ulaz" id="splat-ulaz">
+            <p class="splat-ulaz__oznaka">Pronta da esplorare</p>
+            <h3 class="splat-ulaz__naslov" id="splat-ulaz-naslov">Opera</h3>
+
+            <p class="splat-ulaz__tekst" id="splat-ulaz-tekst">
+              L’opera è stata ripresa ed è pronta. Il visualizzatore e l’opera
+              si scaricano solo quando premete il pulsante.
+            </p>
+
+            <ul class="splat-uputstvo">
+              <li>
+                <span class="splat-uputstvo__tipka">Trascinamento</span>
+                <span class="splat-uputstvo__opis">con il mouse o con un dito — per girare intorno all’opera</span>
+              </li>
+              <li>
+                <span class="splat-uputstvo__tipka">Rotellina</span>
+                <span class="splat-uputstvo__opis">per avvicinarsi e allontanarsi; sugli schermi touch, con due dita</span>
+              </li>
+              <li>
+                <span class="splat-uputstvo__tipka">Frecce</span>
+                <span class="splat-uputstvo__opis">lo stesso da tastiera; più e meno avvicinano e allontanano</span>
+              </li>
+              <li>
+                <span class="splat-uputstvo__tipka">Home</span>
+                <span class="splat-uputstvo__opis">riporta alla vista iniziale; Esc chiude il visualizzatore</span>
+              </li>
+            </ul>
+
+            <button class="dugme dugme--puno splat-ulaz__dugme" type="button" id="splat-pokreni">
+              Esplora l’opera
+            </button>
+
+            <p class="splat-ulaz__napomena">
+              Il visualizzatore (circa 1,4 MB compresso) e la ripresa vera e propria
+              si scaricano solo quando premete il pulsante. Fino ad allora, questa
+              pagina non carica nulla di tutto ciò.
+            </p>
+          </div>
+
+          <!-- Platno. Canvas ubacuje js/splat.js. -->
+          <div class="splat-platno" id="splat-platno"></div>
+
+          <p class="splat-ucitavanje" id="splat-ucitavanje" role="status">
+            Scaricamento del visualizzatore e dell’opera…
+            <span class="splat-ucitavanje__mjerilo" id="splat-mjerilo"></span>
+          </p>
+
+          <!-- HUD: povratak na početni pogled i izlaz -->
+          <div class="splat-hud" id="splat-hud">
+            <div class="splat-hud__traka">
+              <button class="splat-hud__dugme" type="button" id="splat-pocetni">Vista iniziale</button>
+              <button class="splat-hud__dugme" type="button" id="splat-izadji">Esci</button>
+            </div>
+            <p class="splat-hud__uputa">
+              Trascinate per girare intorno all’opera · rotellina o due dita per avvicinarvi
+            </p>
+          </div>
+
+          <!-- ---------- POŠTENO PRAZNO STANJE ----------
+               Vidi se kad splat fajla nema. Nema lažne demonstracije,
+               nema tuđeg snimka koji glumi Dumnićevo platno. -->
+          <div class="splat-prazno" id="splat-prazno">
+            <div class="splat-prazno__unutra">
+              <p class="splat-prazno__oznaka">Ancora nessuna ripresa</p>
+              <h3 class="splat-prazno__naslov">
+                Qui comparirà <span id="splat-prazno-naziv">l’opera</span>, ripresa da ogni angolazione
+              </h3>
+
+              <p class="splat-prazno__tekst">
+                Il visualizzatore è pronto e funziona — manca solo la ripresa. Appena il file
+                sarà al suo posto, questo riquadro diventerà da solo un visualizzatore a cui
+                girare intorno. Fino ad allora, qui di proposito non c’è la ripresa di qualcun
+                altro spacciata per una tela di Dumnić.
+              </p>
+
+              <ol class="splat-koraci">
+                <li>
+                  <b>Ripresa con il telefono</b>
+                  Appendete la tela a una parete o mettetela su un cavalletto, con una luce
+                  uniforme e senza riflessi di lampade nella vernice. Giratele intorno lentamente,
+                  ad arco, con 40–80 foto o un breve video, dal basso, all’altezza della tela e
+                  dall’alto. Conta quanti angoli coprite, non il numero degli scatti.
+                </li>
+                <li>
+                  <b>Elaborazione — Scaniverse</b>
+                  La ripresa si elabora in <i>Scaniverse</i> (Niantic) — gratis, direttamente
+                  sul telefono, senza caricare nulla su un server, ed esporta subito in SPZ.
+                  L’elaborazione richiede da pochi minuti a mezz’ora.
+                </li>
+                <li>
+                  <b>Esportazione in SPZ</b>
+                  Terminata l’elaborazione, scegliete l’esportazione in SPZ — il più leggero
+                  dei formati supportati. Se SPZ non è disponibile, vanno bene anche PLY,
+                  SPLAT o KSPLAT; sono solo sensibilmente più pesanti.
+                </li>
+                <li>
+                  <b>Il file sul sito</b>
+                  Salvate il file con il nome dell’opera e mettetelo nella cartella
+                  <code>splat/</code> alla radice del sito:
+                </li>
+              </ol>
+
+              <p class="splat-putanja"><code id="splat-putanja">splat/aria-di-torino.spz</code></p>
+
+              <p class="splat-prazno__tekst">
+                Poi aggiungete il file all’elenco in <code>splat/index.json</code>
+                (come farlo è spiegato in <code>splat/README.md</code>). Non cambia nient’altro —
+                né questa pagina né il codice. A ogni apertura la pagina legge quell’elenco e,
+                appena vi trova l’opera, offre un pulsante per esplorarla.
+              </p>
+
+              <p class="splat-prazno__tekst">
+                <b>Sulle dimensioni:</b> puntate a <b>meno di 15–30 MB</b>. Oltre,
+                i telefoni su rete mobile aspettano a lungo e i dispositivi meno potenti
+                esauriscono la memoria. In Scaniverse il numero di punti si può
+                ridurre prima dell’esportazione — per una sola tela, 1–2 milioni
+                di punti sono più che sufficienti.
+              </p>
+            </div>
+          </div>
+
+        </div>
+        <!-- ---------- /TAMNA SOBA ---------- -->
+
+        <!-- Poruke o grešci — UVIJEK ispod okna, nikad preko slike. -->
+        <p class="splat-poruka" id="splat-poruka" role="status"></p>
+
+        <!-- ---------- 2D ZAMJENA ----------
+             Markup je u HTML-u i sakriven preko CSS-a. JS samo mijenja
+             data-stanje i otkriva tačan razlog. -->
+        <div class="splat-2d">
+          <div class="splat-2d__poruka">
+            <h3 class="naslov-3">La vista 3D non è disponibile — ecco l’opera come semplice immagine</h3>
+
+            <p class="splat-2d__razlog splat-2d__razlog--js">
+              La vista 3D funziona con JavaScript, che qui è disattivato, oppure lo
+              script non è stato caricato. L’opera è qui sotto, come semplice immagine.
+            </p>
+            <p class="splat-2d__razlog" data-razlog="webgl">
+              Questo browser non supporta WebGL2, e senza non è possibile disegnare
+              la nuvola di punti. L’opera è qui sotto, come semplice immagine.
+            </p>
+            <p class="splat-2d__razlog" data-razlog="fajl">
+              La pagina è stata aperta come file locale, e in questa modalità i browser
+              bloccano la lettura della ripresa. La vista 3D funziona quando il sito è
+              servito da un server locale o da un indirizzo web.
+            </p>
+            <p class="splat-2d__razlog" data-razlog="biblioteka">
+              Non è stato possibile caricare il visualizzatore da <code>vendor/</code>.
+              Probabilmente i file non sono stati pubblicati con il sito, oppure le regole
+              di sicurezza li bloccano. L’opera è qui sotto, come semplice immagine.
+            </p>
+            <p class="splat-2d__razlog" data-razlog="citanje">
+              La ripresa è stata trovata, ma non è stato possibile leggerla — probabilmente
+              è incompleta o in un formato che il visualizzatore non legge.
+            </p>
+          </div>
+
+          <figure class="splat-2d__figura">
+            <span class="splat-2d__okvir">
+              <img id="splat-2d-slika" src="../img/radovi/aria-di-torino.jpg"
+                   alt="Una villa dal tetto rosso all’angolo di una strada e, sopra, un cielo di pennellate dense e vorticose di blu e di bianco."
+                   width="1171" height="1400"
+                   loading="lazy" decoding="async">
+            </span>
+            <figcaption id="splat-2d-natpis">
+              Aria di Torino — fotografia dell’opera, senza la vista da ogni angolazione.
+            </figcaption>
+          </figure>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================= ZAPEČENO SVJETLO ================= -->
+  <section class="sekcija sekcija--toplo" aria-labelledby="naslov-ogranicenja">
+    <div class="omot">
+      <p class="oznaka">Un limite, detto apertamente</p>
+      <h2 class="naslov-2" id="naslov-ogranicenja">La luce è impressa nella ripresa</h2>
+
+      <div class="splat-ogranicenje__mjera">
+        <p>
+          Un Gaussian splat non registra separatamente la forma e il colore di un oggetto. Registra
+          <b>come appariva l’oggetto</b> — insieme alla luce che quel giorno lo illuminava.
+          Il riflesso di una lampada nella vernice, l’ombra della cornice, il calore del sole
+          pomeridiano: tutto è entrato nella ripresa e vi resta per sempre.
+        </p>
+        <p>
+          Per questo l’opera <b>non può essere appesa a una parete della sala virtuale</b>. La sala ha
+          i suoi faretti; se vi portassimo dentro lo splat, la tela conserverebbe il riflesso dello
+          studio, e il faretto della sala non la sfiorerebbe nemmeno. La tela sembrerebbe
+          sospesa in un mondo che non è il suo.
+        </p>
+        <p>
+          Non è un difetto del visualizzatore — è così che funziona la tecnica stessa. Invece
+          di nasconderlo, l’opera sta qui, nella sua luce, separata dalla sala.
+        </p>
+
+        <ul class="splat-poredjenje">
+          <li>
+            <b>Sala virtuale</b>
+            <span>
+              Immagini piatte sulle pareti, illuminate dai faretti della sala. La luce
+              cambia mentre vi muovete, ma la superficie della tela è liscia — non ci
+              sono né impasto né vernice.
+            </span>
+          </li>
+          <li>
+            <b>Questa pagina</b>
+            <span>
+              Una sola opera, con tutta la sua superficie: impasto, segni di spatola, la
+              lucentezza della vernice. Ma la luce è quella dello studio e non cambia — per
+              questo l’opera sta da sola, fuori dalla sala.
+            </span>
+          </li>
+        </ul>
+
+        <p class="mt-6">
+          <a class="dugme dugme--tekst" href="galerija.html">Visitate la galleria virtuale</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="podnozje">
+  <div class="podnozje__unutra">
+    <div class="podnozje__znak" aria-hidden="true"><img src="../img/md-znak-160.webp" srcset="../img/md-znak-160.webp 2x, ../img/md-znak-240.webp 3x" width="50" height="50" alt="" loading="lazy" decoding="async"></div>
+    <div class="podnozje__blok">
+      <p class="podnozje__ime">Marko Dumnić</p>
+      <p class="podnozje__meta">Pittore · Cettigne, Montenegro</p>
+      <p class="podnozje__meta">Accademia Albertina di Belle Arti, Torino</p>
+    </div>
+    <nav class="podnozje__blok" aria-label="Piè di pagina">
+      <a href="index.html">Home</a>
+      <a href="o-autoru.html">L’artista</a>
+      <a href="radovi.html">Opere</a>
+      <a href="galerija.html">Galleria virtuale</a>
+      <a href="kontakt.html">Contatti</a>
+    </nav>
+    <div class="podnozje__blok">
+      <a class="podnozje__insta" href="https://www.instagram.com/marko.mapko/" rel="noopener">
+        <span class="podnozje__insta-tekst">Instagram</span><span class="vizuelno-skriveno"> — @marko.mapko</span>
+        <span class="podnozje__ikona" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <p class="podnozje__potpis">© <span data-godina>2026</span> Marko Dumnić. Tutti i diritti riservati.
+    <span class="podnozje__pokrece">Powered by <a href="https://cryptogorac.com" rel="noopener">cryptogorac.com</a></span></p>
+</footer>
+
+<script src="../js/base.js"></script>
+<script src="../js/splat.js"></script>
+</body>
+</html>

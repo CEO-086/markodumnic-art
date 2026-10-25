@@ -9,7 +9,7 @@
 # Vercel radi obrnuto: kasnije pravilo ZAMJENJUJE isto zaglavlje, pa su
 # u vercel.json opšta pravila gore, posebna dolje. Njegov "source" je
 # path-to-regexp: "/(en/)?splat" ne hvata /splat (kosa crta ulazi u
-# opcionu grupu), zato tamo stoji "/((?:en/)?splat(?:\.html)?)".
+# opcionu grupu), zato tamo stoji "/((?:en/|it/)?splat(?:\.html)?)".
 #
 # Spoljnih izvora nema: fontovi su u /fonts/ (alati/fontovi.py), pa je
 # font-src samo 'self'. 'unsafe-inline' u style-src je zbog <style>
@@ -39,6 +39,14 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
 
 /en/splat
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/it/splat.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+/it/splat
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' blob: data:; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
 

@@ -23,13 +23,14 @@
 
 /* ---------------------------------------------------------
    JEZIK I KORIJEN SAJTA
-   Ista skripta služi i crnogorsku (korijen) i englesku stranicu
-   (en/). Jezik se čita iz <html lang>, a sve putanje iz podataka
+   Ista skripta služi crnogorsku (korijen), englesku (en/) i
+   italijansku stranicu (it/). Jezik se čita iz <html lang>, a sve putanje iz podataka
    (data/, img/, vendor/) računaju se od KORIJENA SAJTA, izvedenog iz
    adrese ove skripte (js/galerija.js → ../), ne od adrese stranice —
    inače bi sa en/galerija.html išle na en/img/… i padale.
    --------------------------------------------------------- */
 const EN = document.documentElement.lang === 'en';
+const IT = document.documentElement.lang === 'it';
 const KORIJEN_SAJTA = (function () {
   const s = document.currentScript;
   try { return new URL('../', s && s.src ? s.src : document.baseURI).href; }
@@ -41,7 +42,33 @@ function izKorijena(put) {
 }
 
 /* Tekstovi koje skripta sama upisuje. Crnogorski je izvor. */
-const TEKST = EN ? {
+const TEKST = IT ? {
+  izbliza: 'Da vicino: ', djelo: 'opera', zatvori: 'Chiudi',
+  savjetPuna: 'Trascinate o usate le frecce per muovervi sul dipinto · clic o Invio mostra l’opera intera',
+  savjetCijela: 'Fate clic sul dipinto o premete Invio per vederlo a grandezza piena',
+  slikaIzbliza: function (n) { return n + ' — Invio passa alla grandezza piena, le frecce si muovono sul dipinto'; },
+  platnoIme: 'Sala espositiva virtuale',
+  salaNazad: 'Torna alla prima sala', salaDruga: 'Alla seconda sala',
+  platno: 'Sala espositiva virtuale con le opere di Marko Dumnić. Fate clic su un dipinto per portarvi davanti la telecamera; ' +
+    'le frecce sinistra e destra passano all’opera precedente e a quella successiva, Esc torna alla panoramica della sala. ' +
+    'Davanti a un’opera: A e D girano intorno al dipinto, W e S cambiano l’altezza dello sguardo, ' +
+    'le frecce su e giù avvicinano e allontanano, L accende la luce radente.',
+  tura: 'Visita la mostra', nastavi: 'Riprendi la visita', pauza: 'Pausa',
+  obilazak: function (k, n) { return 'Visita: ' + k + ' di ' + n; },
+  nastavlja: 'La visita prosegue',
+  pocetak: function (n) { return 'Visita alla mostra · ' + n + ' opere'; },
+  pauzirano: 'Visita in pausa · «Riprendi la visita» la fa ripartire',
+  kraj: 'Fine del percorso · grazie per la visita',
+  mapa: 'Mappa', tlocrt: 'Pianta delle sale con le opere',
+  sala1: 'SALA 1', sala2: 'SALA 2',
+  djeloBr: function (i) { return 'Opera ' + i; },
+  idiDo: 'Vai all’opera: ',
+  sakrijMapu: 'Nascondi la pianta', prikaziMapu: 'Mostra la pianta',
+  crtez: 'Disegno', ulje: 'Dipinto a olio',
+  karticaVise: 'Mostra i dati dell’opera', karticaManje: 'Nascondi i dati dell’opera',
+  opcije: 'Opzioni', iliDodir: 'o toccate un dipinto', oDjelu: 'Sull’opera',
+  cistoSavjet: 'Toccate il dipinto per nascondere i pulsanti', cistoNazad: 'Toccate di nuovo il dipinto per riavere i pulsanti'
+} : EN ? {
   izbliza: 'Close-up: ', djelo: 'artwork', zatvori: 'Close',
   savjetPuna: 'Drag or use the arrow keys to move around the painting · click or Enter shows the whole work',
   savjetCijela: 'Click the painting or press Enter to view it at full size',
@@ -684,15 +711,17 @@ async function ucitajPodatke() {
     throw { vrsta: 'json' };
   }
 
-  /* Svako djelo u jeziku stranice (polje `en` na engleskoj), sa
-     putanjama slika od korijena sajta — dalje u kodu sve je isto. */
+  /* Svako djelo u jeziku stranice (polje `en` na engleskoj, `it` na
+     italijanskoj), sa putanjama slika od korijena sajta — dalje u kodu
+     sve je isto. */
   const svi = ((podaci && podaci.radovi) || []).map(function (r) {
     if (!r) { return r; }
     const d = Object.assign({}, r);
-    if (EN && r.en) {
-      if (r.en.naziv) { d.naziv = r.en.naziv; }
-      if (r.en.opis) { d.opis = r.en.opis; }
-      if (r.en.tehnika) { d.tehnika = r.en.tehnika; }
+    const prevod = IT ? r.it : EN ? r.en : null;
+    if (prevod) {
+      if (prevod.naziv) { d.naziv = prevod.naziv; }
+      if (prevod.opis) { d.opis = prevod.opis; }
+      if (prevod.tehnika) { d.tehnika = prevod.tehnika; }
     }
     if (d.slika) { d.slika = izKorijena(d.slika); }
     if (d.slikaVelika) { d.slikaVelika = izKorijena(d.slikaVelika); }
@@ -701,7 +730,7 @@ async function ucitajPodatke() {
   /* Nazivi serija za natpis u panelu ("Torinski pejzaži"…) */
   S.serije = {};
   ((podaci && podaci.kategorije) || []).forEach(function (k) {
-    if (k && k.id) { S.serije[k.id] = (EN && k.nazivEn) || k.naziv; }
+    if (k && k.id) { S.serije[k.id] = (IT && k.nazivIt) || (EN && k.nazivEn) || k.naziv; }
   });
   const izbor = svi.filter(function (r) { return r && r.istaknuto; });
   /* Ostali radovi vise u drugoj sali, koja se vidi kroz prolaz */

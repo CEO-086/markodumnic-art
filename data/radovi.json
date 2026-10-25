@@ -1,5 +1,5 @@
 {
-  "napomena": "Fotografije, nazivi, godine i dimenzije su iz autorovog portfolija 2026 (MarkoDumnicPortfolio2026.pdf). Nazivi su prevedeni na crnogorski, original je u polju 'originalniNaziv'. Kratki opisi su opisi onoga što se vidi na slici — autor ih može zamijeniti svojim riječima. Engleski: polje 'en' (naziv, opis, tehnika) i 'nazivEn' kod kategorija; nazivi serija i djela su iz engleskog portfolija, osim tri mrtve prirode (u portfoliju sve tri glase 'Still life').",
+  "napomena": "Fotografije, nazivi, godine i dimenzije su iz autorovog portfolija 2026 (MarkoDumnicPortfolio2026.pdf). Nazivi su prevedeni na crnogorski, original je u polju 'originalniNaziv'. Kratki opisi su opisi onoga što se vidi na slici — autor ih može zamijeniti svojim riječima. Engleski: polje 'en' (naziv, opis, tehnika) i 'nazivEn' kod kategorija; nazivi serija i djela su iz engleskog portfolija, osim tri mrtve prirode (u portfoliju sve tri glase 'Still life'). Italijanski: polje 'it' (naziv, opis, tehnika) i 'nazivIt' kod kategorija; tri torinska naziva su originalna italijanska.",
   "autor": {
     "ime": "Marko Dumnić",
     "uloga": "Slikar",
@@ -12,22 +12,26 @@
     {
       "id": "sve",
       "naziv": "Sve",
-      "nazivEn": "All"
+      "nazivEn": "All",
+      "nazivIt": "Tutte"
     },
     {
       "id": "torino",
       "naziv": "Torinski pejzaži",
-      "nazivEn": "Turin Landscapes"
+      "nazivEn": "Turin Landscapes",
+      "nazivIt": "Paesaggi torinesi"
     },
     {
       "id": "atelje",
       "naziv": "Prizori iz ateljea",
-      "nazivEn": "Glimpses from the Studio"
+      "nazivEn": "Glimpses from the Studio",
+      "nazivIt": "Scorci dallo studio"
     },
     {
       "id": "rodni-grad",
       "naziv": "Sanjarenja o rodnom gradu",
-      "nazivEn": "Hometown Reveries"
+      "nazivEn": "Hometown Reveries",
+      "nazivIt": "Fantasticherie sulla città natale"
     }
   ],
   "radovi": [
@@ -56,6 +60,11 @@
         "naziv": "Aria di Torino",
         "opis": "A villa with a red roof on a street corner, under a sky of thick, swirling strokes of blue and white.",
         "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Aria di Torino",
+        "opis": "Una villa dal tetto rosso all’angolo di una strada e, sopra, un cielo di pennellate dense e vorticose di blu e di bianco.",
+        "tehnika": "Olio su tela"
       },
       "varijante": [
         480,
@@ -90,6 +99,11 @@
         "opis": "The Torre Littoria rises above the façades of Piazza Castello; the sky is broken into short strokes of colour.",
         "tehnika": "Oil on canvas"
       },
+      "it": {
+        "naziv": "Piazza Castello e Torre Littoria",
+        "opis": "La Torre Littoria svetta sulle facciate di Piazza Castello; il cielo si frantuma in brevi pennellate di colore.",
+        "tehnika": "Olio su tela"
+      },
       "varijante": [
         480,
         800,
@@ -121,6 +135,11 @@
         "naziv": "Ponte Isabella",
         "opis": "A bridge over the Po, with the riverbank and promenade in the foreground and its arches mirrored in the water.",
         "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Ponte Isabella",
+        "opis": "Un ponte sul Po, con la sponda e la passeggiata in primo piano e le arcate che si specchiano nell’acqua.",
+        "tehnika": "Olio su tela"
       },
       "varijante": [
         480,
@@ -154,6 +173,11 @@
         "opis": "A dome and the rooftops of Turin in blue and ochre light, seen from above, from within the dense fabric of the city.",
         "tehnika": "Oil on canvas"
       },
+      "it": {
+        "naziv": "Tetti di Torino",
+        "opis": "Una cupola e i tetti di Torino in una luce blu e ocra, visti dall’alto, dal cuore del fitto tessuto urbano.",
+        "tehnika": "Olio su tela"
+      },
       "varijante": [
         480,
         800,
@@ -185,6 +209,11 @@
         "naziv": "Havanese Kastro",
         "opis": "Kastro, a Havanese dog, asleep on a blanket in the studio, among cushions and paintings on the wall.",
         "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Kastro, bichon avanese",
+        "opis": "Kastro, un bichon avanese, dorme su una coperta nello studio, tra cuscini e quadri appesi alla parete.",
+        "tehnika": "Olio su tela"
       },
       "varijante": [
         480,
@@ -219,6 +248,11 @@
         "opis": "A blue vase, a potted flower and a box on a table, against the colourful wall of the studio.",
         "tehnika": "Oil on canvas"
       },
+      "it": {
+        "naziv": "Natura morta con vaso",
+        "opis": "Un vaso blu, una piantina fiorita e una scatola sul tavolo, davanti alla parete variopinta dello studio.",
+        "tehnika": "Olio su tela"
+      },
       "varijante": [
         480,
         800,
@@ -251,6 +285,11 @@
         "naziv": "Still Life with Bottles",
         "opis": "Two bottles and a green vase on an orange table, with frames leaning against the wall.",
         "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Natura morta con bottiglie",
+        "opis": "Due bottiglie e un vaso verde su un tavolo arancione, con alcune cornici appoggiate alla parete.",
+        "tehnika": "Olio su tela"
       },
       "varijante": [
         480,
@@ -285,6 +324,11 @@
         "opis": "Flowers in a tin pot, a tuber and an onion on the table, with an empty frame behind them.",
         "tehnika": "Oil on canvas"
       },
+      "it": {
+        "naziv": "Natura morta con fiori",
+        "opis": "Fiori in un barattolo di latta, un tubero e una cipolla sul tavolo; dietro, una cornice vuota.",
+        "tehnika": "Olio su tela"
+      },
       "varijante": [
         480,
         800,
@@ -317,6 +361,11 @@
         "naziv": "Self-Portrait",
         "opis": "The self-portrait appears as a small sketch on the studio table, among a potted flower, a pomegranate and frames.",
         "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Autoritratto",
+        "opis": "L’autoritratto compare come un piccolo schizzo sul tavolo dello studio, tra una piantina fiorita, una melagrana e alcune cornici.",
+        "tehnika": "Olio su tela"
       },
       "varijante": [
         480,
@@ -351,6 +400,11 @@
         "opis": "Two dogs on a green meadow in Cetinje, in front of flowering shrubs, with houses in the background.",
         "tehnika": "Oil on canvas"
       },
+      "it": {
+        "naziv": "Amici",
+        "opis": "Due cani su un prato verde a Cettigne, davanti a cespugli in fiore, con le case sullo sfondo.",
+        "tehnika": "Olio su tela"
+      },
       "varijante": [
         480,
         800,
@@ -383,6 +437,11 @@
         "naziv": "Old Cemetery",
         "opis": "A chapel in an old cemetery, surrounded by gravestones and dark trees.",
         "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Vecchio cimitero",
+        "opis": "Una cappella in un vecchio cimitero, circondata da lapidi e alberi scuri.",
+        "tehnika": "Olio su tela"
       },
       "varijante": [
         480,
@@ -417,6 +476,11 @@
         "opis": "A stone house with an orange roof and a bare tree in front of it, in the first light of morning.",
         "tehnika": "Oil on canvas"
       },
+      "it": {
+        "naziv": "Luce del mattino",
+        "opis": "Una casa di pietra dal tetto arancione e, davanti, un albero spoglio, nella prima luce del mattino.",
+        "tehnika": "Olio su tela"
+      },
       "varijante": [
         480,
         800,
@@ -449,6 +513,11 @@
         "naziv": "Dusk Light",
         "opis": "A small house under a violet evening sky, behind a stone wall and bare branches.",
         "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Luce al crepuscolo",
+        "opis": "Una piccola casa sotto il cielo violetto della sera, dietro un muro di pietra e rami spogli.",
+        "tehnika": "Olio su tela"
       },
       "varijante": [
         480,

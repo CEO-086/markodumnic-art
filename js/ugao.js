@@ -14,11 +14,19 @@
 const OKNO   = document.getElementById('okno');
 const STANJE = document.getElementById('stanje');
 // Od korijena sajta (adresa ovog modula, js/ → ../), ne od stranice —
-// isti modul služi i en/ugao.html.
+// isti modul služi i en/ugao.html i it/ugao.html.
 const PUT    = new URL('../img/proba/aria-di-torino-', import.meta.url).href;
 const EN     = document.documentElement.lang === 'en';
+const IT     = document.documentElement.lang === 'it';
 
-const TEKST = EN ? {
+const TEKST = IT ? {
+  reljef: 'Rilievo',
+  fajl: 'La pagina è stata aperta come file locale. Avviate ./pokreni.sh e aprite http://localhost:8000/it/ugao.html',
+  webgl: 'Questo browser non supporta WebGL, quindi la tela non può essere mostrata nello spazio.',
+  ucitavanje: 'Caricamento…',
+  three: 'Impossibile caricare Three.js da vendor/three/. Verificate che i file siano presenti.',
+  spremno: 'Trascinate con il mouse, usate le frecce della tastiera o i pulsanti Ruota a sinistra / Ruota a destra per cambiare l\'angolo di visione.',
+} : EN ? {
   reljef: 'Relief',
   fajl: 'The page was opened as a local file. Run ./pokreni.sh and open http://localhost:8000/en/ugao.html',
   webgl: 'This browser does not offer WebGL, so the canvas cannot be shown in space.',
@@ -49,7 +57,12 @@ const BOJA = {
  * NAPOMENA: ovo je kalibracija za IZVEDEN reljef. Kod izmjerenog podatka iz
  * fotometrijskog stereja normalScale je po definiciji 1.0 — mapa već nosi
  * stvarne nagibe i ne smije se dotjerivati. */
-const JACINE = EN ? [
+const JACINE = IT ? [
+  { ime: 'disattivato', skala: 0,   opis: 'Un\'immagine piatta — come funziona oggi la sala espositiva.' },
+  { ime: 'lieve',       skala: 0.8, opis: 'Circa 0,3 mm — una normale pennellata.' },
+  { ime: 'medio',       skala: 1.6, opis: 'Circa 1 mm — un impasto medio, con segni di spatola.' },
+  { ime: 'forte',       skala: 3.0, opis: 'Circa 3 mm — un impasto denso e corposo.' },
+] : EN ? [
   { ime: 'off',       skala: 0,   opis: 'A flat picture — how the exhibition room works now.' },
   { ime: 'low',       skala: 0.8, opis: 'About 0.3 mm — an ordinary brushstroke.' },
   { ime: 'medium',    skala: 1.6, opis: 'About 1 mm — average paint with palette-knife marks.' },

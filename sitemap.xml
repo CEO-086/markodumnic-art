@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Sitemap — Marko Dumnić. Pisan ručno, održava se ručno.
-  38 URL-ova: crnogorski 6 glavnih stranica + 13 stranica djela iz
-  data/radovi.json, i engleski prevod istih: 6 glavnih + 13 djela pod /en/.
+  57 URL-ova: crnogorski 6 glavnih stranica + 13 stranica djela iz
+  data/radovi.json, engleski prevod istih: 6 glavnih + 13 djela pod /en/,
+  i italijanski: 6 glavnih + 13 djela pod /it/.
   splat i ugao su noindex i nisu ovdje.
 
   URL-ovi su BEZ ".html" namjerno. Vercel (cleanUrls) i Cloudflare Pages
@@ -10,20 +11,21 @@
   ekstenzije jedini koji vraća 200. Na disku fajlovi i dalje imaju .html i
   lokalno se otvaraju tako — razlika postoji samo u produkciji.
 
-  DVA JEZIKA: svaki <url> koji ima par na drugom jeziku nosi tri
-  xhtml:link veze — sr-ME (crnogorski, u korijenu; Google ne prima troslovni cnr), en (isti put pod /en/)
-  i x-default (crnogorski). Obje jezičke verzije nose ISTI skup veza.
+  TRI JEZIKA: svaki <url> nosi četiri xhtml:link veze — sr-ME
+  (crnogorski, u korijenu; Google ne prima troslovni cnr), en (isti put
+  pod /en/), it (isti put pod /it/) i x-default (crnogorski). Sve tri
+  jezičke verzije nose ISTI skup veza.
 
   ODRŽAVANJE (vidi IZVJESTAJ-seo.md, odjeljak "Kako se održava sitemap"):
-   - novo djelo u radovi.json  -> dodaj <url> za /djelo/<id> I za
-     /en/djelo/<id> (bez .html), priority 0.7, oba sa tri xhtml:link veze
-   - nova obična stranica      -> dodaj <url>, priority 0.5-0.9 (i /en/ par)
+   - novo djelo u radovi.json  -> dodaj <url> za /djelo/<id>, /en/djelo/<id>
+     i /it/djelo/<id> (bez .html), priority 0.7, svi sa četiri xhtml:link veze
+   - nova obična stranica      -> dodaj <url>, priority 0.5-0.9 (i /en/ i /it/ par)
    - izmjena sadržaja          -> podigni <lastmod> na tom URL-u
    - promjena domena           -> zamijeni sve pojave domena odjednom
      (sed komanda je u izvještaju; domen stoji i u robots.txt)
 
   djelo.html NIJE ovdje namjerno — to je klijentski template bez sadržaja,
-  zabranjen i u robots.txt. Isto važi za en/djelo.html i za 404 stranice.
+  zabranjen i u robots.txt. Isto važi za en/djelo.html, it/djelo.html i za 404 stranice.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -36,6 +38,7 @@
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/"/>
   </url>
   <url>
@@ -45,6 +48,7 @@
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/radovi"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/radovi"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/radovi"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/radovi"/>
   </url>
   <url>
@@ -54,6 +58,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/galerija"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/galerija"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/galerija"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/galerija"/>
   </url>
   <url>
@@ -63,6 +68,7 @@
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/zum"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/zum"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/zum"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/zum"/>
   </url>
   <url>
@@ -72,6 +78,7 @@
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/o-autoru"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/o-autoru"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/o-autoru"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/o-autoru"/>
   </url>
   <url>
@@ -81,6 +88,7 @@
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/kontakt"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/kontakt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/kontakt"/>
   </url>
   <url>
@@ -90,6 +98,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/aria-di-torino"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/aria-di-torino"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/aria-di-torino"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/aria-di-torino"/>
   </url>
   <url>
@@ -99,6 +108,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/piazza-castello-e-torre-littoria"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/piazza-castello-e-torre-littoria"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/piazza-castello-e-torre-littoria"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/piazza-castello-e-torre-littoria"/>
   </url>
   <url>
@@ -108,6 +118,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/ponte-isabella"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/ponte-isabella"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/ponte-isabella"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/ponte-isabella"/>
   </url>
   <url>
@@ -117,6 +128,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/krovovi-torina"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/krovovi-torina"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/krovovi-torina"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/krovovi-torina"/>
   </url>
   <url>
@@ -126,6 +138,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/havanac-kastro"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/havanac-kastro"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/havanac-kastro"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/havanac-kastro"/>
   </url>
   <url>
@@ -135,6 +148,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-vazom"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-vazom"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-vazom"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-vazom"/>
   </url>
   <url>
@@ -144,6 +158,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-bocama"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-bocama"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-bocama"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-bocama"/>
   </url>
   <url>
@@ -153,6 +168,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-cvijecem"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
   </url>
   <url>
@@ -162,6 +178,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/autoportret"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/autoportret"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/autoportret"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/autoportret"/>
   </url>
   <url>
@@ -171,6 +188,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/prijatelji"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/prijatelji"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/prijatelji"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/prijatelji"/>
   </url>
   <url>
@@ -180,6 +198,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/staro-groblje"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/staro-groblje"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/staro-groblje"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/staro-groblje"/>
   </url>
   <url>
@@ -189,6 +208,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/jutarnje-svjetlo"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/jutarnje-svjetlo"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/jutarnje-svjetlo"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/jutarnje-svjetlo"/>
   </url>
   <url>
@@ -198,6 +218,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/svjetlo-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/svjetlo-u-sumrak"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
   </url>
 
@@ -209,6 +230,7 @@
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/"/>
   </url>
   <url>
@@ -218,6 +240,7 @@
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/radovi"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/radovi"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/radovi"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/radovi"/>
   </url>
   <url>
@@ -227,6 +250,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/galerija"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/galerija"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/galerija"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/galerija"/>
   </url>
   <url>
@@ -236,6 +260,7 @@
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/zum"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/zum"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/zum"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/zum"/>
   </url>
   <url>
@@ -245,6 +270,7 @@
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/o-autoru"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/o-autoru"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/o-autoru"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/o-autoru"/>
   </url>
   <url>
@@ -254,6 +280,7 @@
     <priority>0.5</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/kontakt"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/kontakt"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/kontakt"/>
   </url>
   <url>
@@ -263,6 +290,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/aria-di-torino"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/aria-di-torino"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/aria-di-torino"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/aria-di-torino"/>
   </url>
   <url>
@@ -272,6 +300,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/piazza-castello-e-torre-littoria"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/piazza-castello-e-torre-littoria"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/piazza-castello-e-torre-littoria"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/piazza-castello-e-torre-littoria"/>
   </url>
   <url>
@@ -281,6 +310,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/ponte-isabella"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/ponte-isabella"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/ponte-isabella"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/ponte-isabella"/>
   </url>
   <url>
@@ -290,6 +320,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/krovovi-torina"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/krovovi-torina"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/krovovi-torina"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/krovovi-torina"/>
   </url>
   <url>
@@ -299,6 +330,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/havanac-kastro"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/havanac-kastro"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/havanac-kastro"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/havanac-kastro"/>
   </url>
   <url>
@@ -308,6 +340,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-vazom"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-vazom"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-vazom"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-vazom"/>
   </url>
   <url>
@@ -317,6 +350,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-bocama"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-bocama"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-bocama"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-bocama"/>
   </url>
   <url>
@@ -326,6 +360,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-cvijecem"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
   </url>
   <url>
@@ -335,6 +370,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/autoportret"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/autoportret"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/autoportret"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/autoportret"/>
   </url>
   <url>
@@ -344,6 +380,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/prijatelji"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/prijatelji"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/prijatelji"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/prijatelji"/>
   </url>
   <url>
@@ -353,6 +390,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/staro-groblje"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/staro-groblje"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/staro-groblje"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/staro-groblje"/>
   </url>
   <url>
@@ -362,6 +400,7 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/jutarnje-svjetlo"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/jutarnje-svjetlo"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/jutarnje-svjetlo"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/jutarnje-svjetlo"/>
   </url>
   <url>
@@ -371,6 +410,198 @@
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/svjetlo-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/svjetlo-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
+  </url>
+  <!-- ===== Italiano (/it/) ===== -->
+  <url>
+    <loc>https://markodumnic.art/it</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/radovi</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/radovi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/radovi"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/radovi"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/radovi"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/galerija</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/galerija"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/galerija"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/galerija"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/galerija"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/zum</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/zum"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/zum"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/zum"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/zum"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/o-autoru</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/o-autoru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/o-autoru"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/o-autoru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/o-autoru"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/kontakt</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/kontakt"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/aria-di-torino</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/aria-di-torino"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/aria-di-torino"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/aria-di-torino"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/aria-di-torino"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/piazza-castello-e-torre-littoria</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/piazza-castello-e-torre-littoria"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/piazza-castello-e-torre-littoria"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/piazza-castello-e-torre-littoria"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/piazza-castello-e-torre-littoria"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/ponte-isabella</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/ponte-isabella"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/ponte-isabella"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/ponte-isabella"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/ponte-isabella"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/krovovi-torina</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/krovovi-torina"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/krovovi-torina"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/krovovi-torina"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/krovovi-torina"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/havanac-kastro</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/havanac-kastro"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/havanac-kastro"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/havanac-kastro"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/havanac-kastro"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/mrtva-priroda-sa-vazom</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-vazom"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-vazom"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-vazom"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-vazom"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/mrtva-priroda-sa-bocama</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-bocama"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-bocama"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-bocama"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-bocama"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/mrtva-priroda-sa-cvijecem</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-cvijecem"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-cvijecem"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/autoportret</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/autoportret"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/autoportret"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/autoportret"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/autoportret"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/prijatelji</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/prijatelji"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/prijatelji"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/prijatelji"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/prijatelji"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/staro-groblje</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/staro-groblje"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/staro-groblje"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/staro-groblje"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/staro-groblje"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/jutarnje-svjetlo</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/jutarnje-svjetlo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/jutarnje-svjetlo"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/jutarnje-svjetlo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/jutarnje-svjetlo"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/svjetlo-u-sumrak</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/svjetlo-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/svjetlo-u-sumrak"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
   </url>
 </urlset>

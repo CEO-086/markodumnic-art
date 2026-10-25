@@ -20,10 +20,11 @@
   'use strict';
 
   /* --- Jezik stranice i korijen sajta ---
-     Ista skripta služi i en/splat.html. Sve putanje (vendor/, splat/,
+     Ista skripta služi i en/splat.html i it/splat.html. Sve putanje (vendor/, splat/,
      img/) računaju se od KORIJENA SAJTA, izvedenog iz adrese ove
      skripte (js/splat.js → ../), ne od adrese stranice. */
   var EN = document.documentElement.lang === 'en';
+  var IT = document.documentElement.lang === 'it';
   var KORIJEN_SAJTA = (function () {
     var s = document.currentScript;
     try { return new URL('../', s && s.src ? s.src : document.baseURI).href; }
@@ -34,7 +35,30 @@
     try { return new URL(put, KORIJEN_SAJTA).href; } catch (e) { return put; }
   }
 
-  var TEKST = EN ? {
+  var TEKST = IT ? {
+    natpis: ' — fotografia dell’opera, senza la vista da ogni angolazione.',
+    decimala: ',',
+    mjeriloSa: function (mb) { return 'Visualizzatore circa 1,4 MB · opera ' + mb; },
+    mjerilo: 'Visualizzatore circa 1,4 MB',
+    platno: function (n) {
+      return '«' + n + '» in tre dimensioni. ' +
+        'Le frecce ruotano la vista, più e meno avvicinano, ' +
+        'Home riporta alla vista iniziale, Esc chiude il visualizzatore.';
+    },
+    biblioteka: 'Il visualizzatore non è riuscito a caricare la sua libreria da ' +
+      '<code>vendor/spark/</code> o <code>vendor/three/</code>. ' +
+      'Probabilmente i file non sono stati pubblicati con il sito, oppure ' +
+      'le regole di sicurezza (CSP) li bloccano.',
+    citanje: function (u) {
+      return 'La ripresa <code>' + u + '</code> è stata trovata, ma non è ' +
+        'stato possibile leggerla come Gaussian splat. Probabilmente il file ' +
+        'è incompleto o in un formato che il visualizzatore non legge.';
+    },
+    spremno: function (mb) {
+      return 'L’opera è stata ripresa ed è pronta: ' + mb +
+        '. Il visualizzatore e l’opera si scaricano solo quando premete il pulsante.';
+    }
+  } : EN ? {
     natpis: ' — photograph of the work, without the view from every angle.',
     decimala: '.',
     mjeriloSa: function (mb) { return 'Viewer about 1.4 MB · work ' + mb; },
@@ -96,7 +120,23 @@
 
   /* Djela za koja prikazivač uopšte pokušava da traži fajl.
      Ključ je ?djelo=<id>; vrijednost nosi naziv i 2D zamjenu. */
-  var DJELA = EN ? {
+  var DJELA = IT ? {
+    'aria-di-torino': {
+      naziv: 'Aria di Torino',
+      slika: 'img/radovi/aria-di-torino.jpg',
+      opis: 'Una villa dal tetto rosso all’angolo di una strada e, sopra, un cielo di pennellate dense e vorticose di blu e di bianco.'
+    },
+    'havanac-kastro': {
+      naziv: 'Kastro, bichon avanese',
+      slika: 'img/radovi/havanac-kastro.jpg',
+      opis: 'Kastro, un bichon avanese, dorme su una coperta nello studio, tra cuscini e quadri appesi alla parete.'
+    },
+    'mrtva-priroda-sa-vazom': {
+      naziv: 'Natura morta con vaso',
+      slika: 'img/radovi/mrtva-priroda-sa-vazom.jpg',
+      opis: 'Un vaso blu, una piantina fiorita e una scatola sul tavolo, davanti alla parete variopinta dello studio.'
+    }
+  } : EN ? {
     'aria-di-torino': {
       naziv: 'Aria di Torino',
       slika: 'img/radovi/aria-di-torino.jpg',

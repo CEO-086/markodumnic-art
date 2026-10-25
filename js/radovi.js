@@ -10,17 +10,19 @@
 (function () {
   'use strict';
 
-  /* --- Jezik stranice: engleske stranice su pod en/ i nose lang="en" --- */
+  /* --- Jezik stranice: engleske stranice su pod en/ i nose lang="en",
+     italijanske pod it/ sa lang="it" --- */
   var ENGLESKI = document.documentElement.lang === 'en';
+  var ITALIJANSKI = document.documentElement.lang === 'it';
 
   /* --- Korijen sajta, izveden iz adrese OVE skripte (js/radovi.js),
-     ne iz adrese stranice — da podaci i slike rade i sa /en/ stranica. --- */
+     ne iz adrese stranice — da podaci i slike rade i sa /en/ i /it/ stranica. --- */
   var KORIJEN = (function () {
     var skripta = document.currentScript;
     try {
       if (skripta && skripta.src) { return new URL('../', skripta.src).href; }
     } catch (e) { /* stari pregledač — ispod je rezervni put */ }
-    return new URL(ENGLESKI ? '../' : './', window.location.href).href;
+    return new URL(ENGLESKI || ITALIJANSKI ? '../' : './', window.location.href).href;
   }());
 
   /* Pretvara putanju iz radovi.json (img/radovi/…) u adresu od korijena. */
@@ -36,7 +38,11 @@
 
   /* Nazivi serija — za vezu „Serija” na stranici djela. Ako radovi.json
      donese svoje nazive (polje `kategorije`), oni imaju prednost. */
-  var NAZIVI_SERIJA = ENGLESKI ? {
+  var NAZIVI_SERIJA = ITALIJANSKI ? {
+    'torino': 'Paesaggi torinesi',
+    'atelje': 'Scorci dallo studio',
+    'rodni-grad': 'Fantasticherie sulla città natale'
+  } : ENGLESKI ? {
     'torino': 'Turin Landscapes',
     'atelje': 'Glimpses from the Studio',
     'rodni-grad': 'Hometown Reveries'
@@ -47,7 +53,35 @@
   };
 
   /* --- Tekstovi koje skripta upisuje, po jeziku --- */
-  var TEKST = ENGLESKI ? {
+  var TEKST = ITALIJANSKI ? {
+    prikazano: function (n, ukupno) {
+      return (n === 1 ? 'Visualizzata ' : 'Visualizzate ') + n + (n === 1 ? ' opera' : ' opere') + ' su ' + ukupno;
+    },
+    upit: function (naziv) { return 'Informazioni su «' + naziv + '»'; },
+    fajlSistem:
+      'Il sito è stato aperto direttamente dal file system (file://), quindi ' +
+      'il browser non consente di leggere i dati delle opere. Aprite il sito ' +
+      'tramite un server locale, ad esempio eseguendo «python3 -m http.server» ' +
+      'nella cartella del sito e visitando http://localhost:8000 nel browser.',
+    nedostupno: function (status) {
+      return 'I dati delle opere non sono disponibili (stato ' + status + '). ' +
+        'Verificate che il file ' + PUTANJA_PODACI + ' esista.';
+    },
+    nemaIdNaslov: 'Nessuna opera selezionata',
+    nemaIdTekst: 'L’indirizzo non indica alcuna opera. Sceglietene una dall’elenco delle opere.',
+    nijeNadjenoNaslov: 'Opera non trovata',
+    nijeNadjenoTekst: function (id) {
+      return 'Nell’elenco delle opere non ce n’è nessuna con l’identificativo «' + id + '». ' +
+        'Il link potrebbe essere vecchio o trascritto male.';
+    },
+    neucitanoNaslov: 'Impossibile caricare i dati',
+    neucitanoTekst:
+      'Non è possibile leggere i dati delle opere. Se avete aperto il sito con un ' +
+      'doppio clic su un file, apritelo invece tramite un server locale, ad esempio ' +
+      'eseguendo «python3 -m http.server» nella cartella del sito e visitando ' +
+      'http://localhost:8000 nel browser. Se siete su un server, verificate che il ' +
+      'file ' + PUTANJA_PODACI + ' esista e sia valido.'
+  } : ENGLESKI ? {
     prikazano: function (n, ukupno) {
       return 'Showing ' + n + ' of ' + ukupno + ' ' + (ukupno === 1 ? 'work' : 'works');
     },
@@ -116,10 +150,11 @@
   }
 
   /* Djelo na jeziku stranice: na engleskim stranicama naziv, opis i
-     tehnika dolaze iz polja `en`; sve ostalo je isto za oba jezika. */
+     tehnika dolaze iz polja `en`, na italijanskim iz `it`; sve ostalo
+     je isto za sve jezike. */
   function naJeziku(djelo) {
-    if (!ENGLESKI || !djelo) { return djelo; }
-    var en = djelo.en || {};
+    if (!(ENGLESKI || ITALIJANSKI) || !djelo) { return djelo; }
+    var en = (ITALIJANSKI ? djelo.it : djelo.en) || {};
     var kopija = {};
     Object.keys(djelo).forEach(function (k) { kopija[k] = djelo[k]; });
     kopija.naziv = en.naziv || djelo.naziv;
@@ -129,11 +164,11 @@
   }
 
   /* Da li izvorni naziv treba prikazati — samo kad se razlikuje od
-     naziva na stranici. Na engleskom bez obzira na velika slova
-     („Turin rooftops” je isto što i „Turin Rooftops”). */
+     naziva na stranici. Na engleskom i italijanskom bez obzira na
+     velika slova („Turin rooftops” je isto što i „Turin Rooftops”). */
   function imaIzvorniNaziv(djelo) {
     if (!djelo.originalniNaziv) { return false; }
-    if (ENGLESKI) {
+    if (ENGLESKI || ITALIJANSKI) {
       return djelo.originalniNaziv.toLowerCase() !== String(djelo.naziv || '').toLowerCase();
     }
     return djelo.originalniNaziv !== djelo.naziv;
@@ -499,7 +534,7 @@
         var nazivSerije = '';
         ((podaci && podaci.kategorije) || []).forEach(function (k) {
           if (k.id === spisak[indeks].kategorija) {
-            nazivSerije = (ENGLESKI && k.nazivEn) || k.naziv;
+            nazivSerije = (ITALIJANSKI && k.nazivIt) || (ENGLESKI && k.nazivEn) || k.naziv;
           }
         });
 

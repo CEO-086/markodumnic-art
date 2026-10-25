@@ -8,8 +8,9 @@
    Takođe: čita `?djelo=` iz adrese (stranica djela šalje korisnika ovdje
    sa tim parametrom) i prikazuje tihu liniju "Upit za djelo: ...".
 
-   Dvojezično: engleske stranice (en/kontakt.html, <html lang="en">)
-   uzimaju tekstove iz tabele TEKST.en; crnogorska ostaje kakva je bila.
+   Trojezično: engleske stranice (en/kontakt.html, <html lang="en">)
+   uzimaju tekstove iz tabele TEKST.en, italijanske (it/, lang="it")
+   iz TEKST.it; crnogorska ostaje kakva je bila.
    ========================================================= */
 
 (function () {
@@ -25,9 +26,11 @@
 
   var INSTAGRAM = "https://www.instagram.com/marko.mapko/";
 
-  /* Jezik strane. Engleske strane su u en/, pa su podaci jedan nivo gore. */
+  /* Jezik strane. Engleske i italijanske strane su u en/ i it/, pa su
+     podaci jedan nivo gore. */
   var ENGLESKI = document.documentElement.lang === "en";
-  var PUT_DO_PODATAKA = ENGLESKI ? "../data/radovi.json" : "data/radovi.json";
+  var ITALIJANSKI = document.documentElement.lang === "it";
+  var PUT_DO_PODATAKA = ENGLESKI || ITALIJANSKI ? "../data/radovi.json" : "data/radovi.json";
 
   /* Svi tekstovi koje korisnik vidi (i oni koji idu u mejl), po jeziku.
      Funkcije primaju broj ili naziv i vraćaju gotovu rečenicu. */
@@ -79,9 +82,33 @@
       otvaramo:
         "Opening your email application with the message filled in. " +
         "All that is left is to send it."
+    },
+    it: {
+      imePrazno: "Scrivete il vostro nome, così saprò chi mi scrive.",
+      epostaPrazno: "Scrivete il vostro indirizzo e-mail: senza, non è possibile rispondervi.",
+      epostaPogresno: "Questo indirizzo non sembra corretto: controllate la @ e il dominio.",
+      porukaPrazno: "Scrivete un messaggio, anche breve.",
+      provjeriteUnos: "Controllate i dati inseriti.",
+      upitZaDjelo: "Richiesta sull’opera: ",
+      jednoPolje: "Prima dell’invio va completato ancora un campo.",
+      visePolja: function (n) { return "Prima dell’invio vanno completati ancora " + n + " campi."; },
+      bezAdreseProzor:
+        "L’indirizzo e-mail non è ancora stato impostato sul sito, quindi il messaggio " +
+        "non può essere composto. Scrivete su Instagram: si apre in una nuova finestra.",
+      bezAdreseVeza:
+        "L’indirizzo e-mail non è ancora stato impostato sul sito, quindi il messaggio " +
+        "non può essere composto. Scrivete su Instagram: ",
+      naslovSajt: "Messaggio dal sito",
+      tijeloIme: "Nome: ",
+      tijeloEposta: "E-mail: ",
+      tijeloDjelo: "Opera: ",
+      tijeloPotpis: "Inviato dal sito.",
+      otvaramo:
+        "Si apre la vostra applicazione di posta con il messaggio già compilato. " +
+        "Non resta che inviarlo."
     }
   };
-  var T = ENGLESKI ? TEKST.en : TEKST.cnr;
+  var T = ITALIJANSKI ? TEKST.it : ENGLESKI ? TEKST.en : TEKST.cnr;
 
   /* Adresa se provjerava jednom, na učitavanju. Prazna ili polupopunjena
      adresa (npr. ostao samo "ime@") ne smije napraviti `mailto:` koji bi
@@ -171,9 +198,11 @@
           for (var i = 0; i < podaci.radovi.length; i++) {
             var rad = podaci.radovi[i];
             if (rad && rad.id === idDjela && typeof rad.naziv === "string") {
-              /* Na engleskom naziv iz rad.en.naziv, a ako ga nema — crnogorski. */
-              var naziv = ENGLESKI && rad.en && typeof rad.en.naziv === "string" && rad.en.naziv
-                ? rad.en.naziv
+              /* Na engleskom naziv iz rad.en.naziv, na italijanskom iz
+                 rad.it.naziv, a ako ga nema — crnogorski. */
+              var prevod = ITALIJANSKI ? rad.it : ENGLESKI ? rad.en : null;
+              var naziv = prevod && typeof prevod.naziv === "string" && prevod.naziv
+                ? prevod.naziv
                 : rad.naziv;
               prikaziDjelo(naziv);
               return;

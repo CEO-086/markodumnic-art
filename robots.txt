@@ -20,13 +20,17 @@ Disallow: /djelo.html
 Disallow: /djelo$
 Disallow: /en/djelo.html
 Disallow: /en/djelo$
+Disallow: /it/djelo.html
+Disallow: /it/djelo$
 Disallow: /djelo?
 Disallow: /en/djelo?
+Disallow: /it/djelo?
 
 # Eksplicitno propuštanje stranica djela — da ostane jasno i ako neko
 # kasnije doda šire pravilo iznad.
 Allow: /djelo/
 Allow: /en/djelo/
+Allow: /it/djelo/
 
 # --- Nije sadržaj za indeks ----------------------------------------------
 Disallow: /data/

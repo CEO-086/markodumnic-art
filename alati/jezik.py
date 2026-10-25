@@ -2,7 +2,8 @@
 """Prekidač jezika (zastavice) i hreflang za sve stranice.
 
 Pokretanje iz korijena sajta:  python3 alati/jezik.py
-Crnogorske stranice su u korijenu, engleske iste putanje pod en/.
+Crnogorske stranice su u korijenu, engleske iste putanje pod en/,
+italijanske pod it/.
 Blok prekidača stoji između <!-- jezik --> i <!-- /jezik --> u zaglavlju,
 a hreflang veze između <!-- hreflang --> i <!-- /hreflang --> u <head>.
 Skripta je idempotentna: svako pokretanje prepiše oba bloka.
@@ -25,6 +26,11 @@ ZASTAVA_EN = ('<svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRat
               '<path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/>'
               '<path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/>'
               '</svg>')
+ZASTAVA_IT = ('<svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false">'
+              '<rect width="10" height="20" fill="#009246"/>'
+              '<rect x="10" width="10" height="20" fill="#F1F2F1"/>'
+              '<rect x="20" width="10" height="20" fill="#CE2B37"/>'
+              '</svg>')
 
 def stranice():
     for d, _, fajlovi in os.walk(KORIJEN):
@@ -38,12 +44,14 @@ def stranice():
 def obradi(rel):
     put = os.path.join(KORIJEN, rel)
     s = open(put, encoding='utf-8').read()
-    en = rel.startswith('en' + os.sep)
-    stranica = rel[3:] if en else rel                   # putanja bez en/
+    prvi = rel.split(os.sep)[0]
+    jezik = prvi if prvi in ('en', 'it') else 'me'
+    stranica = rel[3:] if jezik != 'me' else rel          # putanja bez en/ ili it/
     dubina = rel.count(os.sep)
     gore = '../' * dubina
-    href_me = gore + stranica.replace(os.sep, '/')
-    href_en = gore + 'en/' + stranica.replace(os.sep, '/')
+    href = {'me': gore + stranica.replace(os.sep, '/'),
+            'en': gore + 'en/' + stranica.replace(os.sep, '/'),
+            'it': gore + 'it/' + stranica.replace(os.sep, '/')}
     javno = stranica.replace(os.sep, '/')
     if javno == 'index.html':
         javno = ''
@@ -51,7 +59,7 @@ def obradi(rel):
         javno = javno[:-5]          # čisti URL-ovi (cleanUrls na Vercelu, Pages to radi sam)
     if stranica == '404.html':
         # 404 se servira sa bilo koje dubine — veze moraju biti apsolutne
-        href_me, href_en = '/', '/en'
+        href = {'me': '/', 'en': '/en', 'it': '/it'}
 
     # Na telefonu (uz hamburger) prekidač je dugme sa zastavom trenutnog
     # jezika i strelicom koje otvara listu; od 820px su veze u nizu.
@@ -59,21 +67,26 @@ def obradi(rel):
                 '<path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>')
     kvacica = ('<svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false">'
                '<path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>')
-    zastava_dugme = (ZASTAVA_EN.replace('jezik-uk', 'jezik-uk-d') if en else ZASTAVA_ME)
+    zastave = {'me': ZASTAVA_ME, 'en': ZASTAVA_EN, 'it': ZASTAVA_IT}
+    zastava_dugme = (ZASTAVA_EN.replace('jezik-uk', 'jezik-uk-d') if jezik == 'en' else zastave[jezik])
+    dugme_tekst = {'me': ' Jezik: crnogorski. Promijeni jezik',
+                   'en': ' Language: English. Change language',
+                   'it': ' Lingua: italiano. Cambia lingua'}[jezik]
+    lista_ime = {'me': 'Jezik', 'en': 'Language', 'it': 'Lingua'}[jezik]
+    veze = ''
+    for kod, hl, lang, ime in (('me', 'sr-ME', 'sr-Latn-ME', 'Crnogorski'),
+                               ('en', 'en', 'en', 'English'),
+                               ('it', 'it', 'it', 'Italiano')):
+        veze += ('        <a class="jezik__veza" href="%s" hreflang="%s" lang="%s"%s>%s<span class="jezik__kod">%s</span><span class="jezik__ime">%s</span>%s</a>\n' % (
+            href[kod], hl, lang, ' aria-current="true"' if kod == jezik else '', zastave[kod], kod.upper(), ime, kvacica))
     blok = ('<!-- jezik -->\n'
             '    <div class="jezik">\n'
             '      <button class="jezik__dugme" type="button" aria-expanded="false" aria-controls="jezik-lista">%s<span class="jezik__kod">%s</span>%s<span class="vizuelno-skriveno">%s</span></button>\n'
             '      <nav class="jezik__lista" id="jezik-lista" aria-label="%s">\n'
-            '        <a class="jezik__veza" href="%s" hreflang="sr-ME" lang="sr-Latn-ME"%s>%s<span class="jezik__kod">ME</span><span class="jezik__ime">Crnogorski</span>%s</a>\n'
-            '        <a class="jezik__veza" href="%s" hreflang="en" lang="en"%s>%s<span class="jezik__kod">EN</span><span class="jezik__ime">English</span>%s</a>\n'
+            '%s'
             '      </nav>\n'
             '    </div>\n'
-            '    <!-- /jezik -->') % (
-                zastava_dugme, 'EN' if en else 'ME', strelica,
-                ' Language: English. Change language' if en else ' Jezik: crnogorski. Promijeni jezik',
-                'Language' if en else 'Jezik',
-                href_me, '' if en else ' aria-current="true"', ZASTAVA_ME, kvacica,
-                href_en, ' aria-current="true"' if en else '', ZASTAVA_EN, kvacica)
+            '    <!-- /jezik -->') % (zastava_dugme, jezik.upper(), strelica, dugme_tekst, lista_ime, veze)
     if '<!-- jezik -->' in s:
         s = re.sub(r'<!-- jezik -->.*?<!-- /jezik -->', lambda m: blok, s, flags=re.S)
     else:
@@ -82,20 +95,25 @@ def obradi(rel):
             s = s[:m.end()] + '\n\n    ' + blok + s[m.end():]
 
     # hreflang: Google traži ISO 639-1, pa sr-ME umjesto cnr (na <html> je lang="sr-Latn-ME": čitači ekrana nemaju glas za cnr).
-    url_me = DOMEN + javno
-    url_en = DOMEN + ('en/' + javno if javno else 'en')   # /en/ bi Vercel preusmjerio na /en
-    vlastiti = url_en if en else url_me
+    url = {'me': DOMEN + javno,
+           'en': DOMEN + ('en/' + javno if javno else 'en'),   # /en/ bi Vercel preusmjerio na /en
+           'it': DOMEN + ('it/' + javno if javno else 'it')}
+    vlastiti = url[jezik]
     noindex = 'name="robots" content="noindex' in s
+    lokal = {'me': 'sr_ME', 'en': 'en_GB', 'it': 'it_IT'}
     hreflang = ('<!-- hreflang -->\n'
                 '<link rel="alternate" hreflang="sr-ME" href="%s">\n'
                 '<link rel="alternate" hreflang="en" href="%s">\n'
-                '<link rel="alternate" hreflang="x-default" href="%s">\n') % (url_me, url_en, url_me)
+                '<link rel="alternate" hreflang="it" href="%s">\n'
+                '<link rel="alternate" hreflang="x-default" href="%s">\n') % (url['me'], url['en'], url['it'], url['me'])
     if not noindex:
         hreflang += '<link rel="canonical" href="%s">\n' % vlastiti
     hreflang += ('<meta property="og:url" content="%s">\n'
-                 '<meta property="og:locale" content="%s">\n'
-                 '<meta property="og:locale:alternate" content="%s">\n'
-                 '<!-- /hreflang -->') % (vlastiti, 'en_GB' if en else 'sr_ME', 'sr_ME' if en else 'en_GB')
+                 '<meta property="og:locale" content="%s">\n') % (vlastiti, lokal[jezik])
+    for kod in ('me', 'en', 'it'):
+        if kod != jezik:
+            hreflang += '<meta property="og:locale:alternate" content="%s">\n' % lokal[kod]
+    hreflang += '<!-- /hreflang -->'
     if '<!-- hreflang -->' in s:
         s = re.sub(r'<!-- hreflang -->.*?<!-- /hreflang -->', lambda m: hreflang, s, flags=re.S)
     elif '</head>' in s and not rel.endswith('404.html'):

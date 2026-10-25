@@ -19,10 +19,11 @@
 (function () {
   'use strict';
 
-  /* Jezik stranice i korijen sajta. Ista skripta služi i en/zum.html,
-     pa se putanje do pločica i podataka računaju od korijena sajta
+  /* Jezik stranice i korijen sajta. Ista skripta služi i en/zum.html
+     i it/zum.html, pa se putanje do pločica i podataka računaju od korijena sajta
      (adresa ove skripte, js/zum.js → ../), ne od adrese stranice. */
   var EN = document.documentElement.lang === 'en';
+  var IT = document.documentElement.lang === 'it';
   var KORIJEN_SAJTA = (function () {
     var s = document.currentScript;
     try { return new URL('../', s && s.src ? s.src : document.baseURI).href; }
@@ -33,7 +34,21 @@
     try { return new URL(put, KORIJEN_SAJTA).href; } catch (e) { return put; }
   }
 
-  var TEKST = EN ? {
+  var TEKST = IT ? {
+    cijela: ' — il dipinto intero, senza zoom a tasselli',
+    nedostupna: 'L\'immagine non è disponibile. Verificate che esista questo file: ',
+    bezPlocica: 'Impossibile trovare i tasselli: al loro posto è mostrata l\'immagine semplice.',
+    djelo: 'Opera',
+    ucitano: 'Caricata: ',
+    okno: ' — visualizzatore con zoom. Le frecce spostano l\'immagine, più e meno ' +
+      'ingrandiscono e riducono, zero riporta al dipinto intero.',
+    fajl: 'La pagina è stata aperta come file (file://), quindi il browser non ' +
+      'legge i dati dei tasselli. Avviate un server locale — ' +
+      './pokreni.sh — e aprite http://localhost:8000/it/zum.html',
+    neprocitano: function (m) {
+      return 'Impossibile leggere i dati dei tasselli (' + m + '): al loro posto è mostrata l\'immagine semplice.';
+    }
+  } : EN ? {
     cijela: ' — the whole painting, without tiled zoom',
     nedostupna: 'The image is not available. Check that this file exists: ',
     bezPlocica: 'The tiles could not be found, so the plain image is shown instead.',
@@ -63,18 +78,20 @@
     }
   };
 
-  /* Na engleskoj stranici naziv i tehnika dolaze iz data/radovi.json
-     (polje `en`), jer info.json pločica nosi crnogorske. Učitava se
-     jednom; ako ne stigne, ostaje ono što piše u info.json. */
+  /* Na engleskoj i italijanskoj stranici naziv i tehnika dolaze iz
+     data/radovi.json (polje `en`, odnosno `it`), jer info.json pločica
+     nosi crnogorske. Učitava se jednom; ako ne stigne, ostaje ono što
+     piše u info.json. */
+  var POLJE_JEZIKA = IT ? 'it' : 'en';
   var engleski = null;
   function engleskiPodaci() {
-    if (!EN || !window.fetch) { return Promise.resolve(null); }
+    if (!(EN || IT) || !window.fetch) { return Promise.resolve(null); }
     if (!engleski) {
       engleski = fetch(izKorijena('data/radovi.json'), { cache: 'default' })
         .then(function (o) { return o.ok ? o.json() : null; })
         .then(function (d) {
           var mapa = {};
-          ((d && d.radovi) || []).forEach(function (r) { if (r && r.id && r.en) { mapa[r.id] = r.en; } });
+          ((d && d.radovi) || []).forEach(function (r) { if (r && r.id && r[POLJE_JEZIKA]) { mapa[r.id] = r[POLJE_JEZIKA]; } });
           return mapa;
         })
         .catch(function () { return null; });
@@ -100,7 +117,7 @@
   if (!okno || !platno) { return; }
 
   /* --- Podešavanja --- */
-  /* Putanje u atributima su od korijena sajta (i na en/ stranicama). */
+  /* Putanje u atributima su od korijena sajta (i na en/ i it/ stranicama). */
   var OSNOVA = izKorijena(korijen.getAttribute('data-zum-osnova') || 'img/plocice');
   var REZERVA_DIR = izKorijena(korijen.getAttribute('data-zum-rezerva') || 'img/radovi');
   var PODRAZUMIJEVANI = korijen.getAttribute('data-zum-id') || 'aria-di-torino';
@@ -888,7 +905,7 @@
         });
       })
       .then(function (podaci) {
-        if (!podaci || !podaci.sadrzaj) { throw new Error(EN ? 'invalid info.json' : 'neispravan info.json'); }
+        if (!podaci || !podaci.sadrzaj) { throw new Error(IT ? 'info.json non valido' : EN ? 'invalid info.json' : 'neispravan info.json'); }
 
         info = podaci;
         W = Number(info.sadrzaj.sirina) || 700;

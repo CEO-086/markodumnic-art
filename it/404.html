@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pagina non trovata — Marko Dumnić</title>
+<meta name="description" content="A questo indirizzo non c’è nessuna pagina. Sfogliate le opere, visitate la galleria virtuale o tornate alla home page.">
+<meta name="robots" content="noindex">
+<!-- SVE putanje na ovoj stranici su apsolutne: Cloudflare Pages servira
+     en/404.html za nepostojeće adrese pod /en/ (npr. /en/radovi/nesto/),
+     pa bi relativne pukle. Veze vode na engleske stranice (/en/...). -->
+<!-- fontovi -->
+<link rel="preload" href="/fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<!-- /fontovi -->
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+
+<!-- Ikone — isti blok kao na ostalim stranicama (vidi IZVJESTAJ-ikone.md). -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/ikone/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#1E1A15">
+
+<style>
+  /* =======================================================
+     Samo za ovu stranicu — nema smisla u zajedničkom CSS-u.
+     Isključivo var(--...) tokeni, bez novih boja.
+     ======================================================= */
+
+  /* Prazan ram — jedini vizuelni element stranice.
+     Platno koje je ostalo neispunjeno: vlasasta ivica i šrafura unutra. */
+  .prazan-ram {
+    max-width: 48rem;
+    margin-inline: auto;
+    padding: var(--s-7) var(--s-5);
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+  }
+
+  @media (min-width: 820px) {
+    .prazan-ram {
+      padding: var(--s-9) var(--s-8);
+    }
+  }
+
+  /* Red sa izlazima iz ćorsokaka. */
+  .izlazi {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--s-3);
+  }
+
+  /* Telefon: izlazi u jednoj koloni, sva tri dugmeta iste širine. */
+  @media (max-width: 520px) {
+    .izlazi {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  /* Centrirani tekst u ravnim redovima, bez jedne riječi u zadnjem. */
+  .prazan-ram .uvodni,
+  .tekst-centar p {
+    text-wrap: balance;
+  }
+</style>
+</head>
+<body>
+
+<a class="preskoci" href="#glavno">Vai al contenuto</a>
+
+<header class="zaglavlje">
+  <div class="zaglavlje__traka">
+    <a class="logotip" href="/it/index.html">
+      <span class="logotip__ime">Marko Dumnić</span>
+      <span class="logotip__uloga">Pittore</span>
+    </a>
+
+    <button class="meni-dugme" type="button" aria-expanded="false" aria-controls="glavna-navigacija">
+      <span class="meni-dugme__linija"></span>
+      <span class="meni-dugme__linija"></span>
+      <span class="vizuelno-skriveno">Menu</span>
+    </button>
+
+    <nav class="navigacija" id="glavna-navigacija" aria-label="Navigazione principale">
+      <a href="/it/">Home</a>
+      <a href="/it/o-autoru.html">L’artista</a>
+      <a href="/it/radovi.html">Opere</a>
+      <a href="/it/galerija.html">Galleria</a>
+      <a href="/it/kontakt.html">Contatti</a>
+    </nav>
+
+    <!-- jezik -->
+    <div class="jezik">
+      <button class="jezik__dugme" type="button" aria-expanded="false" aria-controls="jezik-lista"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#F1F2F1"/><rect x="20" width="10" height="20" fill="#CE2B37"/></svg><span class="jezik__kod">IT</span><svg class="jezik__strelica" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vizuelno-skriveno"> Lingua: italiano. Cambia lingua</span></button>
+      <nav class="jezik__lista" id="jezik-lista" aria-label="Lingua">
+        <a class="jezik__veza" href="/" hreflang="sr-ME" lang="sr-Latn-ME"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="30" height="20" fill="#C40308"/><rect x="0.6" y="0.6" width="28.8" height="18.8" fill="none" stroke="#D3AE3B" stroke-width="1.2"/><path fill="#D3AE3B" d="M15 4.6l1 1.5 3.4-1.7-1.1 3.3 2.4-.6-2.3 3.2-1.9.4.9 2.9-2.4-1.3-2.4 1.3.9-2.9-1.9-.4-2.3-3.2 2.4.6-1.1-3.3 3.4 1.7z"/></svg><span class="jezik__kod">ME</span><span class="jezik__ime">Crnogorski</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="/en" hreflang="en" lang="en"><svg class="jezik__zastava" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><clipPath id="jezik-uk"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath><path d="M0 0v30h60V0z" fill="#012169"/><path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30m0-30L0 30" clip-path="url(#jezik-uk)" stroke="#C8102E" stroke-width="4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="jezik__kod">EN</span><span class="jezik__ime">English</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="jezik__veza" href="/it" hreflang="it" lang="it" aria-current="true"><svg class="jezik__zastava" viewBox="0 0 30 20" aria-hidden="true" focusable="false"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#F1F2F1"/><rect x="20" width="10" height="20" fill="#CE2B37"/></svg><span class="jezik__kod">IT</span><span class="jezik__ime">Italiano</span><svg class="jezik__kvacica" viewBox="0 0 12 10" aria-hidden="true" focusable="false"><path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </nav>
+    </div>
+    <!-- /jezik -->
+  </div>
+</header>
+
+<main id="glavno">
+
+  <section class="sekcija">
+    <div class="omot">
+
+      <div class="prazan-ram srafura srafura--papir tekst-centar">
+        <p class="oznaka oznaka--gola">Errore 404</p>
+
+        <h1 class="naslov-1 mt-5">Una cornice vuota</h1>
+
+        <p class="uvodni mt-6">
+          A questo indirizzo non c’è nulla. La pagina è stata spostata oppure,
+          strada facendo, l’indirizzo è stato trascritto male.
+        </p>
+
+        <div class="izlazi mt-7">
+          <a class="dugme dugme--puno" href="/it/radovi.html">Opere</a>
+          <a class="dugme" href="/it/galerija.html">Galleria virtuale</a>
+          <a class="dugme" href="/it/index.html">Home</a>
+        </div>
+      </div>
+
+      <!-- Klasa .tekst-centar ide na roditelja: base.css preko nje daje
+           paragrafu `margin-inline: auto`, pa se centrira i sam blok. -->
+      <div class="tekst-centar mt-7">
+        <p>
+          <small>
+            Se siete arrivati qui da un link di questo sito, segnalatemelo dalla
+            <a href="/it/kontakt.html">pagina dei contatti</a>: lo correggerò volentieri.
+          </small>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="podnozje">
+  <div class="podnozje__unutra">
+    <div class="podnozje__znak" aria-hidden="true"><img src="/img/md-znak-160.webp" srcset="/img/md-znak-160.webp 2x, /img/md-znak-240.webp 3x" width="50" height="50" alt="" loading="lazy" decoding="async"></div>
+    <div class="podnozje__blok">
+      <p class="podnozje__ime">Marko Dumnić</p>
+      <p class="podnozje__meta">Pittore · Cettigne, Montenegro</p>
+      <p class="podnozje__meta">Accademia Albertina di Belle Arti, Torino</p>
+    </div>
+    <nav class="podnozje__blok" aria-label="Piè di pagina">
+      <a href="/it/">Home</a>
+      <a href="/it/o-autoru.html">L’artista</a>
+      <a href="/it/radovi.html">Opere</a>
+      <a href="/it/galerija.html">Galleria virtuale</a>
+      <a href="/it/kontakt.html">Contatti</a>
+    </nav>
+    <div class="podnozje__blok">
+      <a class="podnozje__insta" href="https://www.instagram.com/marko.mapko/" rel="noopener">
+        <span class="podnozje__insta-tekst">Instagram</span><span class="vizuelno-skriveno"> — @marko.mapko</span>
+        <span class="podnozje__ikona" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <p class="podnozje__potpis">© <span data-godina>2026</span> Marko Dumnić. Tutti i diritti riservati.
+    <span class="podnozje__pokrece">Powered by <a href="https://cryptogorac.com" rel="noopener">cryptogorac.com</a></span></p>
+</footer>
+
+<script src="/js/base.js"></script>
+</body>
+</html>
