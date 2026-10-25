@@ -797,6 +797,12 @@ figcaption {
   color: var(--ink);
 }
 
+/* Ime u podnožju vodi na početnu, kao logotip u zaglavlju: bez
+   podvlake, zlatna crta tek na hover. */
+.podnozje__ime a { color: inherit; text-decoration: none; text-decoration-color: transparent; }
+.podnozje__ime a:hover,
+.podnozje__ime a:focus-visible { text-decoration: underline; text-decoration-color: var(--accent); }
+
 .podnozje__meta {
   max-width: 36ch;
   font-size: var(--t-sm);
