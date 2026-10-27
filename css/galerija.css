@@ -115,12 +115,11 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 /* Ukras ulaza: jedno djelo (Kastro), iskošeno kao da visi na zidu
    koji odmiče udesno, pod svjetlom reflektora.
    - Računar i tablet (> 720px): u desnom dijelu ploče, pored teksta (ulaz je 54ch).
-   - Telefon: u gornjem desnom uglu ploče, iznad teksta, ulazi s desne
-     ivice i ivica ga malo siječe — kao da stojite na početku zida sale
-     i gledate niz njega. Dok se blok skroluje u kadar, slika se polako
+   - Telefon: na vrhu ploče, u sredini, iznad teksta. Dok se blok skroluje u kadar, slika se polako
      okreće ka posjetiocu (samo gdje pregledač zna animation-timeline
      i nije uključeno smanjeno kretanje; inače stoji pod istim uglom). */
 .galerija-ulaz-slika { display: none; }
+.galerija-ulaz-slika__kartica { display: none; }
 
 .galerija[data-stanje="ulaz"] .galerija-ulaz-slika {
   display: block;
@@ -157,49 +156,77 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   .galerija[data-stanje="ulaz"] .galerija-ulaz-slika {
     position: absolute;
     top: 50%;
-    right: clamp(2rem, 9%, 8rem);
-    width: min(26%, 21rem);
-    transform: translateY(-50%) perspective(1200px) rotateY(-18deg);
+    right: clamp(2rem, 8%, 7rem);
+    width: min(32%, 26rem);
+    transform: translateY(-50%) perspective(1200px) rotateY(-27deg);
   }
 }
 
 /* Uži tablet: tekst zauzima više od pola ploče, slika se privija uz desnu ivicu. */
 @media (min-width: 721px) and (max-width: 959px) {
-  .galerija[data-stanje="ulaz"] .galerija-ulaz-slika { right: 5%; width: 24%; }
+  .galerija[data-stanje="ulaz"] .galerija-ulaz-slika { right: 4%; width: 28%; }
 }
 
 @media (max-width: 720px) {
-  /* Gornji desni ugao ploče: oznaka ide preko cijele širine, ispod nje
-     slika ulazi s desne ivice (ivica je siječe), a naslov stoji lijevo
-     od slike. Uvodni tekst kreće ispod slike: margin-top prati visinu
-     slike (kvadratna je, pa je visina ≈ širina). */
+  /* Telefon: slika je prva stvar u bloku — kao prvi pogled kroz vrata
+     sale. Stoji na vrhu, u sredini, okrenuta kao da visi na zidu koji
+     odmiče udesno; ispod nje tekst preko cijele širine, pa se naslov
+     ne lomi i ništa ne mora da se provlači pored slike. */
   .galerija[data-stanje="ulaz"] .galerija-ulaz-slika {
+    width: min(56%, 15.5rem);
+    margin: var(--s-7) 0 0 9%;           /* desno ostaje mjesto za karticu */
+    transform: perspective(800px) rotateY(-24deg);
+    transform-origin: 30% 50%;
+    pointer-events: auto;                /* dodir vodi u salu, kao dugme */
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Muzejska kartica pored slike, kao u sali — u istoj ravni zida,
+     pa se okreće zajedno sa slikom. */
+  .galerija-ulaz-slika__kartica {
+    display: block;
     position: absolute;
-    top: calc(var(--s-6) + 2.25rem);
-    right: -6%;
-    width: min(40%, 15rem);
-    transform: perspective(700px) rotateY(-24deg);
-    transform-origin: 100% 50%;
+    left: calc(100% + 0.7rem);
+    top: 54%;
+    width: 4.5rem;
+    padding: 0.4rem 0.45rem 0.45rem;
+    background: var(--ink);              /* svijetla kartica na tamnom zidu */
+    color: var(--paper);
+    font-family: var(--font-ui);
+    font-size: 0.45rem;
+    line-height: 1.35;
+    box-shadow: 0.25rem 0.35rem 0.6rem color-mix(in srgb, black 50%, transparent);
+  }
+  .galerija-ulaz-slika__autor {
+    display: block;
+    font-size: 0.4rem;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .galerija-ulaz-slika__naziv {
+    display: block;
+    margin: 0.15rem 0 0.1rem;
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    line-height: 1.15;
   }
 
   .galerija[data-stanje="ulaz"] .galerija-ulaz { padding-top: var(--s-6); }
-  .galerija[data-stanje="ulaz"] .galerija-ulaz__naslov { max-width: 58%; }
-  .galerija[data-stanje="ulaz"] .galerija-ulaz__uvod {
-    margin-top: max(0px, calc(min(42%, 15rem) - 1.4rem));
-  }
 
   /* Svjetlo pada odozgo, uži snop nego na računaru. */
   .galerija-ulaz-slika::before {
-    inset: -40% -10% -20% -30%;
-    background: radial-gradient(45% 60% at 45% 25%,
+    inset: -35% -30% -15%;
+    background: radial-gradient(45% 55% at 50% 30%,
       color-mix(in srgb, var(--ink) 15%, transparent),
       transparent 75%);
   }
 }
 
 @keyframes galerija-kastro-okret {
-  from { transform: perspective(700px) rotateY(-30deg); }
-  to   { transform: perspective(700px) rotateY(-14deg); }
+  from { transform: perspective(800px) rotateY(-34deg); }
+  to   { transform: perspective(800px) rotateY(-18deg); }
 }
 
 @supports (animation-timeline: view()) {

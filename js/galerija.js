@@ -3626,6 +3626,12 @@ if (korijen) {
   } else {
     stanje('ulaz');
     if (el.pokreni) { el.pokreni.addEventListener('click', ulaz); }
+    /* Slika Kastra na ulaznom ekranu (na telefonu) vodi u salu isto kao
+       dugme. Ostaje aria-hidden: za tastaturu i čitače ekrana tu je dugme. */
+    const ukras = korijen.querySelector('.galerija-ulaz-slika');
+    if (ukras && el.pokreni) {
+      ukras.addEventListener('click', function () { el.pokreni.click(); });
+    }
     najaviKadTreba();
     /* „Uđi u galeriju“ sa početne (galerija.html?ulaz) ulazi odmah u
        salu, bez drugog klika. Parametar se briše iz adrese, pa
