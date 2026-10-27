@@ -106,6 +106,17 @@
         <!-- ================= TAMNA SOBA: ulaz, platno, HUD, panel ================= -->
         <div class="galerija-scena soba-tamna">
 
+          <!-- Ukras ulaza: Kastro iskošen kao na zidu sale, pod svjetlom.
+               Samo ukras (aria-hidden, prazan alt); na telefonu stoji
+               na vrhu bloka, iznad teksta (zato je prije ulaza u DOM-u). -->
+          <figure class="galerija-ulaz-slika" aria-hidden="true">
+            <picture>
+              <source type="image/avif" srcset="img/radovi/w/havanac-kastro-480.avif 480w, img/radovi/w/havanac-kastro-800.avif 800w, img/radovi/w/havanac-kastro-1200.avif 1200w" sizes="(min-width: 960px) min(26vw, 21rem), min(64vw, 20rem)">
+              <source type="image/webp" srcset="img/radovi/w/havanac-kastro-480.webp 480w, img/radovi/w/havanac-kastro-800.webp 800w, img/radovi/w/havanac-kastro-1200.webp 1200w" sizes="(min-width: 960px) min(26vw, 21rem), min(64vw, 20rem)">
+              <img src="img/radovi/w/havanac-kastro-800.webp" alt="" width="1398" height="1400" loading="lazy" decoding="async">
+            </picture>
+          </figure>
+
           <!-- Ulazni ekran. 3D se NE pokreće sam — Three.js se preuzima tek na klik. -->
           <div class="galerija-ulaz" id="galerija-ulaz">
             <p class="galerija-ulaz__oznaka">Dvije sale · 13 djela</p>
@@ -131,17 +142,6 @@
               Uključeno vam je smanjeno kretanje, pa kamera prelazi odmah, bez klizanja.
             </p>
           </div>
-
-          <!-- Ukras ulaza: Kastro iskošen kao na zidu sale, pod svjetlom.
-               Samo ukras (aria-hidden, prazan alt); lazy, pa ga telefon,
-               gdje je sakriven, uopšte ne preuzima. -->
-          <figure class="galerija-ulaz-slika" aria-hidden="true">
-            <picture>
-              <source type="image/avif" srcset="img/radovi/w/havanac-kastro-480.avif 480w, img/radovi/w/havanac-kastro-800.avif 800w, img/radovi/w/havanac-kastro-1200.avif 1200w" sizes="min(26vw, 21rem)">
-              <source type="image/webp" srcset="img/radovi/w/havanac-kastro-480.webp 480w, img/radovi/w/havanac-kastro-800.webp 800w, img/radovi/w/havanac-kastro-1200.webp 1200w" sizes="min(26vw, 21rem)">
-              <img src="img/radovi/w/havanac-kastro-800.webp" alt="" width="1398" height="1400" loading="lazy" decoding="async">
-            </picture>
-          </figure>
 
           <!-- Platno. Canvas ubacuje js/galerija.js. -->
           <div class="galerija-platno" id="galerija-platno"></div>
