@@ -112,6 +112,50 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   mask-image: radial-gradient(120% 120% at 100% 100%, var(--ink) 30%, transparent 72%);
 }
 
+/* Ukras ulaza: jedno djelo (Kastro) u desnom dijelu ploče, iskošeno
+   kao da visi na zidu koji odmiče udesno, pod svjetlom reflektora.
+   Samo na širini gdje ima mjesta pored teksta (ulaz je 54ch); na užem
+   ekranu se ne prikazuje, a pošto je slika lazy, ne preuzima se ni. */
+.galerija-ulaz-slika { display: none; }
+
+@media (min-width: 960px) {
+  .galerija[data-stanje="ulaz"] .galerija-ulaz-slika {
+    display: block;
+    position: absolute;
+    z-index: 1;               /* iznad šrafure (::after scene) */
+    top: 50%;
+    right: clamp(3rem, 9%, 8rem);
+    width: min(26%, 21rem);
+    margin: 0;
+    pointer-events: none;
+    transform: translateY(-50%) perspective(1200px) rotateY(-18deg);
+    transform-origin: 50% 50%;
+  }
+
+  /* Svjetlo reflektora na zidu — mrlja iznad i iza slike. */
+  .galerija-ulaz-slika::before {
+    content: "";
+    position: absolute;
+    inset: -45% -40% -25%;
+    z-index: -1;
+    background: radial-gradient(50% 55% at 50% 35%,
+      color-mix(in srgb, var(--ink) 13%, transparent),
+      transparent 75%);
+  }
+
+  .galerija-ulaz-slika img {
+    display: block;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    border: clamp(6px, 0.6vw, 9px) solid black;
+    outline: 1px solid var(--rule-strong);
+    box-shadow:
+      1.4rem 1.6rem 2.4rem color-mix(in srgb, black 60%, transparent),
+      0.3rem 0.4rem 0.6rem color-mix(in srgb, black 45%, transparent);
+  }
+}
+
 .galerija-ulaz__oznaka {
   margin: 0;
   font-family: var(--font-ui);

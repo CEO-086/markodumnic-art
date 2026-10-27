@@ -132,6 +132,17 @@
             </p>
           </div>
 
+          <!-- Ukras ulaza: Kastro iskošen kao na zidu sale, pod svjetlom.
+               Samo ukras (aria-hidden, prazan alt); lazy, pa ga telefon,
+               gdje je sakriven, uopšte ne preuzima. -->
+          <figure class="galerija-ulaz-slika" aria-hidden="true">
+            <picture>
+              <source type="image/avif" srcset="img/radovi/w/havanac-kastro-480.avif 480w, img/radovi/w/havanac-kastro-800.avif 800w, img/radovi/w/havanac-kastro-1200.avif 1200w" sizes="min(26vw, 21rem)">
+              <source type="image/webp" srcset="img/radovi/w/havanac-kastro-480.webp 480w, img/radovi/w/havanac-kastro-800.webp 800w, img/radovi/w/havanac-kastro-1200.webp 1200w" sizes="min(26vw, 21rem)">
+              <img src="img/radovi/w/havanac-kastro-800.webp" alt="" width="1398" height="1400" loading="lazy" decoding="async">
+            </picture>
+          </figure>
+
           <!-- Platno. Canvas ubacuje js/galerija.js. -->
           <div class="galerija-platno" id="galerija-platno"></div>
 
