@@ -14,7 +14,7 @@ Potrebno:  pip install fonttools brotli
   2. Skupi sve znakove koje sajt stvarno ispisuje: tekst iz *.html, js/*.js,
      data/*.json i css/*.css (bez komentara i bez vendor/), plus osnovni
      latinični skup (cio ASCII i tvrdi razmak) i obavezni
-     znakovi crnogorske latinice i tipografije (čćšžđ śź, — – „ “ ” ’ · × … → ←).
+     znakovi crnogorske latinice i tipografije (čćšžđ śź, italijanski àèéìòù i velika slova za text-transform, — – „ “ ” ’ · × … → ←).
      Uzimaju se samo znakovi iz opsega u kojima je Google Fonts ove fontove
      i ranije služio (latin + latin-ext) i obavezni znakovi — simboli poput
      ▶ ◀ ✕ i dalje dolaze iz sistemskog fonta, kao i do sada, da se izgled
@@ -83,7 +83,7 @@ GOOGLE_OPSEZI = (
     'U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, '
     'U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF')
 # Uvijek unutra, i kad ih trenutno nema u tekstu.
-OBAVEZNI = ('čćšžđČĆŠŽĐśźŚŹ' '—–„“”‘’‚«»·×…→←' '€§°')
+OBAVEZNI = ('čćšžđČĆŠŽĐśźŚŹ' 'àèéìíòóùÀÈÉÌÍÒÓÙ' '—–„“”‘’‚«»·×…→←' '€§°')
 OSNOVNI = [chr(c) for c in range(0x20, 0x7F)] + ['\u00A0']
 
 

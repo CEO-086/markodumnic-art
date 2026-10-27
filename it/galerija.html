@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Galleria virtuale — Marko Dumnić</title>
 <!-- Prije stilova: postavi <html data-js>, da skrivena 2D mreža ne preuzima slike (vidi js/rano.js) -->
-<script src="../js/rano.js"></script>
+<script src="../js/rano.js?v=d70666587b"></script>
 <meta name="description" content="Una sala espositiva virtuale con i dipinti di Marko Dumnić: paesaggi torinesi, scorci dallo studio e Cettigne. Basta un clic su una tela e la telecamera vi si ferma davanti.">
 <!-- fontovi -->
-<link rel="preload" href="../fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/inter-var.woff2?v=9d83462df0" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/eb-garamond-var.woff2?v=bfcf9b53f7" as="font" type="font/woff2" crossorigin>
 <!-- /fontovi -->
-<link rel="stylesheet" href="../css/tokens.css">
-<link rel="stylesheet" href="../css/base.css">
-<link rel="stylesheet" href="../css/galerija.css">
+<link rel="stylesheet" href="../css/tokens.css?v=46934e8b67">
+<link rel="stylesheet" href="../css/base.css?v=01271421f3">
+<link rel="stylesheet" href="../css/galerija.css?v=ddfb0d8aa1">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
@@ -115,7 +115,6 @@
               <source type="image/webp" srcset="../img/radovi/w/havanac-kastro-480.webp 480w, ../img/radovi/w/havanac-kastro-800.webp 800w, ../img/radovi/w/havanac-kastro-1200.webp 1200w" sizes="(min-width: 721px) min(32vw, 26rem), min(56vw, 15.5rem)">
               <img src="../img/radovi/w/havanac-kastro-800.webp" alt="" width="1398" height="1400" loading="lazy" decoding="async">
             </picture>
-            <span class="galerija-ulaz-slika__kartica"><span class="galerija-ulaz-slika__autor">Marko Dumnić</span><span class="galerija-ulaz-slika__naziv">Kastro, bichon avanese</span>2023 · Olio su tela</span>
           </figure>
 
           <!-- Ulazni ekran. 3D se NE pokreće sam — Three.js se preuzima tek na klik. -->
@@ -530,7 +529,7 @@
     <span class="podnozje__pokrece">Powered by <a href="https://cryptogorac.com" rel="noopener">cryptogorac.com</a></span></p>
 </footer>
 
-<script src="../js/base.js"></script>
+<script src="../js/base.js?v=92dd296153"></script>
 <!-- NIJE type="module", i to je mjereno a ne nemar.
      Modul-skript se povlači kao CORS zahtjev, pa se sa `file://` adrese
      uopšte NE IZVRŠI — stranica otvorena duplim klikom ostala bi bez
@@ -540,6 +539,6 @@
      Dinamički `import('three')` unutra i dalje prolazi kroz importmapu —
      provjereno u pregledaču, importmapa važi za cio dokument, ne samo za
      modul-skripte. -->
-<script src="../js/galerija.js"></script>
+<script src="../js/galerija.js?v=3b4e67bb53"></script>
 </body>
 </html>

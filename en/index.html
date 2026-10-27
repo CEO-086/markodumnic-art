@@ -9,13 +9,13 @@
 <meta property="og:description" content="Oil on canvas: Turin Landscapes, Glimpses from the Studio and Hometown Reveries.">
 <meta property="og:type" content="website">
 <!-- fontovi -->
-<link rel="preload" href="../fonts/inter-var.woff2?v=a58fe3a39d" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../fonts/eb-garamond-var.woff2?v=c342854703" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/inter-var.woff2?v=9d83462df0" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/eb-garamond-var.woff2?v=bfcf9b53f7" as="font" type="font/woff2" crossorigin>
 <!-- /fontovi -->
-<link rel="stylesheet" href="../css/tokens.css">
-<link rel="stylesheet" href="../css/base.css">
-<link rel="stylesheet" href="../css/naslovna.css">
-<link rel="stylesheet" href="../css/kontakt.css">
+<link rel="stylesheet" href="../css/tokens.css?v=46934e8b67">
+<link rel="stylesheet" href="../css/base.css?v=01271421f3">
+<link rel="stylesheet" href="../css/naslovna.css?v=787fabb192">
+<link rel="stylesheet" href="../css/kontakt.css?v=4ea4f540fe">
 <!-- Bez JavaScripta forma ne radi (nema servera): sklanja se, a ostaju
      direktni putevi do autora. Isto kao na stranici Kontakt. -->
 <noscript>
@@ -418,6 +418,15 @@
   <!-- 6 · Virtuelna galerija — najava -->
   <section class="sekcija najava-galerije soba-tamna" aria-labelledby="galerija-naslov" data-pojavi>
     <div class="omot najava-galerije__unutra">
+      <!-- Ista slika kao na ulazu u galeriju (iskošeni Kastro); vodi u salu.
+           Ukras: za tastaturu i čitače ekrana tu je dugme ispod. -->
+      <a class="najava-galerije__slika" href="../en/galerija.html?ulaz#galerija" aria-hidden="true" tabindex="-1">
+        <picture>
+          <source type="image/avif" srcset="../img/radovi/w/havanac-kastro-480.avif 480w, ../img/radovi/w/havanac-kastro-800.avif 800w, ../img/radovi/w/havanac-kastro-1200.avif 1200w" sizes="(min-width: 1024px) min(28vw, 24rem), min(56vw, 15.5rem)">
+          <source type="image/webp" srcset="../img/radovi/w/havanac-kastro-480.webp 480w, ../img/radovi/w/havanac-kastro-800.webp 800w, ../img/radovi/w/havanac-kastro-1200.webp 1200w" sizes="(min-width: 1024px) min(28vw, 24rem), min(56vw, 15.5rem)">
+          <img src="../img/radovi/w/havanac-kastro-800.webp" alt="" width="1398" height="1400" loading="lazy" decoding="async">
+        </picture>
+      </a>
       <h2 class="naslov-2 naslov--crta najava-galerije__naslov" id="galerija-naslov">Virtual Gallery</h2>
       <p class="uvodni najava-galerije__uvod">
         A selection of the works is hung in a 3D space that you can walk through like
@@ -582,7 +591,7 @@
     <span class="podnozje__pokrece">Powered by <a href="https://cryptogorac.com" rel="noopener">cryptogorac.com</a></span></p>
 </footer>
 
-<script src="../js/base.js"></script>
-<script src="../js/kontakt.js"></script>
+<script src="../js/base.js?v=92dd296153"></script>
+<script src="../js/kontakt.js?v=6ce25080e6"></script>
 </body>
 </html>
