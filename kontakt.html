@@ -16,8 +16,8 @@
 
 <!--
   Degradiranje bez JavaScripta:
-  forma nema server (action je prazan) i slanje radi isključivo js/kontakt.js
-  koji sastavlja `mailto:`. Bez JS-a dugme ne bi radilo ništa, a napomene bi
+  forma nema svoj server (action je prazan) i slanje radi isključivo js/kontakt.js
+  (Web3Forms, rezerva `mailto:`). Bez JS-a dugme ne bi radilo ništa, a napomene bi
   tvrdile nešto neistinito — zato se cijela forma i te napomene sklanjaju,
   a na njihovo mjesto staje blok sa direktnim putem do autora.
 -->
@@ -97,7 +97,7 @@
     <div class="omot">
       <h1 class="naslov-1">Kontakt</h1>
       <p class="uvodni uvodni-sa-js mt-6">
-        Za upite o kupovini radova, izložbama i saradnji. Poruku možete sastaviti
+        Za upite o kupovini radova, izložbama i saradnji. Poruku možete poslati
         ispod, pisati direktno e-poštom ili se javiti preko Instagrama.
       </p>
       <p class="uvodni uvodni-bez-js mt-6">
@@ -118,8 +118,7 @@
           <div class="forma-bez-js">
             <p class="forma-bez-js__naslov">Forma zahtijeva JavaScript</p>
             <p class="forma-bez-js__tekst">
-              Sajt nema server koji bi primio poruku — formu sastavlja skripta u
-              vašem browseru, pa bez JavaScripta ne može da radi. Javite se
+              Poruku šalje skripta u vašem browseru, pa bez JavaScripta ne može da radi. Javite se
               direktno:
             </p>
             <ul class="forma-bez-js__spisak">
@@ -136,8 +135,8 @@
             </p>
           </div>
 
-          <!-- Forma je statička: nema backend, zato je `action` prazan,
-               a slanje preuzima skripta na dnu strane (mailto). -->
+          <!-- Forma nema svoj backend (`action` je prazan): šalje je js/kontakt.js
+               preko Web3Forms na info@, a ako to ne uspije — preko mailto. -->
           <form class="forma" id="forma-kontakt" action="" method="post" novalidate>
 
             <!-- Popunjava skripta iz ?djelo= parametra; korisnik ga ne dira. -->
@@ -167,28 +166,18 @@
               <p class="polje__greska" id="greska-poruka"></p>
             </div>
 
+            <!-- Mamac za botove: čovjek ga ne vidi, bot ga čekira. -->
+            <input type="checkbox" name="botcheck" hidden tabindex="-1" autocomplete="off">
+
             <!-- Skupna poruka o greškama / potvrdi. Čita je čitač ekrana. -->
             <div class="forma__status" id="status-forme" role="status" aria-live="polite"></div>
 
             <div class="forma__dno">
-              <button class="dugme dugme--puno" type="submit">Sastavi poruku</button>
+              <button class="dugme dugme--puno" type="submit">Pošalji poruku</button>
             </div>
           </form>
 
-          <p class="napomena-forme napomena-forme--ispod">
-            Forma nije povezana sa serverom, pa poruka ne odlazi sa sajta — dugme
-            samo otvara vašu aplikaciju za e-poštu. Ako je nemate podešenu, pišite
-            direktno na <a href="mailto:info@markodumnic.art">info@markodumnic.art</a>.
-          </p>
 
-          <!-- ZA KORISNIKA — kako da forma stvarno šalje poruke:
-               1) Formspree — napravi formu na formspree.io i stavi njen endpoint u
-                  action="https://formspree.io/f/XXXX" uz method="post"; obriši JS za mailto.
-               2) Netlify Forms — ako je sajt na Netlifyju, dodaj atribut `netlify`
-                  na <form> i skriveno polje <input type="hidden" name="form-name" value="...">.
-               3) Cloudflare Worker — mali Worker koji prima POST i šalje mejl preko
-                  servisa (npr. MailChannels ili Resend); u action stavi URL Workera.
-               U sva tri slučaja ukloniti blok sa mailto skriptom i napomenu ispod forme. -->
         </div>
 
         <!-- ===== Podaci ===== -->
@@ -251,6 +240,6 @@
 </footer>
 
 <script src="js/base.js?v=92dd296153"></script>
-<script src="js/kontakt.js?v=3bdc81ddc8"></script>
+<script src="js/kontakt.js?v=6ac8b22d5c"></script>
 </body>
 </html>
