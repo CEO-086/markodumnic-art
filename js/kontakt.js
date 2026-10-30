@@ -1,9 +1,11 @@
 /* =========================================================
-   kontakt.js — kontakt forma bez servera.
+   kontakt.js — kontakt forma.
 
-   Sajt je statički i nema backend. Zato forma ne šalje ništa sama:
-   na potvrdu sastavi `mailto:` vezu sa popunjenim sadržajem i otvori je
-   u korisnikovoj aplikaciji za e-poštu. Pošteno i radi bez servera.
+   Sajt je statički i nema svoj backend. Poruku prima besplatni servis
+   Web3Forms (api.web3forms.com) i prosljeđuje je na ADRESA; odgovor ide
+   na e-poštu koju je posjetilac upisao (polje `email` = Reply-To).
+   Ako slanje ne uspije (mreža, servis, prazan ključ), forma pada na stari
+   put: sastavi `mailto:` vezu i otvori korisnikovu aplikaciju za e-poštu.
 
    Takođe: čita `?djelo=` iz adrese (stranica djela šalje korisnika ovdje
    sa tim parametrom) i prikazuje tihu liniju "Upit za djelo: ...".
@@ -24,6 +26,13 @@
      --------------------------------------------------------- */
   var ADRESA = "info@markodumnic.art";
 
+  /* Web3Forms pristupni ključ (vezan za ADRESA). Javan je po dizajnu —
+     servis šalje samo na adresu za koju je ključ izdat. Prazan ključ =
+     forma radi kao ranije, preko `mailto:`. Za CSP vidi connect-src u
+     vercel.json i _headers. */
+  var KLJUC_FORME = "6aad51ae-302f-4b9f-8956-e8e54e4ee52e";
+  var SERVIS_FORME = "https://api.web3forms.com/submit";
+
   var INSTAGRAM = "https://www.instagram.com/marko.mapko/";
 
   /* Jezik strane. Engleske i italijanske strane su u en/ i it/, pa su
@@ -36,6 +45,9 @@
      Funkcije primaju broj ili naziv i vraćaju gotovu rečenicu. */
   var TEKST = {
     cnr: {
+      saljem: "Šaljem poruku…",
+      poslato: "Hvala, poruka je poslata. Odgovor stiže na e-poštu koju ste upisali.",
+      neuspjelo: "Slanje nije uspjelo, pa otvaramo vašu aplikaciju za e-poštu sa popunjenom porukom.",
       imePrazno: "Upišite ime, da se zna ko piše.",
       epostaPrazno: "Upišite e-poštu, bez nje nema odgovora.",
       epostaPogresno: "Ova adresa ne izgleda ispravno — provjerite znak @ i domen.",
@@ -60,6 +72,9 @@
         "Ostaje samo da je pošaljete."
     },
     en: {
+      saljem: "Sending your message…",
+      poslato: "Thank you, your message has been sent. The reply will come to the email address you entered.",
+      neuspjelo: "Sending failed, so we are opening your email application with the message filled in.",
       imePrazno: "Please enter your name, so that I know who is writing.",
       epostaPrazno: "Please enter your email address — without it there is no way to reply.",
       epostaPogresno: "This address does not look right — please check the @ sign and the domain.",
@@ -84,6 +99,9 @@
         "All that is left is to send it."
     },
     it: {
+      saljem: "Invio del messaggio…",
+      poslato: "Grazie, il messaggio è stato inviato. La risposta arriverà all’indirizzo e-mail che avete indicato.",
+      neuspjelo: "L’invio non è riuscito, quindi apriamo la vostra applicazione di posta con il messaggio già compilato.",
       imePrazno: "Scrivete il vostro nome, così saprò chi mi scrive.",
       epostaPrazno: "Scrivete il vostro indirizzo e-mail: senza, non è possibile rispondervi.",
       epostaPogresno: "Questo indirizzo non sembra corretto: controllate la @ e il dominio.",
@@ -261,7 +279,7 @@
   });
 
 
-  /* === Slanje — mailto umjesto POST-a ====================== */
+  /* === Slanje — Web3Forms, a mailto kao rezerva ============ */
 
   function sastaviTijelo(vrijednosti) {
     var redovi = [
@@ -280,9 +298,67 @@
     return redovi.join("\n");
   }
 
+  var dugme = forma.querySelector('button[type="submit"]');
+  var mamac = forma.querySelector('input[name="botcheck"]');
+  var saljeSe = false;
+
+  /* Stari put: `mailto:` veza otvara korisnikovu aplikaciju za e-poštu. */
+  function otvoriMailto(naslov, vrijednosti, poruka) {
+    /* Adresa ide kroz encodeURI (ne ...Component): znak @ mora ostati @ da
+       ga klijent prepozna, a sve ostalo što bi pokvarilo vezu se kodira.
+       Naslov i tijelo idu kroz encodeURIComponent — tako č/ć/ž postanu UTF-8
+       procenti, novi red %0A, a & i ? ne presijeku upit. */
+    var veza = "mailto:" + encodeURI(ADRESA.trim()) +
+      "?subject=" + encodeURIComponent(naslov) +
+      "&body=" + encodeURIComponent(sastaviTijelo(vrijednosti));
+
+    status.textContent = poruka;
+    window.location.href = veza;
+  }
+
+  function posaljiServisu(naslov, vrijednosti) {
+    saljeSe = true;
+    if (dugme) { dugme.disabled = true; }
+    status.classList.remove("forma__status--greska");
+    status.textContent = T.saljem;
+
+    fetch(SERVIS_FORME, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        access_key: KLJUC_FORME,
+        subject: naslov,
+        from_name: vrijednosti.ime,
+        name: vrijednosti.ime,
+        email: vrijednosti.eposta,
+        message: sastaviTijelo(vrijednosti),
+        botcheck: mamac ? mamac.checked : false
+      })
+    })
+      .then(function (odgovor) {
+        return odgovor.json().then(function (podaci) {
+          if (!odgovor.ok || !podaci || podaci.success !== true) { throw new Error("servis"); }
+        });
+      })
+      .then(function () {
+        forma.reset();
+        /* reset() vraća skriveno polje na prazno — djelo ostaje isto. */
+        if (poljeDjelo) { poljeDjelo.value = idDjela; }
+        status.textContent = T.poslato;
+      })
+      .catch(function () {
+        otvoriMailto(naslov, vrijednosti, T.neuspjelo);
+      })
+      .then(function () {
+        saljeSe = false;
+        if (dugme) { dugme.disabled = false; }
+      });
+  }
+
   forma.addEventListener("submit", function (dogadjaj) {
-    /* Uvijek zaustavljamo normalno slanje — nema servera koji bi primio POST. */
+    /* Uvijek zaustavljamo normalno slanje — šalje skripta, ne browser. */
     dogadjaj.preventDefault();
+    if (saljeSe) { return; }
 
     var prvaGreska = null;
     var brojGresaka = 0;
@@ -336,16 +412,10 @@
       ? T.upitZaDjelo + (nazivDjela || vrijednosti.djelo)
       : T.naslovSajt;
 
-    /* Adresa ide kroz encodeURI (ne ...Component): znak @ mora ostati @ da
-       ga klijent prepozna, a sve ostalo što bi pokvarilo vezu se kodira.
-       Naslov i tijelo idu kroz encodeURIComponent — tako č/ć/ž postanu UTF-8
-       procenti, novi red %0A, a & i ? ne presijeku upit. */
-    var veza = "mailto:" + encodeURI(ADRESA.trim()) +
-      "?subject=" + encodeURIComponent(naslov) +
-      "&body=" + encodeURIComponent(sastaviTijelo(vrijednosti));
-
-    status.textContent = T.otvaramo;
-
-    window.location.href = veza;
+    if (KLJUC_FORME && window.fetch && window.JSON) {
+      posaljiServisu(naslov, vrijednosti);
+    } else {
+      otvoriMailto(naslov, vrijednosti, T.otvaramo);
+    }
   });
 }());

@@ -16,8 +16,8 @@
 
 <!--
   Degradiranje bez JavaScripta:
-  forma nema server (action je prazan) i slanje radi isključivo js/kontakt.js
-  koji sastavlja `mailto:`. Bez JS-a dugme ne bi radilo ništa, a napomene bi
+  forma nema svoj server (action je prazan) i slanje radi isključivo js/kontakt.js
+  (Web3Forms, rezerva `mailto:`). Bez JS-a dugme ne bi radilo ništa, a napomene bi
   tvrdile nešto neistinito — zato se cijela forma i te napomene sklanjaju,
   a na njihovo mjesto staje blok sa direktnim putem do autora.
 -->
@@ -98,7 +98,7 @@
       <h1 class="naslov-1">Contact</h1>
       <p class="uvodni uvodni-sa-js mt-6">
         For enquiries about purchasing works, exhibitions and collaborations. You can
-        compose a message below, write directly by email or get in touch on Instagram.
+        send a message below, write directly by email or get in touch on Instagram.
       </p>
       <p class="uvodni uvodni-bez-js mt-6">
         For enquiries about purchasing works, exhibitions and collaborations. Please
@@ -118,8 +118,7 @@
           <div class="forma-bez-js">
             <p class="forma-bez-js__naslov">The form requires JavaScript</p>
             <p class="forma-bez-js__tekst">
-              The site has no server to receive messages — the form is put together by
-              a script in your browser, so it cannot work without JavaScript. Please
+              The message is sent by a script in your browser, so it cannot work without JavaScript. Please
               get in touch directly:
             </p>
             <ul class="forma-bez-js__spisak">
@@ -136,8 +135,8 @@
             </p>
           </div>
 
-          <!-- Forma je statička: nema backend, zato je `action` prazan,
-               a slanje preuzima skripta na dnu strane (mailto). -->
+          <!-- Forma nema svoj backend (`action` je prazan): šalje je js/kontakt.js
+               preko Web3Forms na info@, a ako to ne uspije — preko mailto. -->
           <form class="forma" id="forma-kontakt" action="" method="post" novalidate>
 
             <!-- Popunjava skripta iz ?djelo= parametra; korisnik ga ne dira. -->
@@ -167,24 +166,18 @@
               <p class="polje__greska" id="greska-poruka"></p>
             </div>
 
+            <!-- Mamac za botove: čovjek ga ne vidi, bot ga čekira. -->
+            <input type="checkbox" name="botcheck" hidden tabindex="-1" autocomplete="off">
+
             <!-- Skupna poruka o greškama / potvrdi. Čita je čitač ekrana. -->
             <div class="forma__status" id="status-forme" role="status" aria-live="polite"></div>
 
             <div class="forma__dno">
-              <button class="dugme dugme--puno" type="submit">Compose message</button>
+              <button class="dugme dugme--puno" type="submit">Send message</button>
             </div>
           </form>
 
-          <p class="napomena-forme napomena-forme--ispod">
-            The form is not connected to a server, so the message does not leave the
-            site — the button simply opens your email application. If you do not have
-            one set up, please write directly to
-            <a href="mailto:info@markodumnic.art">info@markodumnic.art</a>.
-          </p>
 
-          <!-- ZA KORISNIKA — kako da forma stvarno šalje poruke: vidi isti
-               komentar u ../kontakt.html (Formspree, Netlify Forms ili
-               Cloudflare Worker). Izmjenu primijeniti na obje stranice. -->
         </div>
 
         <!-- ===== Podaci ===== -->
@@ -247,6 +240,6 @@
 </footer>
 
 <script src="../js/base.js?v=92dd296153"></script>
-<script src="../js/kontakt.js?v=3bdc81ddc8"></script>
+<script src="../js/kontakt.js?v=6ac8b22d5c"></script>
 </body>
 </html>
