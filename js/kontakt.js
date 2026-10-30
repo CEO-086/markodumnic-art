@@ -22,7 +22,7 @@
      veze) — kad se mijenja, mijenja se na oba mjesta.
      Ako se ikad isprazni, dugme vodi korisnika na Instagram umjesto na mejl.
      --------------------------------------------------------- */
-  var ADRESA = "mfnlulu@gmail.com";
+  var ADRESA = "info@markodumnic.art";
 
   var INSTAGRAM = "https://www.instagram.com/marko.mapko/";
 
