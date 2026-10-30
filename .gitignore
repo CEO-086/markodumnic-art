@@ -7,3 +7,5 @@ node_modules/
 
 # Originalne fotografije su samo lokalno (repo je javan); čuvaju se na Mac-u i u fajlovima projekta
 izvorne-fotografije/*.jpg
+.vercel
+.env*
