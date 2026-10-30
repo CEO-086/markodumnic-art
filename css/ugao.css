@@ -1,0 +1,87 @@
+/* Proba uglova gledanja — samo tokeni, nijedan hex. */
+
+.ugao-okvir {
+  margin-block: var(--s-6);
+}
+
+.ugao-okno {
+  position: relative;
+  width: 100%;
+  height: min(66vh, 620px);
+  background: var(--paper-ink);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+}
+
+.ugao-okno:active { cursor: grabbing; }
+.ugao-okno canvas { display: block; width: 100%; height: 100%; }
+
+.ugao-kontrole {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+
+/* Prekidač (aria-pressed) ima stalan natpis, pa se uključeno stanje mora
+   vidjeti i bez teksta: popunjeno dugme, kao .dugme--puno. */
+.ugao-kontrole .dugme[aria-pressed="true"] {
+  background-color: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.ugao-kontrole .dugme[aria-pressed="true"]:hover {
+  background-color: var(--accent-deep);
+  border-color: var(--accent-deep);
+  color: var(--paper);
+}
+
+.ugao-stanje {
+  margin-top: var(--s-3);
+  font-size: var(--t-sm);
+  color: var(--ink-muted);
+  min-height: 1.5em;
+}
+
+.ugao-stanje.je-greska {
+  color: var(--accent-deep);
+  border-left: 2px solid var(--accent-deep);
+  padding-left: var(--s-3);
+}
+
+.ugao-napomena {
+  margin-top: var(--s-6);
+  padding: var(--s-5);
+  background: var(--paper-warm);
+  border-left: 2px solid var(--rule-strong);
+}
+
+.ugao-napomena p { margin-block: var(--s-2); }
+
+.ugao-uporedno {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--s-5);
+  margin-top: var(--s-6);
+}
+
+.ugao-uporedno figure { margin: 0; }
+
+.ugao-uporedno img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.ugao-uporedno figcaption {
+  margin-top: var(--s-2);
+  font-size: var(--t-xs);
+  letter-spacing: var(--track-xwide);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}

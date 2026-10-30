@@ -1,0 +1,70 @@
+{
+  "napomena": "Djela koja imaju pločice za zumiranje.",
+  "djela": [
+    {
+      "id": "aria-di-torino",
+      "naziv": "Aria di Torino",
+      "plocica": 21
+    },
+    {
+      "id": "piazza-castello-e-torre-littoria",
+      "naziv": "Piazza Castello e Torre Littoria",
+      "plocica": 21
+    },
+    {
+      "id": "ponte-isabella",
+      "naziv": "Ponte Isabella",
+      "plocica": 21
+    },
+    {
+      "id": "krovovi-torina",
+      "naziv": "Krovovi Torina",
+      "plocica": 21
+    },
+    {
+      "id": "havanac-kastro",
+      "naziv": "Havanac Kastro",
+      "plocica": 21
+    },
+    {
+      "id": "mrtva-priroda-sa-vazom",
+      "naziv": "Mrtva priroda sa vazom",
+      "plocica": 21
+    },
+    {
+      "id": "mrtva-priroda-sa-bocama",
+      "naziv": "Mrtva priroda sa bocama",
+      "plocica": 21
+    },
+    {
+      "id": "mrtva-priroda-sa-cvijecem",
+      "naziv": "Mrtva priroda sa cvijećem",
+      "plocica": 21
+    },
+    {
+      "id": "autoportret",
+      "naziv": "Autoportret",
+      "plocica": 21
+    },
+    {
+      "id": "prijatelji",
+      "naziv": "Prijatelji",
+      "plocica": 21
+    },
+    {
+      "id": "staro-groblje",
+      "naziv": "Staro groblje",
+      "plocica": 21
+    },
+    {
+      "id": "jutarnje-svjetlo",
+      "naziv": "Jutarnje svjetlo",
+      "plocica": 21
+    },
+    {
+      "id": "svjetlo-u-sumrak",
+      "naziv": "Svjetlo u sumrak",
+      "plocica": 21
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Monogram MD — Marko Dumnić">
+<title>Marko Dumnić</title>
+<rect width="64" height="64" fill="#EDE5D7"/>
+<clipPath id="md-kvadrat-favicon"><rect width="64" height="64"/></clipPath>
+<g clip-path="url(#md-kvadrat-favicon)" opacity="0.1">
+<path d="M0 4.95L4.95 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M0 14.849L14.849 0" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M0 24.749L24.749 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M0 34.648L34.648 0" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M0 44.548L44.548 0" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M0 54.447L54.447 0" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M0.347 64L64 0.347" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M10.246 64L64 10.246" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M20.146 64L64 20.146" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M30.045 64L64 30.045" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M39.945 64L64 39.945" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+<path d="M49.844 64L64 49.844" fill="none" stroke="#1E1A15" stroke-width="0.55"/>
+<path d="M59.744 64L64 59.744" fill="none" stroke="#1E1A15" stroke-width="0.8"/>
+</g>
+<g fill="#EDE5D7" stroke="#EDE5D7" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+<path d="M4.5 14.299 L13.351 14.299 L11.454 18.345 L11.454 45.655 L13.351 49.701 L4.5 49.701 L6.397 45.655 L6.397 18.345 Z"/>
+<path d="M31.052 14.299 L38.006 14.299 L38.006 49.701 L31.052 49.701 L32.948 45.655 L32.948 18.345 Z"/>
+<path d="M6.397 14.299 L22.707 45.908 L38.006 14.299 L34.971 14.299 L21.569 40.092 L11.454 14.299 Z"/>
+<path d="M38.006 14.299 L48.753 14.299 C54.443 14.299 59.5 20.115 59.5 31.368 C59.5 42.115 54.443 49.701 48.753 49.701 L38.006 49.701 L38.006 46.161 L48.121 46.161 C51.914 46.161 55.201 41.103 55.201 31.368 C55.201 22.138 51.914 17.586 48.121 17.586 L38.006 17.586 Z"/>
+</g>
+<g fill="#1E1A15">
+<path d="M4.5 14.299 L13.351 14.299 L11.454 18.345 L11.454 45.655 L13.351 49.701 L4.5 49.701 L6.397 45.655 L6.397 18.345 Z"/>
+<path d="M31.052 14.299 L38.006 14.299 L38.006 49.701 L31.052 49.701 L32.948 45.655 L32.948 18.345 Z"/>
+<path d="M6.397 14.299 L22.707 45.908 L38.006 14.299 L34.971 14.299 L21.569 40.092 L11.454 14.299 Z"/>
+<path d="M38.006 14.299 L48.753 14.299 C54.443 14.299 59.5 20.115 59.5 31.368 C59.5 42.115 54.443 49.701 48.753 49.701 L38.006 49.701 L38.006 46.161 L48.121 46.161 C51.914 46.161 55.201 41.103 55.201 31.368 C55.201 22.138 51.914 17.586 48.121 17.586 L38.006 17.586 Z"/>
+</g>
+</svg>

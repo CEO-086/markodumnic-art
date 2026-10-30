@@ -1,0 +1,44 @@
+{
+  "napomena": "Pločice su isječene iz fotografije djela u punoj rezoluciji (img/radovi/velike/mrtva-priroda-sa-cvijecem.jpg). Svaka pločica je sirina × visina piksela svog nivoa, plus preklop.",
+  "id": "mrtva-priroda-sa-cvijecem",
+  "naziv": "Mrtva priroda sa cvijećem",
+  "tehnika": "Ulje na platnu",
+  "dimenzije": "50 × 40 cm",
+  "godina": 2023,
+  "rezerva": "img/radovi/mrtva-priroda-sa-cvijecem.jpg",
+  "sadrzaj": {
+    "sirina": 473,
+    "visina": 600
+  },
+  "plocica": {
+    "sirina": 473,
+    "visina": 600
+  },
+  "preklop": 2,
+  "nivoa": 3,
+  "nivoi": [
+    {
+      "nivo": 0,
+      "kolona": 1,
+      "redova": 1,
+      "sirina": 473,
+      "visina": 600
+    },
+    {
+      "nivo": 1,
+      "kolona": 2,
+      "redova": 2,
+      "sirina": 946,
+      "visina": 1200
+    },
+    {
+      "nivo": 2,
+      "kolona": 4,
+      "redova": 4,
+      "sirina": 1892,
+      "visina": 2400
+    }
+  ],
+  "obrazac": "{nivo}/{kolona}_{red}.jpg",
+  "ukupno_plocica": 21
+}

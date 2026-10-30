@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 780" width="1180" height="780"
+     role="img" aria-labelledby="naslovS opisS">
+  <title id="naslovS">Putanja kretanja i preklapanje kadrova za Gaussian splatting</title>
+  <desc id="opisS">Dva dijagrama. Panel A, pogled odozgo: platno je na zidu, a aparat opisuje
+    luk od oko 150 stepeni ispred njega, na udaljenosti jedne do dvije dijagonale, zastajući svakih
+    10 do 15 stepeni. Luk se prolazi tri puta, na tri visine. Panel B, bočni presjek: tri prolaza —
+    jedan u visini centra platna, jedan odozgo pod oko 30 stepeni i jedan odozdo pod oko 30 stepeni.
+    Treći dijagram pokazuje preklapanje susjednih kadrova od oko 70 odsto i naglašava da u svakom
+    kadru moraju biti i ram, i zid oko platna.</desc>
+
+  <style>
+    .h  { font-family: 'EB Garamond', Palatino, Georgia, serif; fill: #1E1A15;
+          font-size: 21px; letter-spacing: 0.04em; }
+    .t  { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #4A4238; font-size: 13px; }
+    .tm { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #665E53; font-size: 12px; }
+    .lb { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #1E1A15;
+          font-size: 11.5px; font-weight: 600; }
+    .ug { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #A3562E;
+          font-size: 13px; font-weight: 600; }
+    .ozn{ font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #665E53;
+          font-size: 10.5px; letter-spacing: 0.16em; }
+    .rule   { stroke: #B6AC9C; stroke-width: 1; fill: none; }
+    .ruleD  { stroke: #B6AC9C; stroke-width: 1; fill: none; stroke-dasharray: 4 4; }
+    .axis   { stroke: #74879A; stroke-width: 1.2; fill: none; stroke-dasharray: 7 5; }
+    .path1  { stroke: #BE8B3C; stroke-width: 2.2; fill: none; }
+    .cone   { stroke: #BE8B3C; stroke-width: 0.9; fill: none; opacity: 0.55; }
+    .coneB  { stroke: #A3562E; stroke-width: 1.1; fill: none; }
+    .arcA   { stroke: #A3562E; stroke-width: 1.6; fill: none; }
+    .canvas { stroke: #1E1A15; stroke-width: 2.4; fill: none; }
+  </style>
+
+  <rect fill="#F3EEE4" width="1180" height="780"/>
+
+  <!-- ===================== PANEL A — ODOZGO ===================== -->
+  <text class="ozn" x="56" y="44">PANEL A · POGLED ODOZGO</text>
+  <text class="h"   x="56" y="76">Luk od ~150°, zastajanje svakih 10–15°</text>
+
+  <!-- zid je horizontalan na y=150; platno u centru x=330 -->
+  <g>
+    <line class="rule" x1="90" y1="150" x2="570" y2="150"/>
+    <path class="rule" d="M 98 142 L 106 134 M 128 142 L 136 134 M 158 142 L 166 134
+                          M 188 142 L 196 134 M 218 142 L 226 134 M 248 142 L 256 134
+                          M 278 142 L 286 134 M 308 142 L 316 134 M 338 142 L 346 134
+                          M 368 142 L 376 134 M 398 142 L 406 134 M 428 142 L 436 134
+                          M 458 142 L 466 134 M 488 142 L 496 134 M 518 142 L 526 134
+                          M 548 142 L 556 134"/>
+    <text class="tm" x="96" y="130">zid sale</text>
+
+    <!-- platno u presjeku odozgo: široko 130, debelo 9 -->
+    <rect fill="#EDE5D7" x="265" y="150" width="130" height="9"/>
+    <rect class="canvas" x="265" y="150" width="130" height="9"/>
+    <text class="lb" x="330" y="176" text-anchor="middle">platno</text>
+
+    <!-- normala -->
+    <line class="axis" x1="330" y1="159" x2="330" y2="520"/>
+    <text class="tm" x="338" y="508">normala (0°)</text>
+
+    <!-- luk putanje: centar (330,159), R=270, od -75° do +75° od normale -->
+    <path class="path1" d="M 69.2 228.9 A 270 270 0 0 0 590.8 228.9"/>
+
+    <!-- krajnji zraci -->
+    <line class="ruleD" x1="330" y1="159" x2="69.2"  y2="228.9"/>
+    <line class="ruleD" x1="330" y1="159" x2="590.8" y2="228.9"/>
+
+    <!-- ugao od normale do krajnjeg zraka, luk r=90 -->
+    <path class="arcA" d="M 330 249 A 90 90 0 0 0 243.1 182.7"/>
+    <text class="ug" x="238" y="208" text-anchor="end">75°</text>
+    <path class="arcA" d="M 330 249 A 90 90 0 0 1 416.9 182.7"/>
+    <text class="ug" x="422" y="208">75°</text>
+
+    <!-- pozicije aparata svakih 15°: x=330+270·sin(a), y=159+270·cos(a) -->
+    <g fill="#BE8B3C">
+      <circle cx="69.2"  cy="228.9" r="6"/>
+      <circle cx="96.2"  cy="294.0" r="6"/>
+      <circle cx="139.1" cy="349.9" r="6"/>
+      <circle cx="195.0" cy="392.8" r="6"/>
+      <circle cx="260.1" cy="419.8" r="6"/>
+      <circle cx="330.0" cy="429.0" r="6"/>
+      <circle cx="399.9" cy="419.8" r="6"/>
+      <circle cx="465.0" cy="392.8" r="6"/>
+      <circle cx="520.9" cy="349.9" r="6"/>
+      <circle cx="563.8" cy="294.0" r="6"/>
+      <circle cx="590.8" cy="228.9" r="6"/>
+    </g>
+  </g>
+
+  <!-- vidna polja iz tri pozicije, da se vidi preklapanje -->
+  <g>
+    <path class="cone" d="M 195.0 392.8 L 244 150 M 195.0 392.8 L 420 150"/>
+    <path class="cone" d="M 330.0 429.0 L 232 150 M 330.0 429.0 L 428 150"/>
+    <path class="cone" d="M 465.0 392.8 L 240 150 M 465.0 392.8 L 416 150"/>
+  </g>
+
+  <g transform="translate(56,560)">
+    <text class="t"  x="0" y="0">Udaljenost: 1–2 × dijagonala platna, ISTA cijelim lukom.</text>
+    <text class="t"  x="0" y="22">Luk ne ide dalje od ±75°: iza toga se platno vidi kao linija.</text>
+    <text class="tm" x="0" y="48">Svaki kadar zahvata i zid oko platna — bez njega rekonstrukcija</text>
+    <text class="tm" x="0" y="66">nema za šta da se uhvati (vidi Panel C).</text>
+  </g>
+
+  <line class="rule" x1="636" y1="60" x2="636" y2="700"/>
+
+  <!-- ===================== PANEL B — BOČNI PRESJEK ===================== -->
+  <text class="ozn" x="686" y="44">PANEL B · BOČNI PRESJEK — TRI PROLAZA</text>
+  <text class="h"   x="686" y="76">Isti luk, tri visine</text>
+
+  <g>
+    <!-- zid vertikalno na x=760 -->
+    <line class="rule" x1="760" y1="130" x2="760" y2="470"/>
+    <path class="rule" d="M 752 130 L 744 138 M 752 160 L 744 168 M 752 190 L 744 198
+                          M 752 220 L 744 228 M 752 250 L 744 258 M 752 280 L 744 288
+                          M 752 310 L 744 318 M 752 340 L 744 348 M 752 370 L 744 378
+                          M 752 400 L 744 408 M 752 430 L 744 438 M 752 460 L 744 468"/>
+
+    <!-- platno -->
+    <rect fill="#EDE5D7" x="760" y="222" width="9" height="156"/>
+    <rect class="canvas" x="760" y="222" width="9" height="156"/>
+    <text class="tm" x="782" y="392">platno</text>
+
+    <!-- centar platna -->
+    <circle cx="764" cy="300" r="3.2" fill="#74879A"/>
+    <line class="axis" x1="764" y1="300" x2="1076" y2="300"/>
+
+    <!-- tri pozicije aparata na R=250: srednja, gornja +30°, donja -30° -->
+    <!-- srednja: (764+250, 300) -->
+    <circle cx="1014" cy="300" r="7" fill="#BE8B3C"/>
+    <line class="coneB" x1="1014" y1="300" x2="764" y2="300"/>
+    <text class="lb" x="1030" y="304">prolaz 2 — u visini centra</text>
+
+    <!-- gornja: 30° iznad → (764+250cos30, 300-250sin30) = (980.5, 175) -->
+    <circle cx="980.5" cy="175" r="7" fill="#A3562E"/>
+    <line class="coneB" x1="980.5" y1="175" x2="764" y2="300"/>
+    <text class="lb" x="996" y="172">prolaz 1 — ~30° odozgo</text>
+
+    <!-- donja: 30° ispod → (980.5, 425) -->
+    <circle cx="980.5" cy="425" r="7" fill="#5E6A46"/>
+    <line class="coneB" x1="980.5" y1="425" x2="764" y2="300"/>
+    <text class="lb" x="996" y="430">prolaz 3 — ~30° odozdo</text>
+
+    <!-- luk R=250 -->
+    <path class="ruleD" d="M 980.5 175 A 250 250 0 0 0 980.5 425"/>
+
+    <!-- uglovi -->
+    <path class="arcA" d="M 884 300 A 120 120 0 0 0 867.9 240.0"/>
+    <text class="ug" x="886" y="248">30°</text>
+    <path class="arcA" d="M 884 300 A 120 120 0 0 1 867.9 360.0"/>
+    <text class="ug" x="886" y="364">30°</text>
+  </g>
+
+  <g transform="translate(686,520)">
+    <text class="t"  x="0" y="0">Tri prolaza, ne jedan. Jedna visina daje „bilbord“ —</text>
+    <text class="t"  x="0" y="22">platno izgleda kao nalijepljena slika bez dubine.</text>
+    <text class="tm" x="0" y="48">Visine: koljeno · oči · iznad glave (ili aparat gore na ruci).</text>
+    <text class="tm" x="0" y="66">Preklapanje između prolaza: 30–40%.</text>
+  </g>
+
+  <!-- ===================== PANEL C — PREKLAPANJE ===================== -->
+  <line class="rule" x1="56" y1="664" x2="1124" y2="664"/>
+  <text class="ozn" x="56" y="700">PANEL C · PREKLAPANJE SUSJEDNIH KADROVA ≈ 70%</text>
+
+  <g transform="translate(56,716)">
+    <!-- kadar 1 -->
+    <rect x="0"  y="0" width="190" height="48" fill="none" stroke="#BE8B3C" stroke-width="2"/>
+    <!-- kadar 2, pomjeren 30% širine -->
+    <rect x="57" y="6" width="190" height="48" fill="none" stroke="#A3562E" stroke-width="2"/>
+    <!-- preklop -->
+    <rect x="57" y="6" width="133" height="42" fill="#BE8B3C" opacity="0.14"/>
+    <text class="lb" x="124" y="33" text-anchor="middle">preklop ≈ 70%</text>
+    <text class="tm" x="0" y="72">Pomak između kadrova = 30% širine kadra. Svaka točka platna</text>
+    <text class="tm" x="0" y="90">treba da se pojavi u 3–5 kadrova.</text>
+
+    <!-- šta mora biti u kadru -->
+    <g transform="translate(470,-6)">
+      <rect x="0" y="0" width="230" height="66" fill="none" stroke="#665E53"
+            stroke-width="1.2" stroke-dasharray="9 6"/>
+      <rect x="62" y="14" width="106" height="38" fill="#EDE5D7" stroke="#1E1A15" stroke-width="2"/>
+      <rect x="68" y="19" width="94" height="28" fill="none" stroke="#B6AC9C" stroke-width="1"/>
+      <text class="lb" x="115" y="37" text-anchor="middle">platno</text>
+      <text class="tm" x="115" y="-12" text-anchor="middle">kadar</text>
+      <line class="rule" x1="62" y1="52" x2="30" y2="74"/>
+      <text class="tm" x="26" y="80" text-anchor="end">ram</text>
+      <line class="rule" x1="12" y1="33" x2="-30" y2="33"/>
+      <text class="tm" x="-34" y="37" text-anchor="end">zid</text>
+      <text class="t" x="258" y="22">U kadru moraju biti platno, ram I zid oko njega.</text>
+      <text class="t" x="258" y="44">Ravno platno samo po sebi nema paralaksu —</text>
+      <text class="t" x="258" y="66">okolina je ono što drži rekonstrukciju.</text>
+    </g>
+  </g>
+</svg>

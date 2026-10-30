@@ -1,0 +1,561 @@
+/* =========================================================
+   Marko Dumnić — radovi.css
+   Stranica "Radovi" (mreža + filter) i stranica djela (djelo.html).
+   Samo tokeni iz tokens.css — nijedan hardkodovan hex.
+
+   KONTRAST — zašto sitan tekst nosi --ink-soft, a ne --ink-muted:
+   --ink-muted daje 3.35:1 na --paper i 3.10:1 na --paper-warm. To je
+   ispod praga 4.5:1 koji BRIEF.md traži za tekst, pa je za sve sitne
+   metapodatke (oznake, brojač, meta ispod naziva, putanja, dt u listi
+   djela) uzet --ink-soft, koji daje 8.54:1 na --paper. --ink-muted
+   ostaje samo tamo gdje ne nosi tekst. Hijerarhija se drži razlikom
+   veličine i verzala, ne jedinom razlikom u svjetlini.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   UVOD STRANICE
+   --------------------------------------------------------- */
+
+.radovi-uvod {
+  max-width: var(--measure);
+  margin-bottom: var(--s-7);
+}
+
+.radovi-uvod .naslov-1 {
+  margin-bottom: var(--s-4);
+}
+
+/* ---------------------------------------------------------
+   FILTER
+   Dugmad su prava dugmad. Aktivno nosi donju liniju u akcentu.
+   Linija je uvijek tu (prozirna), pa prelaz ne mijenja visinu.
+   --------------------------------------------------------- */
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-6);
+  margin: var(--s-6) 0 var(--s-7);
+}
+
+.filter__dugmad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+}
+
+.filter__dugme {
+  margin: 0;
+  padding: var(--s-2) 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: none;
+  font-family: var(--font-ui);
+  font-size: var(--t-sm);
+  font-weight: 500;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--ink-soft);   /* 8.54:1 — --ink-muted je davao 3.35:1 */
+  cursor: pointer;
+  transition: color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+
+.filter__dugme:hover {
+  color: var(--ink);
+}
+
+.filter__dugme:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.filter__dugme[aria-pressed="true"],
+.filter__dugme.je-aktivno {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+/* Brojač prikazanih radova — čita ga i čitač ekrana (aria-live). */
+.filter__broj {
+  margin: 0;
+  color: var(--ink-soft);   /* 8.54:1 */
+}
+
+/* Poruka se pojavljuje samo kad JS nije dostupan
+   (noscript blok u radovi.html je prebacuje na display: block). */
+.filter__bez-js {
+  display: none;
+  flex-basis: 100%;
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------
+   MREŽA RADOVA
+   Djela imaju različite proporcije — visina se NE izjednačava.
+   Stavke se poravnavaju po vrhu i slika zadržava prirodan odnos.
+   --------------------------------------------------------- */
+
+.mreza-radova {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--s-6);
+  align-items: start;
+}
+
+.rad {
+  margin: 0;
+}
+
+.rad__veza {
+  display: grid;
+  gap: var(--s-3);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.rad__veza:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 6px;
+}
+
+/* Okvir nosi vlasastu liniju; linija je uvijek 1px pa hover ne pomjera layout. */
+.rad__okvir {
+  display: block;
+  border: 1px solid var(--rule);
+  background-color: var(--paper-warm);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.rad__slika {
+  display: block;
+  width: 100%;
+  height: auto;          /* prirodna visina — bez forsiranog aspect-ratio */
+  transition: opacity var(--dur) var(--ease);
+}
+
+.rad__naziv {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  font-weight: 500;
+  line-height: var(--leading-snug);
+  color: var(--ink);
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+
+.rad__meta {
+  display: block;
+  color: var(--ink-soft);   /* 8.54:1 — sitan verzalni tekst, prag 4.5:1 */
+}
+
+/* Hover: samo linija okvira, tiho gašenje slike i podvlačenje naziva.
+   Ništa se ne pomjera i ništa ne skače. */
+.rad__veza:hover .rad__okvir,
+.rad__veza:focus-visible .rad__okvir {
+  border-color: var(--rule-strong);
+}
+
+.rad__veza:hover .rad__slika {
+  opacity: 0.88;
+}
+
+.rad__veza:hover .rad__naziv,
+.rad__veza:focus-visible .rad__naziv {
+  text-decoration-color: var(--accent);
+}
+
+/* Prazno stanje mreže — tiha šrafura, bez poruka o grešci.
+   .srafura iz base.css crta teksturu kroz ::before. */
+.radovi-prazno {
+  margin: var(--s-7) 0 0;
+  padding: var(--s-8) var(--s-6);
+  border: 1px solid var(--rule);
+  background-color: var(--paper-warm);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  color: var(--ink-soft);
+}
+
+.radovi-napomena {
+  margin: var(--s-8) 0 0;
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  color: var(--ink-soft);   /* 8.54:1 */
+}
+
+/* ---------------------------------------------------------
+   STRANICA DJELA — putanja
+   --------------------------------------------------------- */
+
+.djelo-putanja {
+  margin-bottom: var(--s-6);
+}
+
+.djelo-putanja a {
+  color: var(--ink-soft);   /* 8.54:1 — link, mora biti čitljiv */
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  transition: color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+
+.djelo-putanja a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+/* ---------------------------------------------------------
+   STRANICA DJELA — prazno stanje dok se podaci učitavaju
+   Šrafura, ne spinner. Bez pulsiranja i bez skakanja.
+   --------------------------------------------------------- */
+
+.djelo-ucitavanje {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--s-8);
+  align-items: start;
+}
+
+/* Pozadinu pod šrafurom daje .srafura--papir iz base.css. */
+.djelo-ucitavanje__ploca {
+  aspect-ratio: 4 / 3;      /* samo prazno stanje — ne pravo djelo */
+  border: 1px solid var(--rule);
+}
+
+/* Traka preslikava .djelo__podaci: isti gap, isti ritam blokova,
+   da skelet i sadržaj zauzmu približno istu visinu (bez skakanja). */
+.djelo-ucitavanje__traka {
+  display: grid;
+  gap: var(--s-5);
+  align-content: start;
+}
+
+.djelo-ucitavanje__linija {
+  display: block;
+  height: var(--s-5);
+  border: 1px solid var(--rule);
+}
+
+.djelo-ucitavanje__linija--kratka {
+  width: 55%;
+}
+
+/* Mjesto naslova djela — krupnije od ostalih linija. */
+.djelo-ucitavanje__linija--naslov {
+  height: var(--s-6);
+  width: 80%;
+}
+
+/* Par oznaka/vrijednost — isti raspored kao .djelo__par. */
+.djelo-ucitavanje__par {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.djelo-ucitavanje__linija--oznaka {
+  height: var(--s-4);
+  width: 30%;
+}
+
+.djelo-ucitavanje__linija--vrijednost {
+  height: var(--s-5);
+  width: 60%;
+}
+
+/* Razdjelnik na mjestu .linija iz sadržaja. */
+.djelo-ucitavanje__razdjelnik {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: var(--rule);
+}
+
+.djelo-ucitavanje__opis {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.djelo-ucitavanje__opis .djelo-ucitavanje__linija {
+  height: var(--s-4);
+}
+
+/* Mjesto dugmeta „Upit za djelo”. */
+.djelo-ucitavanje__dugme {
+  display: block;
+  width: 12rem;
+  max-width: 100%;
+  height: var(--s-7);
+  border: 1px solid var(--rule);
+}
+
+/* Poruka bez JavaScripta — skrivena dok JS radi.
+   noscript blok u djelo.html je prebacuje na display: block. */
+.djelo-bez-js {
+  display: none;
+  max-width: var(--measure);
+  margin: 0;
+  padding: var(--s-8) 0 var(--s-7);
+  font-size: var(--t-base);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.djelo-bez-js a {
+  color: var(--ink);
+  text-decoration: underline 1px var(--accent);
+  text-underline-offset: 0.22em;
+}
+
+/* ---------------------------------------------------------
+   STRANICA DJELA — poruka o grešci
+   --------------------------------------------------------- */
+
+.djelo-greska {
+  max-width: var(--measure);
+  padding: var(--s-8) 0 var(--s-7);
+}
+
+.djelo-greska__naslov {
+  margin-bottom: var(--s-4);
+}
+
+.djelo-greska__tekst {
+  margin-bottom: var(--s-6);
+  font-size: var(--t-base);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------
+   STRANICA DJELA — sadržaj
+   Slika lijevo (1.6fr), podaci u uskoj koloni desno (1fr).
+   --------------------------------------------------------- */
+
+.djelo {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--s-8);
+  align-items: start;
+}
+
+.djelo__figura {
+  margin: 0;
+}
+
+/* Tanka linija, bez sjenke. */
+.djelo__slika {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  background-color: var(--paper-warm);
+}
+
+.djelo__privremeno {
+  margin-top: var(--s-3);
+  color: var(--ink-soft);   /* 8.54:1 */
+}
+
+.djelo__podaci {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.djelo__naziv {
+  margin: 0;
+}
+
+.djelo__lista {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0;
+}
+
+.djelo__par {
+  display: grid;
+  gap: var(--s-1);
+}
+
+.djelo__par dt {
+  color: var(--ink-soft);   /* 8.54:1 */
+}
+
+.djelo__par dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--t-base);
+  color: var(--ink);
+}
+
+.djelo__opis {
+  margin: 0;
+  font-size: var(--t-base);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.djelo__akcija {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------
+   STRANICA DJELA — prethodno / sljedeće
+   --------------------------------------------------------- */
+
+.djelo-susjedi {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-5) var(--s-6);
+  margin-top: var(--s-9);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--rule);
+}
+
+.djelo-susjed {
+  display: grid;
+  gap: var(--s-2);
+  max-width: 24ch;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.djelo-susjed .oznaka {
+  color: var(--ink-soft);   /* 8.54:1 */
+}
+
+.djelo-susjed--sljedece {
+  text-align: right;
+  margin-left: auto;
+}
+
+.djelo-susjed__naziv {
+  font-family: var(--font-display);
+  font-size: var(--t-md);
+  line-height: var(--leading-snug);
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+
+.djelo-susjed:hover .djelo-susjed__naziv,
+.djelo-susjed:focus-visible .djelo-susjed__naziv {
+  text-decoration-color: var(--accent);
+}
+
+.djelo-susjed:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
+/* ---------------------------------------------------------
+   MOBILNO — jedna kolona, slika gore
+   --------------------------------------------------------- */
+
+@media (max-width: 860px) {
+  .djelo,
+  .djelo-ucitavanje {
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+  }
+
+  .djelo-ucitavanje__ploca {
+    aspect-ratio: 3 / 2;
+  }
+
+  .djelo-susjed--sljedece {
+    text-align: left;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .filter {
+    flex-direction: column;
+    /* Jedan red (nowrap): inače bi širina reda bila širina cijelog niza
+       dugmadi ispod, pa bi stranica dobila bočno skrolovanje. */
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: var(--s-4);
+  }
+
+  /* Telefon: dugmad filtera u jednom redu koji se pomjera prstom,
+     od ivice do ivice ekrana — umjesto 3–4 reda sa velikim razmacima. */
+  .filter__dugmad {
+    align-self: stretch;
+    flex-wrap: nowrap;
+    gap: var(--s-5);
+    margin: -6px calc(var(--gutter) * -1);
+    /* 6px gore/dolje: da okvir fokusa (2px + 3px razmaka) ne bude odsječen. */
+    padding: 6px var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .filter__dugmad::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter__dugme {
+    flex: none;
+    min-height: 44px;
+    white-space: nowrap;
+  }
+
+  .mreza-radova {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------
+   POŠTOVANJE PREFERENCIJE ZA MANJE POKRETA
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .filter__dugme,
+  .rad__okvir,
+  .rad__slika,
+  .rad__naziv,
+  .djelo-putanja a,
+  .djelo-susjed__naziv {
+    transition: none;
+  }
+}
+
+/* Par „Izvorni naziv” na djelo.html je skriven dok JS ne utvrdi da se
+   izvorni naziv razlikuje od prevoda. `display: grid` iznad nadjačava
+   ugrađeno `[hidden]`, pa ga vraćamo. */
+.djelo__par[hidden] {
+  display: none;
+}
+
+/* Isto za blokove stranice djela koje js/radovi.js pali i gasi
+   atributom `hidden` (skelet, djelo, greška, susjedi): njihov
+   `display: grid/flex` je inače nadjačavao `hidden`, pa su se uz
+   poruku o grešci vidjeli i skelet i prazno djelo. */
+.djelo-ucitavanje[hidden],
+.djelo[hidden],
+.djelo-greska[hidden],
+.djelo-susjedi[hidden],
+.djelo-susjed[hidden] {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .filter__dugme { border-bottom-color: Canvas; }
+  .filter__dugme[aria-pressed="true"] { border-bottom: 3px solid Highlight; }
+}

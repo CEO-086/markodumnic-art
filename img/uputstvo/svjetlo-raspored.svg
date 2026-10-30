@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 760" width="1180" height="760"
+     role="img" aria-labelledby="naslov opis">
+  <title id="naslov">Raspored svjetla za fotometrijski stereo: 3 prstena elevacije × 10 azimuta</title>
+  <desc id="opis">Dva dijagrama. Panel A, čeono iz pozicije aparata: platno u sredini kadra,
+    a oko njega trideset pozicija svjetla u tri koncentrična prstena — vanjski prsten je elevacija
+    15 stepeni, srednji 35, unutrašnji 55. Prstenovi su zamaknuti jedan prema drugom da raspored
+    bude ravnomjerniji. U donjim uglovima kadra su sjajna crna kuglica i kolor karta.
+    Panel B, bočni presjek: elevacija se mjeri od površine platna, od 0 stepeni u ravni platna
+    do 90 stepeni na osi aparata; radni pojas je 15 do 65 stepeni.</desc>
+
+  <style>
+    .h  { font-family: 'EB Garamond', Palatino, Georgia, serif; fill: #1E1A15;
+          font-size: 21px; letter-spacing: 0.04em; }
+    .t  { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #4A4238; font-size: 13px; }
+    .tm { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #665E53; font-size: 12px; }
+    .lb { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #1E1A15;
+          font-size: 11.5px; font-weight: 600; }
+    .ug { font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #A3562E;
+          font-size: 13px; font-weight: 600; }
+    .ozn{ font-family: Inter, 'Helvetica Neue', Arial, sans-serif; fill: #665E53;
+          font-size: 10.5px; letter-spacing: 0.16em; }
+    .rule   { stroke: #B6AC9C; stroke-width: 1; fill: none; }
+    .ruleD  { stroke: #B6AC9C; stroke-width: 1; fill: none; stroke-dasharray: 4 4; }
+    .kadar  { stroke: #665E53; stroke-width: 1.2; fill: none; stroke-dasharray: 9 6; }
+    .axis   { stroke: #74879A; stroke-width: 1.2; fill: none; stroke-dasharray: 7 5; }
+    .ray    { stroke: #BE8B3C; stroke-width: 1.3; fill: none; }
+    .arcA   { stroke: #A3562E; stroke-width: 1.6; fill: none; }
+    .canvas { stroke: #1E1A15; stroke-width: 2.4; fill: none; }
+  </style>
+
+  <rect fill="#F3EEE4" width="1180" height="760"/>
+
+  <!-- ===================== PANEL A — ČEONI POGLED ===================== -->
+  <text class="ozn" x="56" y="44">PANEL A · ČEONO, IZ POZICIJE APARATA</text>
+  <text class="h"   x="56" y="76">30 pozicija svjetla — 3 prstena × 10 azimuta</text>
+
+  <g transform="translate(300,360)">
+    <!-- granica kadra -->
+    <rect class="kadar" x="-215" y="-200" width="430" height="400"/>
+    <text class="ozn" x="-211" y="-208">KADAR APARATA</text>
+
+    <!-- prstenovi: poluprečnik = R·cos(elevacija), R=150 -->
+    <circle class="ruleD" cx="0" cy="0" r="145"/>
+    <circle class="ruleD" cx="0" cy="0" r="123"/>
+    <circle class="ruleD" cx="0" cy="0" r="86"/>
+
+    <!-- platno -->
+    <rect fill="#EDE5D7" x="-62" y="-78" width="124" height="156"/>
+    <rect class="canvas" x="-62" y="-78" width="124" height="156"/>
+    <line class="rule" x1="-62" y1="0" x2="62" y2="0"/>
+    <line class="rule" x1="0" y1="-78" x2="0" y2="78"/>
+    <circle cx="0" cy="0" r="3.2" fill="#74879A"/>
+    <text class="tm" x="0" y="-86" text-anchor="middle">platno</text>
+
+    <!-- PRSTEN 15° — vanjski, r=145, azimut 0° + k·36° -->
+    <g fill="#BE8B3C">
+      <circle cx="0"      cy="-145"   r="7"/>
+      <circle cx="85.2"   cy="-117.3" r="7"/>
+      <circle cx="137.9"  cy="-44.8"  r="7"/>
+      <circle cx="137.9"  cy="44.8"   r="7"/>
+      <circle cx="85.2"   cy="117.3"  r="7"/>
+      <circle cx="0"      cy="145"    r="7"/>
+      <circle cx="-85.2"  cy="117.3"  r="7"/>
+      <circle cx="-137.9" cy="44.8"   r="7"/>
+      <circle cx="-137.9" cy="-44.8"  r="7"/>
+      <circle cx="-85.2"  cy="-117.3" r="7"/>
+    </g>
+
+    <!-- PRSTEN 35° — srednji, r=123, zamak 12° -->
+    <g fill="#A3562E">
+      <circle cx="25.6"   cy="-120.3" r="6"/>
+      <circle cx="91.4"   cy="-82.3"  r="6"/>
+      <circle cx="122.3"  cy="-12.9"  r="6"/>
+      <circle cx="106.5"  cy="61.5"   r="6"/>
+      <circle cx="50.0"   cy="112.4"  r="6"/>
+      <circle cx="-25.6"  cy="120.3"  r="6"/>
+      <circle cx="-91.4"  cy="82.3"   r="6"/>
+      <circle cx="-122.3" cy="12.9"   r="6"/>
+      <circle cx="-106.5" cy="-61.5"  r="6"/>
+      <circle cx="-50.0"  cy="-112.4" r="6"/>
+    </g>
+
+    <!-- PRSTEN 55° — unutrašnji, r=86, zamak 24° -->
+    <g fill="#5E6A46">
+      <circle cx="35.0"  cy="-78.6" r="5.4"/>
+      <circle cx="74.5"  cy="-43.0" r="5.4"/>
+      <circle cx="85.5"  cy="9.0"   r="5.4"/>
+      <circle cx="63.9"  cy="57.5"  r="5.4"/>
+      <circle cx="17.9"  cy="84.1"  r="5.4"/>
+      <circle cx="-35.0" cy="78.6"  r="5.4"/>
+      <circle cx="-74.5" cy="43.0"  r="5.4"/>
+      <circle cx="-85.5" cy="-9.0"  r="5.4"/>
+      <circle cx="-63.9" cy="-57.5" r="5.4"/>
+      <circle cx="-17.9" cy="-84.1" r="5.4"/>
+    </g>
+
+    <!-- oznake prstenova, izvedene van svih markera -->
+    <line class="rule" x1="137.9" y1="-44.8" x2="178" y2="-150"/>
+    <text class="lb" x="182" y="-152" fill="#BE8B3C">15°</text>
+    <line class="rule" x1="122.3" y1="-12.9" x2="178" y2="-120"/>
+    <text class="lb" x="182" y="-122" fill="#A3562E">35°</text>
+    <line class="rule" x1="85.5" y1="9.0" x2="178" y2="-90"/>
+    <text class="lb" x="182" y="-92" fill="#5E6A46">55°</text>
+
+    <!-- sjajna crna kuglica — donji lijevi ugao kadra -->
+    <g transform="translate(-170,152)">
+      <circle cx="0" cy="0" r="14" fill="#1E1A15"/>
+      <circle cx="-4.8" cy="-4.8" r="3.6" fill="#F3EEE4"/>
+      <text class="lb" x="0" y="31" text-anchor="middle">crna kuglica</text>
+    </g>
+
+    <!-- kolor karta — donji desni ugao kadra -->
+    <g transform="translate(140,145)">
+      <rect x="-32" y="-11" width="64" height="24" fill="#EDE5D7" stroke="#1E1A15" stroke-width="1.1"/>
+      <rect x="-28" y="-7" width="13" height="16" fill="#A3562E"/>
+      <rect x="-14" y="-7" width="13" height="16" fill="#5E6A46"/>
+      <rect x="0"   y="-7" width="13" height="16" fill="#74879A"/>
+      <rect x="14"  y="-7" width="14" height="16" fill="#1E1A15"/>
+      <text class="lb" x="0" y="38" text-anchor="middle">kolor karta</text>
+    </g>
+  </g>
+
+  <!-- legenda panela A -->
+  <g transform="translate(56,626)">
+    <circle cx="8" cy="-4" r="7" fill="#BE8B3C"/>
+    <text class="t" x="26" y="0">vanjski prsten · 15° — okrznuto; vadi pastu, špahtlu i potez</text>
+    <circle cx="8" cy="22" r="6" fill="#A3562E"/>
+    <text class="t" x="26" y="26">srednji prsten · 35° — radni, najkorisniji za reljef</text>
+    <circle cx="8" cy="46" r="5.4" fill="#5E6A46"/>
+    <text class="t" x="26" y="50">unutrašnji prsten · 55° — čita boju, daje najmanje sjenke</text>
+    <text class="tm" x="0" y="78">Prstenovi su zamaknuti (0° / 12° / 24°) da azimuti ne leže na istim</text>
+    <text class="tm" x="0" y="96">„žbicama“ — pokrivenost je ravnomjernija.</text>
+  </g>
+
+  <line class="rule" x1="606" y1="60" x2="606" y2="700"/>
+
+  <!-- ===================== PANEL B — BOČNI PRESJEK ===================== -->
+  <text class="ozn" x="656" y="44">PANEL B · BOČNI PRESJEK</text>
+  <text class="h"   x="656" y="76">Elevacija se mjeri od površine platna</text>
+
+  <g>
+    <!-- zid sa šrafurom -->
+    <line class="rule" x1="776" y1="150" x2="776" y2="590"/>
+    <path class="rule" d="M 768 150 L 760 158 M 768 180 L 760 188 M 768 210 L 760 218
+                          M 768 240 L 760 248 M 768 270 L 760 278 M 768 300 L 760 308
+                          M 768 330 L 760 338 M 768 360 L 760 368 M 768 390 L 760 398
+                          M 768 420 L 760 428 M 768 450 L 760 458 M 768 480 L 760 488
+                          M 768 510 L 760 518 M 768 540 L 760 548 M 768 570 L 760 578"/>
+    <text class="tm" x="754" y="594" text-anchor="end">zid</text>
+
+    <!-- platno u presjeku -->
+    <rect fill="#EDE5D7" x="776" y="282" width="9" height="156"/>
+    <rect class="canvas" x="776" y="282" width="9" height="156"/>
+    <text class="tm" x="798" y="452">platno</text>
+
+    <!-- osa aparata = normala na centar platna -->
+    <line class="axis" x1="780" y1="360" x2="1096" y2="360"/>
+    <text class="tm" x="950" y="352" text-anchor="middle">osa aparata — okomita na centar platna</text>
+
+    <!-- hemisferni luk svjetla, R=150 oko (780,360) -->
+    <path class="ruleD" d="M 780 210 A 150 150 0 0 1 930 360"/>
+    <path class="ruleD" d="M 930 360 A 150 150 0 0 1 780 510"/>
+
+    <!-- referentna vertikala: površina platna, produžena gore -->
+    <line class="ruleD" x1="780" y1="360" x2="780" y2="226"/>
+
+    <!-- zraci i pozicije: x = 780 + R·sin(e), y = 360 ∓ R·cos(e) -->
+    <line class="ray" x1="780" y1="360" x2="818.8" y2="215.1"/>
+    <line class="ray" x1="780" y1="360" x2="866.0" y2="237.1"/>
+    <line class="ray" x1="780" y1="360" x2="902.9" y2="274.0"/>
+    <line class="ray" x1="780" y1="360" x2="818.8" y2="504.9"/>
+    <line class="ray" x1="780" y1="360" x2="866.0" y2="482.9"/>
+    <line class="ray" x1="780" y1="360" x2="902.9" y2="446.0"/>
+
+    <circle cx="818.8" cy="215.1" r="7"   fill="#BE8B3C"/>
+    <circle cx="866.0" cy="237.1" r="6"   fill="#A3562E"/>
+    <circle cx="902.9" cy="274.0" r="5.4" fill="#5E6A46"/>
+    <circle cx="818.8" cy="504.9" r="7"   fill="#BE8B3C"/>
+    <circle cx="866.0" cy="482.9" r="6"   fill="#A3562E"/>
+    <circle cx="902.9" cy="446.0" r="5.4" fill="#5E6A46"/>
+
+    <!-- uglovi od vertikale -->
+    <path class="arcA" d="M 780 302 A 58 58 0 0 1 795.0 304.0"/>
+    <text class="ug" x="800" y="294">15°</text>
+    <path class="arcA" d="M 780 282 A 78 78 0 0 1 824.7 296.1"/>
+    <text class="ug" x="830" y="288">35°</text>
+    <path class="arcA" d="M 780 260 A 100 100 0 0 1 861.9 302.6"/>
+    <text class="ug" x="868" y="298">55°</text>
+
+    <!-- R -->
+    <text class="lb" x="836" y="318" fill="#4A4238">R</text>
+
+    <!-- aparat na stativu -->
+    <g transform="translate(1062,360)">
+      <rect x="-26" y="-15" width="52" height="30" fill="#EDE5D7" stroke="#1E1A15" stroke-width="1.6"/>
+      <rect x="-34" y="-9"  width="10" height="18" fill="#1E1A15"/>
+      <circle cx="4" cy="0" r="7" fill="none" stroke="#1E1A15" stroke-width="1.4"/>
+      <line x1="0" y1="15" x2="0" y2="76" stroke="#1E1A15" stroke-width="1.6"/>
+      <line x1="-17" y1="100" x2="0" y2="76" stroke="#1E1A15" stroke-width="1.6"/>
+      <line x1="17"  y1="100" x2="0" y2="76" stroke="#1E1A15" stroke-width="1.6"/>
+      <text class="lb" x="0" y="122" text-anchor="middle">aparat na stativu</text>
+    </g>
+  </g>
+
+  <g transform="translate(656,626)">
+    <text class="t"  x="0" y="0">0° = svjetlo leži u ravni platna.  90° = svjetlo na osi, uz aparat.</text>
+    <text class="t"  x="0" y="24">Radni pojas je 15°–65°: ispod 15° sjenke prerastu motiv,</text>
+    <text class="t"  x="0" y="42">iznad 65° reljefa više nema.</text>
+    <text class="tm" x="0" y="70">R (svjetlo do centra platna) = 2–4 × dijagonala platna.</text>
+    <text class="tm" x="0" y="88">Aparat je dalje: 1,5–2 × dijagonala.  Shema nije u mjerilu.</text>
+  </g>
+</svg>

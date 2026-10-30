@@ -1,0 +1,44 @@
+{
+  "napomena": "Pločice su isječene iz fotografije djela u punoj rezoluciji (img/radovi/velike/ponte-isabella.jpg). Svaka pločica je sirina × visina piksela svog nivoa, plus preklop.",
+  "id": "ponte-isabella",
+  "naziv": "Ponte Isabella",
+  "tehnika": "Ulje na platnu",
+  "dimenzije": "40 × 30 cm",
+  "godina": 2024,
+  "rezerva": "img/radovi/ponte-isabella.jpg",
+  "sadrzaj": {
+    "sirina": 295,
+    "visina": 214
+  },
+  "plocica": {
+    "sirina": 295,
+    "visina": 214
+  },
+  "preklop": 2,
+  "nivoa": 3,
+  "nivoi": [
+    {
+      "nivo": 0,
+      "kolona": 1,
+      "redova": 1,
+      "sirina": 295,
+      "visina": 214
+    },
+    {
+      "nivo": 1,
+      "kolona": 2,
+      "redova": 2,
+      "sirina": 590,
+      "visina": 428
+    },
+    {
+      "nivo": 2,
+      "kolona": 4,
+      "redova": 4,
+      "sirina": 1180,
+      "visina": 856
+    }
+  ],
+  "obrazac": "{nivo}/{kolona}_{red}.jpg",
+  "ukupno_plocica": 21
+}
