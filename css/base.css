@@ -779,13 +779,14 @@ figcaption {
    Uglovi dolaze iz --radius (pravilo iznad), kao i svuda na sajtu. */
 .podnozje__znak--potpis img {
   width: auto;
-  height: 54px;
+  height: 44px;
+  border-radius: 0;   /* potpis stoji direktno na podnožju, bez pločice */
 }
 
 @media (min-width: 820px) {
   .podnozje__znak { margin-top: calc(-1 * var(--s-8)); }
   .podnozje__znak img { width: 50px; height: 50px; }
-  .podnozje__znak--potpis img { width: auto; height: 62px; }
+  .podnozje__znak--potpis img { width: auto; height: 48px; }
 }
 
 .podnozje__blok {
