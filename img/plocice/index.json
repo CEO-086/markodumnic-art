@@ -22,6 +22,11 @@
       "plocica": 21
     },
     {
+      "id": "pejzaz-iz-trentina",
+      "naziv": "Pejzaž iz Trentina",
+      "plocica": 21
+    },
+    {
       "id": "havanac-kastro",
       "naziv": "Havanac Kastro",
       "plocica": 21
@@ -39,6 +44,11 @@
     {
       "id": "mrtva-priroda-sa-cvijecem",
       "naziv": "Mrtva priroda sa cvijećem",
+      "plocica": 21
+    },
+    {
+      "id": "cvijece",
+      "naziv": "Cvijeće",
       "plocica": 21
     },
     {

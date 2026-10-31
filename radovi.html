@@ -15,7 +15,7 @@
 
 <!--
   Degradiranje bez JavaScripta:
-  svih 13 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
+  svih 15 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
   stavke. Ako JS ne radi, dugmad filtera se sklanjaju (vidi <noscript> ispod)
   da korisnik ne dobije mrtve kontrole, a mreža ostaje cijela — što je
   ispravno ponašanje za pregled radova.
@@ -111,7 +111,7 @@
           <button class="filter__dugme" type="button" data-filter="rodni-grad" aria-pressed="false">Sanjarenja o rodnom gradu</button>
         </div>
 
-        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Prikazano 13 od 13 radova</p>
+        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Prikazano 15 od 15 radova</p>
 
         <p class="filter__bez-js">
           Filter po seriji zahtijeva JavaScript. Ispod su prikazani svi radovi.
@@ -191,6 +191,23 @@
           </a>
         </li>
 
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/pejzaz-iz-trentina.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/pejzaz-iz-trentina-480.avif 480w, img/radovi/w/pejzaz-iz-trentina-800.avif 800w, img/radovi/w/pejzaz-iz-trentina-1200.avif 1200w, img/radovi/w/pejzaz-iz-trentina-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/pejzaz-iz-trentina-480.webp 480w, img/radovi/w/pejzaz-iz-trentina-800.webp 800w, img/radovi/w/pejzaz-iz-trentina-1200.webp 1200w, img/radovi/w/pejzaz-iz-trentina-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/pejzaz-iz-trentina.jpg" width="1040" height="1400" loading="lazy" decoding="async"
+                     alt="Visoka kamena kuća sa spoljnim stepeništem iznad kamenog zida, pod nemirnim oblačnim nebom; uz zid prolazi čovjek.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Pejzaž iz Trentina</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 50&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
         <li class="rad" data-kategorija="atelje">
           <a class="rad__veza" href="djelo/havanac-kastro.html">
             <span class="rad__okvir">
@@ -256,6 +273,23 @@
             </span>
             <span class="rad__naziv">Mrtva priroda sa cvijećem</span>
             <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 50&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/cvijece.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/cvijece-480.avif 480w, img/radovi/w/cvijece-800.avif 800w, img/radovi/w/cvijece-1200.avif 1200w, img/radovi/w/cvijece-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/cvijece-480.webp 480w, img/radovi/w/cvijece-800.webp 800w, img/radovi/w/cvijece-1200.webp 1200w, img/radovi/w/cvijece-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/cvijece.jpg" width="933" height="1400" loading="lazy" decoding="async"
+                     alt="Dva ljubičasta cvijeta u limenoj čaši na stolu, pred svijetlim zidom.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Cvijeće</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 35&nbsp;×&nbsp;25&nbsp;cm</span>
           </a>
         </li>
 

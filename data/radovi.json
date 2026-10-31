@@ -185,6 +185,44 @@
       ]
     },
     {
+      "id": "pejzaz-iz-trentina",
+      "naziv": "Pejzaž iz Trentina",
+      "originalniNaziv": "Pejzaž iz Trentina",
+      "godina": 2024,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "50 × 40 cm",
+      "kategorija": "torino",
+      "istaknuto": false,
+      "opis": "Visoka kamena kuća sa spoljnim stepeništem iznad kamenog zida, pod nemirnim oblačnim nebom; uz zid prolazi čovjek.",
+      "paleta": [
+        "#392A29",
+        "#65493A",
+        "#8B7056",
+        "#AD906E",
+        "#C9B595"
+      ],
+      "slika": "img/radovi/pejzaz-iz-trentina.jpg",
+      "slikaVelika": "img/radovi/velike/pejzaz-iz-trentina.jpg",
+      "sirinaPx": 1040,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Landscape from Trentino",
+        "opis": "A tall stone house with an outside staircase above a stone wall, under a restless cloudy sky; a man walks along the wall.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Paesaggio trentino",
+        "opis": "Un’alta casa di pietra con la scala esterna sopra un muro di pietra, sotto un cielo nuvoloso e inquieto; lungo il muro passa un uomo.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
       "id": "havanac-kastro",
       "naziv": "Havanac Kastro",
       "originalniNaziv": "Havanese Kastro",
@@ -327,6 +365,44 @@
       "it": {
         "naziv": "Natura morta con fiori",
         "opis": "Fiori in un barattolo di latta, un tubero e una cipolla sul tavolo; dietro, una cornice vuota.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "cvijece",
+      "naziv": "Cvijeće",
+      "originalniNaziv": "Cvijeće",
+      "godina": 2024,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "35 × 25 cm",
+      "kategorija": "atelje",
+      "istaknuto": false,
+      "opis": "Dva ljubičasta cvijeta u limenoj čaši na stolu, pred svijetlim zidom.",
+      "paleta": [
+        "#2A212D",
+        "#563335",
+        "#674842",
+        "#866554",
+        "#B2957B"
+      ],
+      "slika": "img/radovi/cvijece.jpg",
+      "slikaVelika": "img/radovi/velike/cvijece.jpg",
+      "sirinaPx": 933,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Flowers",
+        "opis": "Two purple flowers in a tin cup on a table, against a pale wall.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Fiori",
+        "opis": "Due fiori viola in un bicchiere di latta sul tavolo, davanti a una parete chiara.",
         "tehnika": "Olio su tela"
       },
       "varijante": [
