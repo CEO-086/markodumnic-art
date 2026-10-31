@@ -300,7 +300,7 @@
     },
     {
       "id": "mrtva-priroda-sa-bocama",
-      "naziv": "Mrtva priroda sa bocama",
+      "naziv": "Mrtva priroda",
       "originalniNaziv": "Still life",
       "godina": 2023,
       "tehnika": "Ulje na platnu",
@@ -320,12 +320,12 @@
       "sirinaPx": 1400,
       "visinaPx": 1048,
       "en": {
-        "naziv": "Still Life with Bottles",
+        "naziv": "Still Life",
         "opis": "Two bottles and a green vase on an orange table, with frames leaning against the wall.",
         "tehnika": "Oil on canvas"
       },
       "it": {
-        "naziv": "Natura morta con bottiglie",
+        "naziv": "Natura morta",
         "opis": "Due bottiglie e un vaso verde su un tavolo arancione, con alcune cornici appoggiate alla parete.",
         "tehnika": "Olio su tela"
       },
