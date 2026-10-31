@@ -132,6 +132,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/krovovi-torina"/>
   </url>
   <url>
+    <loc>https://markodumnic.art/djelo/pejzaz-iz-trentina</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/pejzaz-iz-trentina"/>
+  </url>
+  <url>
     <loc>https://markodumnic.art/djelo/havanac-kastro</loc>
     <lastmod>2026-10-23</lastmod>
     <changefreq>yearly</changefreq>
@@ -170,6 +180,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/djelo/cvijece</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/cvijece"/>
   </url>
   <url>
     <loc>https://markodumnic.art/djelo/autoportret</loc>
@@ -324,6 +344,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/krovovi-torina"/>
   </url>
   <url>
+    <loc>https://markodumnic.art/en/djelo/pejzaz-iz-trentina</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/pejzaz-iz-trentina"/>
+  </url>
+  <url>
     <loc>https://markodumnic.art/en/djelo/havanac-kastro</loc>
     <lastmod>2026-10-23</lastmod>
     <changefreq>yearly</changefreq>
@@ -362,6 +392,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/en/djelo/cvijece</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/cvijece"/>
   </url>
   <url>
     <loc>https://markodumnic.art/en/djelo/autoportret</loc>
@@ -515,6 +555,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/krovovi-torina"/>
   </url>
   <url>
+    <loc>https://markodumnic.art/it/djelo/pejzaz-iz-trentina</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/pejzaz-iz-trentina"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/pejzaz-iz-trentina"/>
+  </url>
+  <url>
     <loc>https://markodumnic.art/it/djelo/havanac-kastro</loc>
     <lastmod>2026-10-23</lastmod>
     <changefreq>yearly</changefreq>
@@ -553,6 +603,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/mrtva-priroda-sa-cvijecem"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/mrtva-priroda-sa-cvijecem"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/cvijece</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/cvijece"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/cvijece"/>
   </url>
   <url>
     <loc>https://markodumnic.art/it/djelo/autoportret</loc>
