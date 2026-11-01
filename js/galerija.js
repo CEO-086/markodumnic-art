@@ -1198,6 +1198,26 @@ function zagrijDrugu() {
      sa ekranom kao metom: pripremi baš one programe koje kadar koristi
      (za sve objekte scene, bez obzira na to gdje kamera gleda). */
   try { S.render.compile(S.scena, kam); } catch (e) {}
+  /* Na računaru (ANGLE/Metal) grafički drajver i poslije toga sprema
+     dio stanja tek pri PRVOM crtanju na sam ekran. Zato još jedan
+     kadar: druga sala se iscrta na ekran i odmah preko nje obična
+     slika prve sale, u istom kadru, pa posjetilac to ne vidi. */
+  if (!TELEFON) { S.zagrijEkran = true; }
+}
+
+function zagrijNaEkranu() {
+  const T = S.tri;
+  const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
+  const z0 = POLA_Z + PROLAZ.zid;
+  const kam = new T.PerspectiveCamera(100, S.kamera.aspect, 0.1, 40);
+  kam.position.set(0, 1.6, z0 + SD * 0.5);
+  try {
+    [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].forEach(function (t) {
+      kam.lookAt(t[0], VISINA_DJELA, t[1]);
+      kam.updateMatrixWorld();
+      S.render.render(S.scena, kam);
+    });
+  } catch (e) {}
 }
 
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
@@ -1328,7 +1348,7 @@ function postaviDjela(djela) {
 
   S.drugaZakazana = false;
   S.zagrijavanjeZakazano = false;
-  S.drugaZagrijana = false;
+  S.drugaZagrijana = false; S.zagrijEkran = false;
   S.kadrovi = [];
   /* Ravna normal mapa (1×1, 128/128/255): platno od početka ima
      normalMap, pa dolazak pravog reljefa ne mijenja shader. */
@@ -2747,6 +2767,10 @@ function petlja() {
   if (TELEFON && S.scena.children.length !== S.sjenkeDjeca) {
     S.sjenkeDjeca = S.scena.children.length;
     osvjeziSjenke();
+  }
+  if (S.zagrijEkran && !S.anim && !S.ka && !S.vuce && !S.inercija) {
+    S.zagrijEkran = false;
+    zagrijNaEkranu();
   }
   S.render.render(S.scena, S.kamera);
   if (S.lupa.na) { osvjeziLupu(); }
