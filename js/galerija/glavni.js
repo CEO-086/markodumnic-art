@@ -14,12 +14,12 @@ const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   izKorijena, BOJA, VIDNO_POLJE, TELEFON, stediPodatke, korijen, el, S, smanjenoKretanje, kameraIde,
-  uUvodu, svedi, lako, osvjeziKadar, sada
+  uUvodu, svedi, lako, osvjeziKadar, sada, POCETNA_SALA
 } = G;
 const { EN, IT, TEKST } = G;   /* tekstovi, osnova.js */
 const { SVJ, zagrijNaEkranu, SVJETLA_U_KADRU, osvjeziSjenke } = G;   /* svjetla, scena.js */
 const { zatvoriBitmapu, jedanPosaoKadra, paziNaDrugu } = G;   /* teksture, scena.js */
-const { MJESTA_DRUGE, napraviSobu, postaviDjela, zamrzniNepokretno } = G;   /* scena.js */
+const { MJESTA_VELIKE, napraviSobu, postaviDjela, zamrzniNepokretno } = G;   /* scena.js */
 /* telefon, sucelje.js */
 const {
   postaviKarticu, pripremiKarticu, uronjeno, fokusUTraku, postaviOpcije, pripremiMob
@@ -108,8 +108,9 @@ function najaviKadTreba() {
 }
 
 /* ---------------------------------------------------------
-   Podaci o djelima: istaknuta (prva sala), crteži (njen prednji
-   zid) i ostali radovi (druga sala), iz data/radovi.json
+   Podaci o djelima: istaknuta (mala sala, u koju se ulazi), ostala
+   ulja i crteži (velika sala, crteži na zidu sa prolazom), iz
+   data/radovi.json
 
    Tri različita ishoda greške, svaki sa svojom porukom:
    'podaci' (404 / nema veze), 'json' (nije ispravan JSON),
@@ -162,21 +163,24 @@ async function ucitajPodatke() {
     if (k && k.id) { S.serije[k.id] = (IT && k.nazivIt) || (EN && k.nazivEn) || k.naziv; }
   });
   const izbor = svi.filter(function (r) { return r && r.istaknuto; });
-  /* Ostali radovi vise u drugoj sali, koja se vidi kroz prolaz */
+  /* Ostala ulja vise u velikoj sali, iza prolaza */
   S.ostali = svi.filter(function (r) { return r && !r.istaknuto && r.slika && r.kategorija !== 'crtezi'; });
   if (!izbor.length) { throw { vrsta: 'prazno' }; }
-  /* Crteži (kategorija "crtezi" u radovi.json) idu na prednji zid prve
-     sale, po zidu iz polja `zid` ("desno" = polovina uz desni zid sale) */
+  /* Crteži (kategorija "crtezi" u radovi.json) idu na zid velike sale
+     sa prolazom, po zidu iz polja `zid` ("desno" = polovina uz desni
+     zid sale, x > 0) */
   let crtezi = svi.filter(function (r) { return r && r.kategorija === 'crtezi' && r.slika; });
   const po = { desno: 0, lijevo: 0 };
   crtezi = crtezi.filter(function (c) { const z = c.zid === 'desno' ? 'desno' : 'lijevo'; c.zid = z; return ++po[z] <= 5; });
   /* redoslijed obilaska: prvo polovina uz desni zid sale */
   crtezi = crtezi.filter(function (c) { return c.zid === 'desno'; }).concat(crtezi.filter(function (c) { return c.zid !== 'desno'; }));
-  /* Sva djela idu na zidove: istaknuta u prvu salu, crteži na njen
-     prednji zid, ostala u drugu */
-  S.uPrvoj = izbor.length;
+  /* Sva djela idu na zidove, redom obilaska: istaknuta u malu salu,
+     pa ostala ulja u veliku, pa crteži na njen zid sa prolazom */
+  const velika = S.ostali.slice(0, MJESTA_VELIKE);
+  S.uMaloj = izbor.length;
+  S.uVelikoj = velika.length;
   S.crtezi = crtezi.length;
-  return izbor.concat(crtezi, S.ostali.slice(0, MJESTA_DRUGE));
+  return izbor.concat(velika, crtezi);
 }
 
 /* PRILAGODLJIVA OŠTRINA (samo računar): ako je crtanje sporo (medijana
@@ -287,7 +291,8 @@ function pokreni(djela) {
   postaviDjela(djela);
   napraviMapu();
 
-  /* Na ulasku kamera stoji na PREGLEDU — vidi se cijela soba */
+  /* Na ulasku kamera stoji na PREGLEDU početne (male) sale */
+  S.sala = POCETNA_SALA;
   const start = pozicijaPregleda();
   S.poz = start.poz.clone();
   S.cilj = start.cilj.clone();

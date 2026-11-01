@@ -292,6 +292,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
   </url>
   <url>
+    <loc>https://markodumnic.art/djelo/kuca-u-sumrak</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/kuca-u-sumrak"/>
+  </url>
+  <url>
     <loc>https://markodumnic.art/djelo/crtez-1</loc>
     <lastmod>2026-10-23</lastmod>
     <changefreq>yearly</changefreq>
@@ -634,6 +644,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
   </url>
   <url>
+    <loc>https://markodumnic.art/en/djelo/kuca-u-sumrak</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/kuca-u-sumrak"/>
+  </url>
+  <url>
     <loc>https://markodumnic.art/en/djelo/crtez-1</loc>
     <lastmod>2026-10-23</lastmod>
     <changefreq>yearly</changefreq>
@@ -973,6 +993,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/svjetlo-u-sumrak"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/svjetlo-u-sumrak"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/svjetlo-u-sumrak"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/kuca-u-sumrak</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/kuca-u-sumrak"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/kuca-u-sumrak"/>
   </url>
   <url>
     <loc>https://markodumnic.art/it/djelo/crtez-1</loc>

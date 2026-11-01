@@ -21,7 +21,7 @@ const G = /** @type {any} */ (window).__galerija;
 const {
   BOJA, SVJETLO_TOPLO, POLA_X, POLA_Z, VISINA_DJELA, UGAO_UPADA, VISINA_SINE, DALJINA_SVJETLA,
   UGAO_SNOPA, ODMAK_OD_ZIDA, UGAO_BOCNO, OSVJETLJENOST, CRTEZI_SVJETLO, PROLAZ, TELEFON, el, S,
-  kameraIde, pamti, graniceSale, osvjeziKadar
+  kameraIde, pamti, graniceSale, POCETNA_SALA, jeDruga, osvjeziKadar
 } = G;
 
 /* ---------------------------------------------------------
@@ -102,9 +102,21 @@ function postaviSine() {
   }
 }
 
-/* ZAGRIJAVANJE DRUGE SALE: dok je posjetilac u prvoj, drugu sala
-   jednom iscrta u sićušnu nevidljivu sliku (64 × 64), iz sredine
-   druge sale ka svakom zidu. Tako se svi shaderi i teksture njenih
+/* Sredina sale i četiri pravca ka njenim zidovima (x, z), za
+   zagrijavanje: 4 × 100° pokrije sve oko kamere. */
+function pravciSale(soba) {
+  if (soba === 2) {
+    const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
+    const z0 = POLA_Z + PROLAZ.zid;
+    return { x: 0, z: z0 + SD * 0.5, pravci: [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]] };
+  }
+  return { x: 0, z: 0, pravci: [[0, -POLA_Z], [POLA_X, 0], [-POLA_X, 0], [0, POLA_Z]] };
+}
+const DRUGA_SALA = POCETNA_SALA === 2 ? 1 : 2;
+
+/* ZAGRIJAVANJE DRUGE SALE: dok je posjetilac u prvoj (početnoj), drugu
+   (onu iza prolaza) jednom iscrta u sićušnu nevidljivu sliku (64 × 64),
+   iz sredine druge sale ka svakom zidu. Tako se svi shaderi i teksture njenih
    djela, legendi i odraza pripreme unaprijed, a ne u kadru u kom
    kamera prvi put vidi drugu salu — to je bio trzaj usred klizanja. */
 function zagrijDrugu() {
@@ -116,11 +128,10 @@ function zagrijDrugu() {
   if (kameraIde() || (S.kadrovi && S.kadrovi.length) || S.crtanjaNaCekanju > 0 || !maleDrugeStigle()) { window.setTimeout(zagrijDrugu, 400); return; }
   S.drugaZagrijana = true;
   const T = S.tri;
-  const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
-  const z0 = POLA_Z + PROLAZ.zid;
+  const druga = pravciSale(DRUGA_SALA);
   const meta = new T.WebGLRenderTarget(64, 64);
   const kam = new T.PerspectiveCamera(100, 1, 0.1, 40);
-  kam.position.set(0, 1.6, z0 + SD * 0.5);
+  kam.position.set(druga.x, 1.6, druga.z);
   const stara = S.render.getRenderTarget();
   /* Ovdje su upaljena SVA svjetla, kao pri prvom zagrijavanju: kad se
      druga sala zagrije ponovo (prave teksture), gašenje svjetala van
@@ -129,7 +140,7 @@ function zagrijDrugu() {
      prevedenih usred mirovanja u drugoj sali, samo za nju. */
   S.svjetlaPrisilno = 'sva';
   try {
-    [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].forEach(function (t) {
+    druga.pravci.forEach(function (t) {
       kam.lookAt(t[0], VISINA_DJELA, t[1]);
       kam.updateMatrixWorld();
       S.render.setRenderTarget(meta);
@@ -148,30 +159,29 @@ function zagrijDrugu() {
   /* Na računaru (ANGLE/Metal) grafički drajver i poslije toga sprema
      dio stanja tek pri PRVOM crtanju na sam ekran. Zato još jedan
      kadar: druga sala se iscrta na ekran i odmah preko nje obična
-     slika prve sale, u istom kadru, pa posjetilac to ne vidi. */
+     slika prve (početne) sale, u istom kadru, pa posjetilac to ne vidi. */
   if (!TELEFON) { S.zagrijEkran = 4; }
 }
 
 function maleDrugeStigle() {
-  return S.teksture.every(function (m) { return m.soba !== 2 || m.nivo >= 1 || m.malaPala; });
+  return S.teksture.every(function (m) { return !jeDruga(m.soba) || m.nivo >= 1 || m.malaPala; });
 }
 
 /* Jedan pravac po kadru (S.zagrijEkran broji 4 → 1), da nijedan kadar
    u prvoj sali ne nosi četiri dodatna crtanja odjednom. */
 function zagrijNaEkranu(korak, malo) {   /* malo: broj svjetala (SVJETLA_U_KADRU) */
   const T = S.tri;
-  const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
-  const z0 = POLA_Z + PROLAZ.zid;
   const kam = new T.PerspectiveCamera(100, S.kamera.aspect, 0.1, 40);
-  let pravci = [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]];
-  kam.position.set(0, 1.6, z0 + SD * 0.5);
   /* Varijanta sa manje svjetala (vidi rasporediSvjetla): koraci 8 → 5
-     su iz sredine prve sale ka njena četiri zida, 4 → 1 isto kao gore. */
+     su iz sredine prve (početne) sale ka njena četiri zida, 4 → 1 iz
+     sredine druge, kao gore. */
+  let sala = pravciSale(DRUGA_SALA);
   if (malo && korak > 4) {
-    pravci = [[0, -POLA_Z], [POLA_X, 0], [-POLA_X, 0], [0, POLA_Z]];
-    kam.position.set(0, 1.6, 0);
+    sala = pravciSale(POCETNA_SALA);
     korak -= 4;
   }
+  const pravci = sala.pravci;
+  kam.position.set(sala.x, 1.6, sala.z);
   S.svjetlaPrisilno = malo || 'sva';   /* i posle nove oštrine: tačno ta varijanta */
   try {
     pravci.slice(korak - 1, korak).forEach(function (t) {
@@ -190,8 +200,8 @@ function zagrijNaEkranu(korak, malo) {   /* malo: broj svjetala (SVJETLA_U_KADRU
    Takav se za taj kadar ugasi — slika je ista do posljednjeg bita.
    Broj upaljenih mijenja shader, pa da se ništa ne prevodi usred hoda,
    upaljeno je uvijek SVE ili tačno jedan od brojeva SVJETLA_U_KADRU
-   (dopunjeno reflektorima van kadra, koji ionako daju nulu): prva sala
-   treba do 5, druga do 9, pogled kroz vrata sva. Sve varijante se
+   (dopunjeno reflektorima van kadra, koji ionako daju nulu): obje sale
+   trebaju do 10, pogled kroz vrata sva. Sve varijante se
    prevedu i zagriju unaprijed (zagrijDrugu → prevediMalo); dok to nije
    gotovo, sva svjetla su upaljena, kao i prije. Reflektor koji baca
    sjenku je uvijek upaljen (i njegova sjenka mijenja shader). */
@@ -432,8 +442,8 @@ G.dijelovi.push('svjetla');
 const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
-  izKorijena, NEUTRALNO, POLA_Z, VIDNO_POLJE, MAX_TEKSTURA, TELEFON, stediPodatke, S, kameraIde, uUvodu,
-  pamti, salaTacke, osvjeziKadar
+  izKorijena, NEUTRALNO, POLA_Z, PROLAZ, VIDNO_POLJE, MAX_TEKSTURA, TELEFON, stediPodatke, S, kameraIde,
+  uUvodu, pamti, salaTacke, POCETNA_SALA, jeDruga, osvjeziKadar
 } = G;
 const { zagrijDrugu } = G;   /* svjetla, scena.js */
 
@@ -545,7 +555,7 @@ function kadNeHoda(f) {
 const PRED_OCIMA = {};
 function predOcima(m, kadar) {
   if (!m || !m.mesh || !S.kamera || !S.poz || !S.tri) { return false; }
-  if (m.soba !== (S.sala || 1) || salaTacke(S.poz.z) !== m.soba) { return false; }
+  if (m.soba !== (S.sala || POCETNA_SALA) || salaTacke(S.poz.z) !== m.soba) { return false; }
   return (kadar || kadarKamere()).intersectsObject(m.mesh);
 }
 function kadarKamere() {
@@ -613,7 +623,7 @@ function zatvoriBitmapu(x) {
    RED_MAX poslova istovremeno (manji broj = ranije):
      —    sićušne slike (img/sala/<id>-160.webp, ~4 KB) svih djela
           idu odmah, mimo reda
-     1    prave slike prve sale
+     1    prave slike prve sale (početne, vidi POCETNA_SALA)
      3    reljef prve sale
    a kad posjetilac krene ka drugoj sali (`ucitajDrugu`):
      0.5  prave slike druge sale
@@ -794,42 +804,45 @@ function rasporediTeksture() {
      pravim slikama prve sale. */
   S.teksture.forEach(ucitajMalu);
   S.teksture.forEach(function (m) {
-    if (m.soba !== 2) { uRed(1, function () { return ucitajBoju(m); }); }
+    if (!jeDruga(m.soba)) { uRed(1, function () { return ucitajBoju(m); }); }
   });
   S.teksture.forEach(function (m) {
-    if (m.soba !== 2) { uRed(3, function () { return ucitajReljef(m); }); }
+    if (!jeDruga(m.soba)) { uRed(3, function () { return ucitajReljef(m); }); }
   });
 }
-/* Druga sala: čim posjetilac krene ka njoj (hod, tura, izbor djela iz
-   nje, mapa, dugme „Druga sala“ pod mišem) ili se okrene ka prolazu. */
+/* Druga sala (iza prolaza, vidi POCETNA_SALA): čim posjetilac krene ka
+   njoj (hod, tura, izbor djela iz nje, mapa, dugme „Druga sala“ pod
+   mišem) ili se okrene ka prolazu. */
 function ucitajDrugu() {
   if (S.drugaKrenula || !S.teksture.length) { return; }
   S.drugaKrenula = true;
   S.teksture.forEach(function (m) {
-    if (m.soba === 2) { uRed(0.5, function () { return ucitajBoju(m); }); }
+    if (jeDruga(m.soba)) { uRed(0.5, function () { return ucitajBoju(m); }); }
   });
   S.teksture.forEach(function (m) {
-    if (m.soba === 2) { uRed(2, function () { return ucitajReljef(m); }); }
+    if (jeDruga(m.soba)) { uRed(2, function () { return ucitajReljef(m); }); }
   });
 }
 /* Kad se druga sala „najavi“ sama od sebe (svaki kadar): kamera je u
-   njoj, ili je bliže vratima od `blizu` m, ili su vrata unutar vidnog
-   polja uvećanog za `ugao` (rad.) — dok se pogled okreće ka prolazu,
-   teksture već idu, a dok su djela iza vrata daleko (iz pregleda prve
-   sale 8+ m), sićušna slika je oštra koliko i prava. Uz štednju podataka
-   ništa unaprijed: samo stvarni polazak (kreniKa, uSalu, tura). */
+   njoj, ili je bliže vratima od `blizu` m i okrenuta ka njima, ili su
+   vrata unutar vidnog polja uvećanog za `ugao` (rad.) — dok se pogled
+   okreće ka prolazu, teksture već idu. Pregled male (početne) sale
+   stoji odmah uz vrata, ali leđima okrenut njima: tu blizina sama ne
+   znači polazak. Uz štednju podataka ništa unaprijed: samo stvarni
+   polazak (kreniKa, uSalu, tura). */
 const NAJAVA_DRUGE = { blizu: 2.0, ugao: 0.6 };
 function paziNaDrugu() {
   if (S.drugaKrenula || !S.poz || !S.cilj) { return; }
-  if (S.sala === 2 || salaTacke(S.poz.z) === 2) { ucitajDrugu(); return; }
+  if (jeDruga(S.sala) || jeDruga(salaTacke(S.poz.z))) { ucitajDrugu(); return; }
   if (stediPodatke()) { return; }
-  const vx = -S.poz.x, vz = POLA_Z - S.poz.z;
+  const vx = -S.poz.x, vz = POLA_Z + PROLAZ.zid / 2 - S.poz.z;
   const daljina = Math.hypot(vx, vz) || 1e-6;
-  if (daljina < NAJAVA_DRUGE.blizu) { ucitajDrugu(); return; }
   const dx = S.cilj.x - S.poz.x, dz = S.cilj.z - S.poz.z;
   const d = Math.hypot(dx, dz) || 1;
+  const ka = (dx * vx + dz * vz) / (d * daljina);   /* kosinus ugla između pogleda i vrata */
+  if (daljina < NAJAVA_DRUGE.blizu && ka > 0) { ucitajDrugu(); return; }
   const polH = Math.atan(Math.tan(VIDNO_POLJE * Math.PI / 360) * (S.kamera ? S.kamera.aspect : 1.6));
-  if ((dx * vx + dz * vz) / (d * daljina) > Math.cos(Math.min(Math.PI, polH + NAJAVA_DRUGE.ugao))) { ucitajDrugu(); }
+  if (ka > Math.cos(Math.min(Math.PI, polH + NAJAVA_DRUGE.ugao))) { ucitajDrugu(); }
 }
 
 /* Fotografija pune veličine za „Izbliza“ krene čim kamera stigne pred
@@ -884,9 +897,10 @@ const { rasporediTeksture } = G;   /* teksture, scena.js */
    Prava veličina, bez normalizacije i bez uvećanja. */
 function mjereIzDimenzija(tekst, djelo) {
   const m = String(tekst || '').match(/(\d+(?:[.,]\d+)?)\s*[×xX*]\s*(\d+(?:[.,]\d+)?)/);
-  if (!m && djelo && djelo.kategorija === 'crtezi' && djelo.sirinaPx > 0 && djelo.visinaPx > 0) {
-    /* Crtež bez upisanih mjera: duža strana 42 cm (A3) */
-    const k = 0.42 / Math.max(djelo.sirinaPx, djelo.visinaPx);
+  if (!m && djelo && djelo.sirinaPx > 0 && djelo.visinaPx > 0) {
+    /* Bez upisanih mjera: proporcije sa fotografije, duža strana 42 cm
+       za crtež (A3), 55 cm za ulje (kao srednja platna serija) */
+    const k = (djelo.kategorija === 'crtezi' ? 0.42 : 0.55) / Math.max(djelo.sirinaPx, djelo.visinaPx);
     return { sirina: djelo.sirinaPx * k, visina: djelo.visinaPx * k };
   }
   if (!m) { return { sirina: 0.6, visina: 0.6 }; }
@@ -940,14 +954,15 @@ function napraviLegendu(djelo) {
 /* ---------------------------------------------------------
    Raspored djela po zidovima
 
-   Djela se dijele na tri zida — lijevi, zadnji, desni — i to
+   VELIKA SALA (soba 1, ostala ulja). Djela se dijele na tri zida —
+   lijevi, zadnji, desni — i to
    proporcionalno dužini zida (zadnji je 14 m, bočni 9 m).
    Redoslijed je redoslijed OBILASKA: lijevi zid od prednjeg ka
    zadnjem, pa zadnji zid lijevo-desno, pa desni zid od zadnjeg
    ka prednjem. Zato strelice ◀ ▶ vode kroz salu u krug, a ne
    skakuću po njoj.
 
-   Trenutni data/radovi.json daje 7 istaknutih djela → 2 + 3 + 2.
+   Trenutni data/radovi.json daje 14 ostalih ulja → 4 + 6 + 4.
    Funkcija radi za bilo koji broj: razmak se računa, ne upisuje.
    --------------------------------------------------------- */
 /**
@@ -959,8 +974,7 @@ function napraviLegendu(djelo) {
  * @property {number} rot       okret platna oko uspravne ose
  * @property {number} [nx]      normala zida, iz rot
  * @property {number} [nz]
- * @property {number} [soba]    2 = druga sala
- * @property {number} [red]     redoslijed obilaska u drugoj sali
+ * @property {number} [soba]    2 = mala sala (iza prolaza)
  * @property {string} [grupa]   crteži: 'istok' | 'zapad' (zajednički reflektor)
  * @property {number} [cx]      crteži: sredina grupe po x
  * @property {number} [raspon]  crteži: širina grupe
@@ -1014,8 +1028,8 @@ function raspored(n) {
   return mjesta;
 }
 
-/* CRTEŽI na prednjem zidu prve sale, lijevo i desno od prolaza — iza
-   leđa posjetioca na početnoj poziciji, iznad klupa. Do pet po polovini
+/* CRTEŽI na prednjem zidu velike sale, lijevo i desno od prolaza — iza
+   leđa posjetioca u pregledu velike sale, iznad klupa. Do pet po polovini
    zida. Obilazak nastavlja krug prve sale: posle desnog zida (x > 0) ide
    polovina prednjeg zida uz njega (od ugla ka vratima), pa druga (od
    vrata ka uglu). U data/radovi.json `zid: "desno"` je polovina uz
@@ -1044,35 +1058,41 @@ function rasporedCrteza(crtezi) {
   return mjesta;
 }
 
-/* Druga sala (iza prolaza): pet mjesta na zadnjem zidu, po četiri na
-   bočnim. Ista visina i normale kao u prvoj sali, pa za kameru,
-   reflektor, legendu i lupu nema razlike u kojoj je sali djelo. */
-const MJESTA_DRUGE = 13;
-function rasporedDruge(n) {
+/* MALA SALA (soba 2, iza prolaza): istaknuta djela, po istom pravilu
+   kao velika — tri zida, proporcionalno dužini (zadnji 9 m, bočni po
+   6 m), metar i po od ugla. Sedam istaknutih → 2 + 3 + 2. Ista visina i
+   normale kao u velikoj sali, pa za kameru, reflektor, legendu i lupu
+   nema razlike u kojoj je sali djelo. Posjetilac ulazi kroz prolaz licem
+   ka +z, pa mu je lijevo +x: obilazak ide lijevim zidom od vrata ka dnu,
+   zadnjim slijeva nadesno, desnim od dna ka vratima — ▶ uvijek vodi na
+   djelo desno. */
+function rasporedMale(n) {
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
   const z0 = POLA_Z + PROLAZ.zid;
-  /* Posjetilac ulazi kroz prolaz licem ka +z, pa mu je lijevo +x.
-     `red` je redoslijed obilaska kao u prvoj sali: lijevi zid od vrata
-     ka dnu, zadnji zid slijeva nadesno, desni zid od dna ka vratima —
-     ▶ uvijek vodi na djelo desno. Niz ispod je redoslijed popunjavanja
-     kad je djela manje od mjesta. */
+  let nZadnji = Math.max(1, Math.round(n * SW / (SW + 2 * SD)));
+  if (nZadnji > n) { nZadnji = n; }
+  const ostatak = n - nZadnji;
+  const nLijevi = Math.ceil(ostatak / 2);
+  const nDesni = ostatak - nLijevi;
+  function duz(korisno, i, broj) {
+    return -korisno / 2 + korisno * (i + 0.5) / broj;
+  }
+  const korisnoZ = Math.max(0.1, SD - 2 * MARGINA_ZIDA);
+  const korisnoX = Math.max(0.1, SW - 2 * MARGINA_ZIDA);
   /** @type {MjestoZida[]} */
-  const sva = [
-    { x: -3.2, z: z0 + SD, rot: Math.PI, red: 8 },
-    { x: -1.6, z: z0 + SD, rot: Math.PI, red: 7 },
-    { x: 0,    z: z0 + SD, rot: Math.PI, red: 6 },
-    { x: 1.6,  z: z0 + SD, rot: Math.PI, red: 5 },
-    { x: 3.2,  z: z0 + SD, rot: Math.PI, red: 4 },
-    { x: -SW / 2, z: z0 + SD * 0.2, rot: Math.PI / 2, red: 12 },
-    { x:  SW / 2, z: z0 + SD * 0.2, rot: -Math.PI / 2, red: 0 },
-    { x: -SW / 2, z: z0 + SD * 0.8, rot: Math.PI / 2, red: 9 },
-    { x:  SW / 2, z: z0 + SD * 0.8, rot: -Math.PI / 2, red: 3 },
-    { x: -SW / 2, z: z0 + SD * 0.4, rot: Math.PI / 2, red: 11 },
-    { x:  SW / 2, z: z0 + SD * 0.4, rot: -Math.PI / 2, red: 1 },
-    { x: -SW / 2, z: z0 + SD * 0.6, rot: Math.PI / 2, red: 10 },
-    { x:  SW / 2, z: z0 + SD * 0.6, rot: -Math.PI / 2, red: 2 }
-  ];
-  const mjesta = sva.slice(0, Math.max(0, n)).sort(function (a, b) { return a.red - b.red; });
+  const mjesta = [];
+  /* Lijevi zid (x = +SW/2), gleda ka -x. Od vrata ka dnu → z raste. */
+  for (let i = 0; i < nLijevi; i++) {
+    mjesta.push({ x: SW / 2, z: z0 + SD / 2 + duz(korisnoZ, i, nLijevi), rot: -Math.PI / 2 });
+  }
+  /* Zadnji zid (z = z0 + SD), gleda ka -z. Slijeva nadesno → x opada. */
+  for (let i = 0; i < nZadnji; i++) {
+    mjesta.push({ x: -duz(korisnoX, i, nZadnji), z: z0 + SD, rot: Math.PI });
+  }
+  /* Desni zid (x = -SW/2), gleda ka +x. Od dna ka vratima → z opada. */
+  for (let i = 0; i < nDesni; i++) {
+    mjesta.push({ x: -SW / 2, z: z0 + SD / 2 - duz(korisnoZ, i, nDesni), rot: Math.PI / 2 });
+  }
   for (const m of mjesta) {
     m.y = VISINA_DJELA;
     m.nx = Math.sin(m.rot);
@@ -1081,6 +1101,9 @@ function rasporedDruge(n) {
   }
   return mjesta;
 }
+/* Najviše ostalih ulja u velikoj sali (4 + 6 + 4 je 14; do 16 razmak
+   još drži i legendu uz svako djelo) */
+const MJESTA_VELIKE = 16;
 
 /* ---------------------------------------------------------
    Građenje sobe — pod, plafon, četiri zida, podna letva
@@ -1303,10 +1326,9 @@ function napraviProlaz(matDrvo) {
   greda.position.set(0, H + O / 2, Z - 0.0125);
   S.scena.add(greda);
 
-  /* DRUGA SALA iza prolaza — vidi se kroz vrata, ali se u nju ne
-     ulazi. Isti pod, zidovi i šine kao glavna sala; na zidovima
-     vise ostali radovi (oni koji nijesu istaknuti), a u sredini
-     muzejska klupa. Svjetlo je JEDNO tačkasto + blaga emisija na
+  /* MALA SALA iza prolaza — u nju posjetilac ulazi prvo (vidi
+     POCETNA_SALA). Isti pod, zidovi i šine kao velika sala; na zidovima
+     vise istaknuta djela, a u sredini muzejska klupa. Svjetlo je JEDNO tačkasto + blaga emisija na
      djelima, ne po reflektor za svako: druga sala se vidi samo
      kroz otvor, pa ne smije koštati koliko prva. */
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina, SH = SOBA.visina;
@@ -1357,15 +1379,15 @@ function napraviProlaz(matDrvo) {
   greda2.position.set(0, H + O / 2, z0 + 0.0125);
   S.scena.add(greda2);
 
-  /* Muzejska klupa u sredini druge sale */
+  /* Muzejska klupa u sredini male sale */
   napraviKlupu(matDrvo, 0, z0 + SD * 0.62, 0);
-  /* I u prvoj sali dvije, uz zid lijevo i desno od prolaza — mjesto
+  /* I u velikoj sali dvije, uz zid lijevo i desno od prolaza — mjesto
      da se sjedne i gleda zadnji zid sale */
   [-1, 1].forEach(function (k) {
     napraviKlupu(matDrvo, k * (W / 2 + O + 2.1), Z - 0.42, 0);
   });
 
-  /* Toplo opšte svjetlo druge sale; djela imaju svoje reflektore */
+  /* Toplo opšte svjetlo male sale; djela imaju svoje reflektore */
   const svj = new T.PointLight(SVJETLO_TOPLO, 5, SD * 2.2, 2);
   svj.position.set(0, SH - 0.6, z0 + SD / 2);
   S.scena.add(svj);
@@ -1378,11 +1400,13 @@ function napraviProlaz(matDrvo) {
    --------------------------------------------------------- */
 function postaviDjela(djela) {
   const T = S.tri;
-  const uPrvoj = Math.min(djela.length, S.uPrvoj || djela.length);
-  const nCrt = Math.min(djela.length - uPrvoj, S.crtezi || 0);
-  const mjesta = raspored(uPrvoj)
-    .concat(rasporedCrteza(djela.slice(uPrvoj, uPrvoj + nCrt)))
-    .concat(rasporedDruge(djela.length - uPrvoj - nCrt));
+  /* Redom obilaska (vidi ucitajPodatke u glavni.js): istaknuta u maloj
+     sali, pa ostala ulja u velikoj, pa crteži na njenom zidu sa prolazom */
+  const nMala = Math.min(djela.length, S.uMaloj || djela.length);
+  const nVelika = Math.min(djela.length - nMala, S.uVelikoj || 0);
+  const mjesta = rasporedMale(nMala)
+    .concat(raspored(nVelika))
+    .concat(rasporedCrteza(djela.slice(nMala + nVelika, nMala + nVelika + (S.crtezi || 0))));
   S.teksture = [];
   S.drugaKrenula = false;
 
@@ -1620,7 +1644,7 @@ function zamrzniNepokretno() {
 }
 
 Object.assign(G, {
-  MJESTA_DRUGE, napraviSobu, postaviDjela, zamrzniNepokretno
+  MJESTA_VELIKE, napraviSobu, postaviDjela, zamrzniNepokretno
 });
 G.dijelovi.push('scena');
 

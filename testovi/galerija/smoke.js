@@ -51,7 +51,10 @@ function ocekivano() {
     return x.kategorija === 'crtezi' && x.slika && ++po[x.zid === 'desno' ? 'desno' : 'lijevo'] <= 5;
   }).length;
   const ostali = r.filter(function (x) { return !x.istaknuto && x.slika && x.kategorija !== 'crtezi'; }).length;
-  return { sala: istaknuta + crtezi + Math.min(13, ostali), mreza: r.filter(function (x) { return x.id && x.slika; }).length };
+  /* MJESTA_VELIKE u js/galerija/scena.js (ostala ulja u velikoj sali) */
+  const mjestaVelike = Number((fs.readFileSync(path.join(KORIJEN, 'js', 'galerija', 'scena.js'), 'utf8')
+    .match(/const MJESTA_VELIKE = (\d+);/) || [])[1]);
+  return { sala: istaknuta + crtezi + Math.min(mjestaVelike, ostali), mreza: r.filter(function (x) { return x.id && x.slika; }).length };
 }
 
 function prati(page) {

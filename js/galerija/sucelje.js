@@ -18,7 +18,7 @@
 
 /** @type {Galerija} */
 const G = /** @type {any} */ (window).__galerija;
-const { korijen, el, S, sada, poruka } = G;   /* osnova.js */
+const { korijen, el, S, jeDruga, sada, poruka } = G;   /* osnova.js */
 const { TEKST } = G;   /* tekstovi, osnova.js */
 
 /* Kartica djela na uspravnom telefonu (panel odozdo): svako novo djelo
@@ -284,7 +284,7 @@ function osvjeziMob() {
   if (!m) { return; }
   const n = S.mjesta.length;
   const tura = el.tura && (el.tura.querySelector('.galerija-tura__tekst') || el.tura).textContent;
-  m.gdje.textContent = S.sala === 2 ? TEKST.sala2 : TEKST.sala1;
+  m.gdje.textContent = jeDruga(S.sala) ? TEKST.sala2 : TEKST.sala1;
   const djelo = S.izabrano >= 0 && S.mjesta[S.izabrano] ? S.mjesta[S.izabrano].djelo : null;
   if (djelo) {
     m.naziv.textContent = djelo.naziv || '—';
@@ -323,7 +323,7 @@ G.dijelovi.push('telefon');
 
 /** @type {Galerija} */
 const G = /** @type {any} */ (window).__galerija;
-const { izKorijena, SOBA, POLA_X, POLA_Z, VIDNO_POLJE, PROLAZ, korijen, el, S } = G;   /* osnova.js */
+const { izKorijena, SOBA, POLA_X, POLA_Z, VIDNO_POLJE, PROLAZ, korijen, el, S, jeDruga } = G;   /* osnova.js */
 const { EN, IT, TEKST } = G;   /* tekstovi, osnova.js */
 const { postaviKarticu, uronjeno, osvjeziUronjeno, osvjeziMob } = G;   /* telefon, sucelje.js */
 
@@ -484,8 +484,8 @@ function osvjeziKretanje() {
     el.pregled.setAttribute('aria-disabled', uPregledu ? 'true' : 'false');
   }
   if (el.sala) {
-    el.sala.textContent = S.sala === 2 ? TEKST.salaNazad : TEKST.salaDruga;
-    el.sala.hidden = !S.mjesta.some(function (m) { return m.soba === 2; });
+    el.sala.textContent = jeDruga(S.sala) ? TEKST.salaNazad : TEKST.salaDruga;
+    el.sala.hidden = !S.mjesta.some(function (m) { return jeDruga(m.soba); });
   }
   osvjeziMob();
 }
@@ -502,7 +502,7 @@ function pisi(kljuc, vrijednost) {
 /* MAPA SALE: tlocrt obje sale odozgo, tačka za svako djelo i
    „vi ste ovdje“ sa smjerom pogleda. Klik na tačku vodi do djela.
    Koordinate SVG-a su metri sobe: x desno, z nadolje (zadnji zid
-   prve sale gore, druga sala ispod, iza prolaza). */
+   velike sale gore, mala sala ispod, iza prolaza). */
 const SVG_NS = 'http://www.w3.org/2000/svg';
 function svgEl(ime, atributi) {
   const e = document.createElementNS(SVG_NS, ime);
@@ -541,8 +541,9 @@ function napraviMapu() {
     t.textContent = tekst;
     svg.appendChild(t);
   };
-  natpisSale(TEKST.sala1, 0.4);
-  natpisSale(TEKST.sala2, z0 + SD / 2 + 0.4);
+  /* „Sala 1“ je ona u koju se ulazi (vidi POCETNA_SALA) */
+  natpisSale(jeDruga(1) ? TEKST.sala2 : TEKST.sala1, 0.4);
+  natpisSale(jeDruga(2) ? TEKST.sala2 : TEKST.sala1, z0 + SD / 2 + 0.4);
 
   S.mapaTacke = [];
   S.mjesta.forEach(function (m, i) {
