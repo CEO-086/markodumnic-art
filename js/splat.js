@@ -127,9 +127,9 @@
       opis: 'Una villa dal tetto rosso all’angolo di una strada e, sopra, un cielo di pennellate dense e vorticose di blu e di bianco.'
     },
     'havanac-kastro': {
-      naziv: 'Kastro, bichon avanese',
+      naziv: 'Castro, bichon avanese',
       slika: 'img/radovi/havanac-kastro.jpg',
-      opis: 'Kastro, un bichon avanese, dorme su una coperta nello studio, tra cuscini e quadri appesi alla parete.'
+      opis: 'Castro, un bichon avanese, dorme su una coperta nello studio, tra cuscini e quadri appesi alla parete.'
     },
     'mrtva-priroda-sa-vazom': {
       naziv: 'Natura morta con vaso',
@@ -143,9 +143,9 @@
       opis: 'A villa with a red roof on a street corner, under a sky of thick, swirling strokes of blue and white.'
     },
     'havanac-kastro': {
-      naziv: 'Havanese Kastro',
+      naziv: 'Havanese Castro',
       slika: 'img/radovi/havanac-kastro.jpg',
-      opis: 'Kastro, a Havanese dog, asleep on a blanket in the studio, among cushions and paintings on the wall.'
+      opis: 'Castro, a Havanese dog, asleep on a blanket in the studio, among cushions and paintings on the wall.'
     },
     'mrtva-priroda-sa-vazom': {
       naziv: 'Still Life with Vase',
@@ -159,9 +159,9 @@
       opis: 'Vila sa crvenim krovom na uglu ulice, a iznad nje nebo u gustim, kovitlavim potezima plave i bijele.'
     },
     'havanac-kastro': {
-      naziv: 'Havanac Kastro',
+      naziv: 'Havanezer Castro',
       slika: 'img/radovi/havanac-kastro.jpg',
-      opis: 'Havanski bišon Kastro spava na pokrivaču u ateljeu, među jastucima i slikama na zidu.'
+      opis: 'Havanski bišon Castro spava na pokrivaču u ateljeu, među jastucima i slikama na zidu.'
     },
     'mrtva-priroda-sa-vazom': {
       naziv: 'Mrtva priroda sa vazom',
