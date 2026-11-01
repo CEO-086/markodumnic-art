@@ -34,22 +34,25 @@
   var PUTANJA_PODACI = 'data/radovi.json';
 
   /* --- Dozvoljene kategorije (serije iz radovi.json) --- */
-  var KATEGORIJE = ['sve', 'torino', 'atelje', 'rodni-grad'];
+  var KATEGORIJE = ['sve', 'torino', 'atelje', 'rodni-grad', 'crtezi'];
 
   /* Nazivi serija — za vezu „Serija” na stranici djela. Ako radovi.json
      donese svoje nazive (polje `kategorije`), oni imaju prednost. */
   var NAZIVI_SERIJA = ITALIJANSKI ? {
     'torino': 'Paesaggi',
     'atelje': 'Scorci dallo studio',
-    'rodni-grad': 'Fantasticherie sulla città natale'
+    'rodni-grad': 'Fantasticherie sulla città natale',
+    'crtezi': 'Disegni'
   } : ENGLESKI ? {
     'torino': 'Landscapes',
     'atelje': 'Glimpses from the Studio',
-    'rodni-grad': 'Hometown Reveries'
+    'rodni-grad': 'Hometown Reveries',
+    'crtezi': 'Drawings'
   } : {
     'torino': 'Pejzaži',
     'atelje': 'Prizori iz ateljea',
-    'rodni-grad': 'Sanjarenja o rodnom gradu'
+    'rodni-grad': 'Sanjarenja o rodnom gradu',
+    'crtezi': 'Crteži'
   };
 
   /* --- Tekstovi koje skripta upisuje, po jeziku --- */
@@ -370,10 +373,9 @@
         var shema = JSON.parse(blok.textContent);
         shema.name = djelo.naziv;
         shema.artMedium = djelo.tehnika;
-        shema.dateCreated = String(djelo.godina);
+        if (djelo.godina != null) { shema.dateCreated = String(djelo.godina); } else { delete shema.dateCreated; }
         shema.description = djelo.opis;
-        /* Svi radovi su ulja na platnu. */
-        shema.artform = 'Painting';
+        shema.artform = djelo.kategorija === 'crtezi' ? 'Drawing' : 'Painting';
         if (imaIzvorniNaziv(djelo)) {
           shema.alternateName = djelo.originalniNaziv;
         } else {
@@ -474,9 +476,9 @@
 
       /* Tekstualni podaci. */
       upisi('#djelo-naziv', djelo.naziv);
-      upisi('#djelo-godina', String(djelo.godina));
+      upisi('#djelo-godina', djelo.godina != null ? String(djelo.godina) : '—');
       upisi('#djelo-tehnika', djelo.tehnika);
-      upisi('#djelo-dimenzije', djelo.dimenzije);
+      upisi('#djelo-dimenzije', djelo.dimenzije || '—');
       upisi('#djelo-opis', djelo.opis);
 
       /* Upit za djelo — kontakt forma dobija id djela. */

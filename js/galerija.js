@@ -602,7 +602,7 @@ function raspored(n) {
    leđa posjetioca na početnoj poziciji, iznad klupa. Do pet po polovini
    zida. Obilazak nastavlja krug prve sale: posle desnog zida (x > 0) ide
    polovina prednjeg zida uz njega (od ugla ka vratima), pa druga (od
-   vrata ka uglu). U data/crtezi.json `zid: "desno"` je polovina uz
+   vrata ka uglu). U data/radovi.json `zid: "desno"` je polovina uz
    desni zid sale (x > 0), `"lijevo"` ona uz lijevi. */
 function rasporedCrteza(crtezi) {
   const ivica = PROLAZ.sirina / 2 + PROLAZ.okvir + 0.55;   /* od sredine vrata */
@@ -785,30 +785,15 @@ async function ucitajPodatke() {
   });
   const izbor = svi.filter(function (r) { return r && r.istaknuto; });
   /* Ostali radovi vise u drugoj sali, koja se vidi kroz prolaz */
-  S.ostali = svi.filter(function (r) { return r && !r.istaknuto && r.slika; });
+  S.ostali = svi.filter(function (r) { return r && !r.istaknuto && r.slika && r.kategorija !== 'crtezi'; });
   if (!izbor.length) { throw { vrsta: 'prazno' }; }
-  /* Crteži (data/crtezi.json) — samo za salu; ako fajla nema, sala radi bez njih */
-  let crtezi = [];
-  try {
-    const o = await fetch(izKorijena('data/crtezi.json'), { cache: 'no-cache' });
-    if (o.ok) {
-      crtezi = (((await o.json()) || {}).crtezi || []).filter(function (c) { return c && c.slika; }).map(function (c) {
-        const d = Object.assign({}, c);
-        const prevod = IT ? c.it : EN ? c.en : null;
-        if (prevod) { Object.assign(d, prevod); }
-        if (!d.naziv) { d.naziv = TEKST.crtez; }
-        d.kategorija = 'crtezi';
-        d.slika = izKorijena(d.slika);
-        if (d.slikaVelika) { d.slikaVelika = izKorijena(d.slikaVelika); }
-        return d;
-      });
-      /* najviše pet po polovini zida */
-      const po = { desno: 0, lijevo: 0 };
-      crtezi = crtezi.filter(function (c) { const z = c.zid === 'desno' ? 'desno' : 'lijevo'; c.zid = z; return ++po[z] <= 5; });
-      /* redoslijed obilaska: prvo polovina uz desni zid sale */
-      crtezi = crtezi.filter(function (c) { return c.zid === 'desno'; }).concat(crtezi.filter(function (c) { return c.zid !== 'desno'; }));
-    }
-  } catch (e) { crtezi = []; }
+  /* Crteži (kategorija "crtezi" u radovi.json) idu na prednji zid prve
+     sale, po zidu iz polja `zid` ("desno" = polovina uz desni zid sale) */
+  let crtezi = svi.filter(function (r) { return r && r.kategorija === 'crtezi' && r.slika; });
+  const po = { desno: 0, lijevo: 0 };
+  crtezi = crtezi.filter(function (c) { const z = c.zid === 'desno' ? 'desno' : 'lijevo'; c.zid = z; return ++po[z] <= 5; });
+  /* redoslijed obilaska: prvo polovina uz desni zid sale */
+  crtezi = crtezi.filter(function (c) { return c.zid === 'desno'; }).concat(crtezi.filter(function (c) { return c.zid !== 'desno'; }));
   /* Sva djela idu na zidove: istaknuta u prvu salu, crteži na njen
      prednji zid, ostala u drugu */
   S.uPrvoj = izbor.length;
@@ -3033,7 +3018,6 @@ function otvoriPanel(djelo) {
   el.pDimenzije.textContent = djelo.dimenzije || '—';
   el.pOpis.textContent = djelo.opis || '';
   el.pLink.setAttribute('href', 'djelo/' + encodeURIComponent(djelo.id || '') + '.html');
-  el.pLink.style.display = djelo.kategorija === 'crtezi' ? 'none' : '';   /* crteži još nemaju svoju stranicu */
   postaviKarticu(false);
   korijen.setAttribute('data-panel', 'otvoren');
   /* Petlja se namjerno NE pauzira dok je panel otvoren — sala ostaje živa iza njega. */

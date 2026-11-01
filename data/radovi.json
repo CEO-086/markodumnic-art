@@ -32,6 +32,12 @@
       "naziv": "Sanjarenja o rodnom gradu",
       "nazivEn": "Hometown Reveries",
       "nazivIt": "Fantasticherie sulla città natale"
+    },
+    {
+      "id": "crtezi",
+      "naziv": "Crteži",
+      "nazivEn": "Drawings",
+      "nazivIt": "Disegni"
     }
   ],
   "radovi": [
@@ -791,6 +797,318 @@
         1200,
         1600
       ]
+    },
+    {
+      "id": "crtez-1",
+      "naziv": "Crtež 1",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "desno",
+      "opis": "Kamena kapija sa lukom na kraju popločane staze, pod tamnim krošnjama.",
+      "paleta": [
+        "#3D3D37",
+        "#292922",
+        "#585A54",
+        "#7B7D77",
+        "#A1A49E"
+      ],
+      "slika": "img/radovi/crtez-1.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-1.jpg",
+      "sirinaPx": 918,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 1",
+        "opis": "A stone gateway with an arch at the end of a paved path, under dark treetops.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 1",
+        "opis": "Un portale di pietra ad arco in fondo a un sentiero lastricato, sotto chiome scure.",
+        "tehnika": "Disegno su carta"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1574
+      ],
+      "izvor": "DSC_4274"
+    },
+    {
+      "id": "crtez-2",
+      "naziv": "Crtež 2",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "desno",
+      "opis": "Ogoljelo drvo pred kućom sa rešetkastim prozorom; prolaznik i psi na ulici.",
+      "paleta": [
+        "#434235",
+        "#757460",
+        "#A6A388",
+        "#BFBC9D",
+        "#CDCAAC"
+      ],
+      "slika": "img/radovi/crtez-2.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-2.jpg",
+      "sirinaPx": 958,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 2",
+        "opis": "A bare tree in front of a house with a barred window; a passer-by and dogs in the street.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 2",
+        "opis": "Un albero spoglio davanti a una casa con la finestra a grata; un passante e dei cani per strada.",
+        "tehnika": "Disegno su carta"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "izvor": "DSC_4277"
+    },
+    {
+      "id": "crtez-3",
+      "naziv": "Crtež 3",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "desno",
+      "opis": "Krov kuće iza grmlja i kamenog zida, pod nebom sa razvučenim oblacima.",
+      "paleta": [
+        "#59574B",
+        "#37362F",
+        "#8B8676",
+        "#BBB39C",
+        "#CEC5AF"
+      ],
+      "slika": "img/radovi/crtez-3.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-3.jpg",
+      "sirinaPx": 962,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 3",
+        "opis": "A house roof behind bushes and a stone wall, under a sky of drawn-out clouds.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 3",
+        "opis": "Il tetto di una casa dietro i cespugli e un muro di pietra, sotto un cielo di nuvole allungate.",
+        "tehnika": "Disegno su carta"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "izvor": "DSC_4281"
+    },
+    {
+      "id": "crtez-4",
+      "naziv": "Crtež 4",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "desno",
+      "opis": "Dva visoka drveta u dolini među brdima.",
+      "paleta": [
+        "#4D4B42",
+        "#7E7B6E",
+        "#CFC7B0",
+        "#B8B29F",
+        "#D9D1BC"
+      ],
+      "slika": "img/radovi/crtez-4.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-4.jpg",
+      "sirinaPx": 995,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 4",
+        "opis": "Two tall trees in a valley between hills.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 4",
+        "opis": "Due alberi alti in una valle tra le colline.",
+        "tehnika": "Disegno su carta"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "izvor": "DSC_4283"
+    },
+    {
+      "id": "crtez-5",
+      "naziv": "Crtež 5",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "lijevo",
+      "opis": "Debelo stablo u parku, sa granama koje se račvaju iznad staze.",
+      "paleta": [
+        "#C0BEB6",
+        "#8D8D86",
+        "#41413B",
+        "#5C5B56",
+        "#6D6D67"
+      ],
+      "slika": "img/radovi/crtez-5.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-5.jpg",
+      "sirinaPx": 944,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 5",
+        "opis": "A thick tree trunk in a park, its branches forking above the path.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 5",
+        "opis": "Un grosso tronco in un parco, con i rami che si biforcano sopra il sentiero.",
+        "tehnika": "Disegno su carta"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "izvor": "DSC_4285"
+    },
+    {
+      "id": "crtez-6",
+      "naziv": "Crtež 6",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "lijevo",
+      "opis": "Vaza sa uvelim cvijetom i posude na polici.",
+      "paleta": [
+        "#544D3A",
+        "#CAB98C",
+        "#9C906E",
+        "#D6C393",
+        "#DCCA98"
+      ],
+      "slika": "img/radovi/crtez-6.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-6.jpg",
+      "sirinaPx": 1002,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 6",
+        "opis": "A vase with a wilted flower and jars on a shelf.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 6",
+        "opis": "Un vaso con un fiore appassito e dei barattoli su una mensola.",
+        "tehnika": "Disegno su carta"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "izvor": "IMG_1100"
+    },
+    {
+      "id": "crtez-7",
+      "naziv": "Crtež 7",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "lijevo",
+      "opis": "Biljka u saksiji i zdjele na stolu, pred zidom sa šarom.",
+      "paleta": [
+        "#2C2823",
+        "#7E7463",
+        "#EFDFB3",
+        "#D9C9A2",
+        "#F5E7BE"
+      ],
+      "slika": "img/radovi/crtez-7.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-7.jpg",
+      "sirinaPx": 1050,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 7",
+        "opis": "A potted plant and bowls on a table, in front of a patterned wall.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 7",
+        "opis": "Una pianta in vaso e delle ciotole su un tavolo, davanti a una parete decorata.",
+        "tehnika": "Disegno su carta"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "izvor": "IMG_1104"
+    },
+    {
+      "id": "crtez-8",
+      "naziv": "Crtež 8",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "lijevo",
+      "opis": "Biljka sa obješenim listovima u visokoj saksiji i zdjela na stolu.",
+      "paleta": [
+        "#271004",
+        "#E4D8C6",
+        "#75542F",
+        "#CFBEA8",
+        "#ECE2D1"
+      ],
+      "slika": "img/radovi/crtez-8.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-8.jpg",
+      "sirinaPx": 997,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 8",
+        "opis": "A plant with drooping leaves in a tall pot and a bowl on a table.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 8",
+        "opis": "Una pianta dalle foglie cadenti in un vaso alto e una ciotola su un tavolo.",
+        "tehnika": "Disegno su carta"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ],
+      "izvor": "IMG_1115"
     }
   ]
 }
