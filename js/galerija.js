@@ -285,10 +285,8 @@ const TELEFON = MAX_TEKSTURA <= 1024;
    na disku kao rezerva):
      img/sala/<id>-160.webp     sićušna slika — stoji na platnu odmah,
                                 dok prava ne stigne
-     img/sala/<id>-1024.avif    fotografija za telefone (MAX_TEKSTURA 1024),
-     img/sala/<id>-1024.webp    WebP kao rezerva
+     img/sala/<id>-1024.webp    fotografija za telefone (MAX_TEKSTURA 1024)
      img/radovi/w/<id>-<w>.avif fotografija za računar (JPG kao rezerva)
-     img/sala/<id>-velika.avif  puna veličina za Izbliza i Lupu
      img/radovi/<id>.jpg        rezerva, u prirodnoj veličini
      img/reljef/<id>.webp       normal mapa (telefon: <id>-512.webp)
    Ako WebP fajla nema, uzima se original (JPG / PNG). */
@@ -304,8 +302,8 @@ function izvoriDjela(djelo) {
   /* Štednja podataka: 800 px AVIF iz img/radovi/w/ (~100 KB), i na telefonu */
   if (avif && stediPodatke() && v.indexOf(800) >= 0) { l.push(izKorijena('img/radovi/w/' + id + '-800.avif')); }
   if (TELEFON && id) {
-    /* Telefon: AVIF ~20 % manji od WebP-a iste oštrine; WebP je rezerva */
-    if (avif) { l.push(izKorijena('img/sala/' + id + '-1024.avif')); }
+    /* Telefon: WebP 1024 (AVIF je ovdje proban i odbačen: sitan pomak
+       boje, a ušteda tek ~20 %) */
     l.push(izKorijena('img/sala/' + id + '-1024.webp'));
   } else if (avif && v.length && djelo.sirinaPx > 0) {
     /* Računar: AVIF iz img/radovi/w/ (isti fajlovi kao na stranicama
@@ -320,11 +318,10 @@ function izvoriDjela(djelo) {
 function izvorDjela(djelo) {
   return izvoriDjela(djelo)[0] || djelo.slika;
 }
-/* Fotografija pune veličine za Izbliza i Lupu: AVIF (img/sala/<id>-velika.avif,
-   ~30 % manji od JPG-a, isto zrno i pod Lupom), JPG je rezerva. */
+/* Fotografija pune veličine za Izbliza i Lupu: originalni JPG (AVIF je
+   proban i odbačen zbog sitnog pomaka boje — boje slika moraju biti tačne). */
 function izvorVelike(djelo) {
-  const jpg = djelo.slikaVelika || djelo.slika;
-  return djelo.id && avifRadi ? izKorijena('img/sala/' + encodeURIComponent(djelo.id) + '-velika.avif') : jpg;
+  return djelo.slikaVelika || djelo.slika;
 }
 function izvorReljefa(djelo, original) {
   const id = encodeURIComponent(djelo.id);

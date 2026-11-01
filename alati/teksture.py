@@ -13,10 +13,6 @@ Iz izvornih fajlova (koji OSTAJU na disku, ne briše se ništa) pravi:
   img/sala/<id>-160.webp      sićušna verzija djela — stoji na platnu dok
                               prava tekstura ne stigne (i u drugoj sali dok
                               posjetilac ne krene ka njoj)
-  img/sala/<id>-1024.avif     isto što -1024.webp, AVIF (telefon ga uzima
-                              prvog; WebP ostaje rezerva)
-  img/sala/<id>-velika.avif   fotografija pune veličine (img/radovi/velike/)
-                              za Izbliza i Lupu; JPG ostaje rezerva
 
 Desktop i dalje crta img/radovi/<id>.jpg u prirodnoj veličini — tu se
 ne gubi ništa od fotografije.
@@ -41,13 +37,6 @@ SOBA = {'albedo': dict(quality=88, method=6),
         'roughness': dict(quality=92, method=6)}
 RADOVI = [('-1024', 1024, dict(quality=86, method=6)),
           ('-160', 160, dict(quality=60, method=6))]
-# AVIF uz WebP/JPG. Kvalitet je biran poređenjem isječaka 2:1 sa izvorom
-# (ulje: sitna tekstura platna je ono što prvo nestane): 1024 px q70 se
-# ne razlikuje od WebP q86 a ~20 % je manji; puna veličina q64 drži zrno
-# JPG-a i pod Lupom (3x), ~30 % manja. Ispod toga AVIF već „pegla“ platno.
-# sRGB: fajlovi nemaju ICC, a AVIF dobija nclx 1/13/6 (sRGB).
-RADOVI_AVIF = [('-1024', 1024, 'slika', dict(quality=70, speed=6, max_threads=1)),
-               ('-velika', 0, 'slikaVelika', dict(quality=64, speed=6, max_threads=1))]
 
 napravljeno = preskoceno = 0
 
@@ -61,7 +50,7 @@ def zastario(izvor, izlaz):
 
 
 def smanji(im, maks):
-    if not maks or max(im.size) <= maks:
+    if max(im.size) <= maks:
         return im
     k = maks / max(im.size)
     return im.resize((max(1, round(im.width * k)), max(1, round(im.height * k))), Image.LANCZOS)
@@ -79,10 +68,7 @@ def sacuvaj(izvor, izlaz, maks, opcije, mod=None):
             mod = 'L' if im.mode in ('L', 'LA', 'I;16') else 'RGB'
         slika = smanji(im.convert(mod), maks)
     privremeni = izlaz + '.tmp'
-    if izlaz.endswith('.avif'):
-        slika.save(privremeni, 'AVIF', **opcije)
-    else:
-        slika.save(privremeni, 'WEBP', exact=True, **opcije)
+    slika.save(privremeni, 'WEBP', exact=True, **opcije)
     os.replace(privremeni, izlaz)
     napravljeno += 1
     print('  %-40s %4dx%-4d %7.1f KB  (izvor %7.1f KB)' % (
@@ -116,20 +102,8 @@ def main():
             continue
         for sufiks, maks, opcije in RADOVI:
             sacuvaj(izvor, put('img', 'sala', r['id'] + sufiks + '.webp'), maks, opcije, 'RGB')
-    djela_avif(radovi)
 
     print('napravljeno %d, već ažurno %d' % (napravljeno, preskoceno))
-
-
-def djela_avif(radovi):
-    for r in radovi:
-        if not r or not r.get('id'):
-            continue
-        for sufiks, maks, polje, opcije in RADOVI_AVIF:
-            rel = r.get(polje) or r.get('slika')
-            if not rel or not os.path.exists(put(*rel.split('/'))):
-                continue
-            sacuvaj(put(*rel.split('/')), put('img', 'sala', r['id'] + sufiks + '.avif'), maks, opcije, 'RGB')
 
 
 if __name__ == '__main__':
