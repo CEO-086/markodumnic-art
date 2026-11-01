@@ -144,3 +144,9 @@
   --rule:       rgba(239, 231, 216, 0.16);
   --rule-strong:rgba(239, 231, 216, 0.3);
 }
+
+/* Veliki monitori (27–32", 1800 px i šire): glavni kontejner malo širi,
+   na svim stranama isto — zaglavlje i sadržaj ostaju poravnati. */
+@media (min-width: 112.5rem) {
+  :root { --max-w: 1440px; }
+}

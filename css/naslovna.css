@@ -57,6 +57,7 @@
 
 .hero__uvod {
   max-width: 34ch;
+  text-wrap: balance;   /* ravnomjerni redovi, bez kratkog reda u sredini */
   margin-block: 0 clamp(var(--s-6), 4vw, var(--s-7));
   color: var(--ink-soft);
 }
@@ -105,6 +106,58 @@
 .disciplina__potpis::before {
   content: none;
   margin-right: 0;
+}
+
+/* PRVI POGLED NA VEĆIM EKRANIMA (laptop, desktop): uvod tačno ispunjava
+   ekran ispod zaglavlja, a tekst i djelo stoje vertikalno na sredini.
+   Visina djela se računa iz visine ekrana — na 13" laptopu su djelo,
+   potpis i dugmad uvijek cijeli u prvom pogledu, a na velikom monitoru
+   djelo raste, ali nikad ne pojede tekst (najviše ~56 % širine omota).
+   Slova naslova prate i visinu ekrana, ne samo širinu. */
+@media (min-width: 48rem) {
+  .hero {
+    --hero-pad: clamp(1.5rem, 6svh, 5rem);
+    --hero-potpis: 2.75rem;   /* razmak + red potpisa ispod djela */
+    display: grid;
+    align-content: center;
+    min-height: calc(100vh - var(--h-zaglavlje));
+    min-height: calc(100svh - var(--h-zaglavlje));
+    padding-block: var(--hero-pad);
+  }
+
+  .hero__unutra {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: clamp(3rem, 6vw, 8rem);
+  }
+
+  .hero__naslov {
+    font-size: clamp(3rem, min(8vw, 11vh), 7.5rem);
+    font-size: clamp(3rem, min(8vw, 11svh), 7.5rem);
+  }
+
+  .hero__djelo img {
+    /* širina iz dostupne visine × proporcija djela (1171 : 1400) */
+    width: min(
+      44vw,
+      calc((min(100vw, var(--max-w)) - 2 * var(--gutter)) * 0.56),
+      calc((100vh - var(--h-zaglavlje) - 2 * var(--hero-pad) - var(--hero-potpis)) * 1171 / 1400)
+    );
+    width: min(
+      44vw,
+      calc((min(100vw, var(--max-w)) - 2 * var(--gutter)) * 0.56),
+      calc((100svh - var(--h-zaglavlje) - 2 * var(--hero-pad) - var(--hero-potpis)) * 1171 / 1400)
+    );
+    min-width: 15rem;
+    height: auto;
+  }
+}
+
+/* Veliki monitor (27–32"): uvodni tekst i naslov rastu sa djelom,
+   da tekst ne ostane sitan pored velike slike. */
+@media (min-width: 112.5rem) and (min-height: 56rem) {
+  .hero__naslov { font-size: clamp(3rem, min(8vw, 11svh), 8.5rem); }
+  .hero__uvod { font-size: 1.625rem; max-width: 30ch; }
+  .hero__tekst > .oznaka { font-size: 0.9rem; }
 }
 
 /* ---------------------------------------------------------
