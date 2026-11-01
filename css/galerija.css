@@ -269,6 +269,21 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   min-height: 44px;          /* dodirna meta */
 }
 
+/* Markov potpis ispod dugmeta — isti crtež i veličina kao u podnožju,
+   samo u svijetloj boji teksta tamne ploče. Čisti ukras: ne prima klik. */
+.galerija-ulaz__potpis {
+  display: block;
+  width: auto;
+  height: 44px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (min-width: 820px) {
+  .galerija-ulaz__potpis { height: 48px; }
+}
+
 .galerija-ulaz__napomena {
   margin: 0;
   max-width: var(--measure);
