@@ -269,19 +269,26 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   min-height: 44px;          /* dodirna meta */
 }
 
-/* Markov potpis ispod dugmeta — isti crtež i veličina kao u podnožju,
-   samo u svijetloj boji teksta tamne ploče. Čisti ukras: ne prima klik. */
+/* Dugme i Markov potpis ispod njega. Omotač je širok koliko dugme
+   (u stupcu ulaza stoji uz lijevu ivicu), a potpis ne utiče na tu
+   širinu (width: 0) nego je samo prati (min-width: 100%) — zato je
+   potpis na svakom jeziku tačno širok kao dugme. Isti crtež kao u
+   podnožju, u svijetloj boji teksta tamne ploče. Čisti ukras. */
+.galerija-ulaz__akcija {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--s-5) + var(--s-1));
+}
+
 .galerija-ulaz__potpis {
   display: block;
-  width: auto;
-  height: 44px;
+  width: 0;
+  min-width: 100%;
+  height: auto;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-}
-
-@media (min-width: 820px) {
-  .galerija-ulaz__potpis { height: 48px; }
 }
 
 .galerija-ulaz__napomena {
