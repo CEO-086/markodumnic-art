@@ -124,6 +124,7 @@
  * @property {any} svjetlo        reflektor nad djelom (ili zajednički za crteže)
  * @property {any} svjetloPoz     njegov početni položaj (bočno svjetlo ga pomjera)
  * @property {number} svjetloJacina
+ * @property {number} svjetloUgao   početni ugao snopa (vraća se kad se bočno svjetlo ugasi)
  */
 /**
  * Zajedničko stanje sale (const S, niže u omotaču). Polja bez [zagrada]
@@ -396,7 +397,7 @@ const UGAO_BOCNO = 78 * Math.PI / 180;
    koju posjetilac ima u stvarnoj sali, pa bi crtež na 1/4 bio crna rupa. */
 const OSVJETLJENOST = { ulja: 1.0, crtezi: 0.4 };
 /* Zajednički reflektor za grupu crteža (po jedan sa svake strane prolaza) */
-const CRTEZI_SVJETLO = { dalje: 3.2, gore: 3.3, nize: 0.55, preko: 0.5, penumbra: 0.55, jacina: 0.75 };
+const CRTEZI_SVJETLO = { dalje: 3.2, gore: 3.3, nize: 0.55, preko: 0.55, jezgro: -0.1, jacina: 0.75 };
 
 /* PROLAZ: otvorena vrata na sredini prednjeg zida (zid bez djela).
    1.4 × 2.5 m — dvoje ljudi se mimoilazi, po pravilima za javne
