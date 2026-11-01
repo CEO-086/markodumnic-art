@@ -1254,6 +1254,7 @@ function zagrijDrugu() {
      sa ekranom kao metom: pripremi baš one programe koje kadar koristi
      (za sve objekte scene, bez obzira na to gdje kamera gleda). */
   try { S.render.compile(S.scena, kam); } catch (e) {}
+  prevediMalo(kam);
   /* Na računaru (ANGLE/Metal) grafički drajver i poslije toga sprema
      dio stanja tek pri PRVOM crtanju na sam ekran. Zato još jedan
      kadar: druga sala se iscrta na ekran i odmah preko nje obična
@@ -1263,19 +1264,136 @@ function zagrijDrugu() {
 
 /* Jedan pravac po kadru (S.zagrijEkran broji 4 → 1), da nijedan kadar
    u prvoj sali ne nosi četiri dodatna crtanja odjednom. */
-function zagrijNaEkranu(korak) {
+function zagrijNaEkranu(korak, malo) {   /* malo: broj svjetala (SVJETLA_U_KADRU) */
   const T = S.tri;
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
   const z0 = POLA_Z + PROLAZ.zid;
   const kam = new T.PerspectiveCamera(100, S.kamera.aspect, 0.1, 40);
+  let pravci = [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]];
   kam.position.set(0, 1.6, z0 + SD * 0.5);
+  /* Varijanta sa manje svjetala (vidi rasporediSvjetla): koraci 8 → 5
+     su iz sredine prve sale ka njena četiri zida, 4 → 1 isto kao gore. */
+  if (malo && korak > 4) {
+    pravci = [[0, -POLA_Z], [POLA_X, 0], [-POLA_X, 0], [0, POLA_Z]];
+    kam.position.set(0, 1.6, 0);
+    korak -= 4;
+  }
+  S.svjetlaPrisilno = malo || 'sva';   /* i posle nove oštrine: tačno ta varijanta */
   try {
-    [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].slice(korak - 1, korak).forEach(function (t) {
+    pravci.slice(korak - 1, korak).forEach(function (t) {
       kam.lookAt(t[0], VISINA_DJELA, t[1]);
       kam.updateMatrixWorld();
       S.render.render(S.scena, kam);
     });
   } catch (e) {}
+  S.svjetlaPrisilno = null;
+}
+
+/* SVJETLA VAN KADRA. Svaki reflektor se u shaderu računa za svaki
+   piksel, i kad ga ne dotiče. A reflektor čiji snop (kupa dužine
+   `distance`) ne siječe vidno polje kamere ne doprinosi NIJEDNOM pikselu
+   tog kadra: three.js mu van kupe i dalje od `distance` daje tačno nulu.
+   Takav se za taj kadar ugasi — slika je ista do posljednjeg bita.
+   Broj upaljenih mijenja shader, pa da se ništa ne prevodi usred hoda,
+   upaljeno je uvijek SVE ili tačno jedan od brojeva SVJETLA_U_KADRU
+   (dopunjeno reflektorima van kadra, koji ionako daju nulu): prva sala
+   treba do 5, druga do 9, pogled kroz vrata sva. Sve varijante se
+   prevedu i zagriju unaprijed (zagrijDrugu → prevediMalo); dok to nije
+   gotovo, sva svjetla su upaljena, kao i prije. Reflektor koji baca
+   sjenku je uvijek upaljen (i njegova sjenka mijenja shader). */
+const SVJETLA_U_KADRU = [6, 12];
+const DOMET = {};
+function dometSvjetla(l) {
+  const T = S.tri;
+  if (!DOMET.kutija) {
+    DOMET.kutija = new T.Box3();
+    DOMET.tacka = new T.Vector3();
+    DOMET.osa = new T.Vector3();
+    DOMET.u = new T.Vector3();
+    DOMET.v = new T.Vector3();
+  }
+  const P = l.position, d = l.distance, k = DOMET.kutija, t = DOMET.tacka;
+  const osa = DOMET.osa.subVectors(l.target.position, P).normalize();
+  const c = Math.cos(l.angle), s = Math.sin(l.angle);
+  DOMET.u.set(Math.abs(osa.y) < 0.9 ? 0 : 1, Math.abs(osa.y) < 0.9 ? 1 : 0, 0).cross(osa).normalize();
+  DOMET.v.crossVectors(osa, DOMET.u);
+  k.makeEmpty();
+  k.expandByPoint(P);
+  /* rub kupe na daljini d (16 tačaka) i, ako je u kupi, krajnja tačka
+     kape u pravcu svake ose — kutija obuhvata cijeli snop */
+  for (let i = 0; i < 16; i++) {
+    const f = i * Math.PI / 8;
+    t.copy(osa).multiplyScalar(c)
+      .addScaledVector(DOMET.u, s * Math.cos(f))
+      .addScaledVector(DOMET.v, s * Math.sin(f));
+    k.expandByPoint(t.multiplyScalar(d).add(P));
+  }
+  const ose = [osa.x, osa.y, osa.z];
+  for (let a = 0; a < 3; a++) {
+    for (let z = -1; z <= 1; z += 2) {
+      if (ose[a] * z >= c) {
+        t.set(0, 0, 0).setComponent(a, z * d);
+        k.expandByPoint(t.add(P));
+      }
+    }
+  }
+  /* 16 tačaka malo potcijene krug; plus 5 cm zalihe */
+  k.expandByScalar(d * s * (1 - Math.cos(Math.PI / 16)) + 0.05);
+  return k;
+}
+function rasporediSvjetla(kamera) {
+  const R = S.reflektori;
+  if (!R || !R.length || !S.tri) { return; }
+  const nacin = S.svjetlaPrisilno || (S.svjetlaMalo ? 'kadar' : 'sva');
+  let treba = 0;
+  if (nacin === 'kadar') {
+    if (!DOMET.kadar) { DOMET.kadar = new S.tri.Frustum(); DOMET.matrica = new S.tri.Matrix4(); }
+    DOMET.kadar.setFromProjectionMatrix(DOMET.matrica.multiplyMatrices(kamera.projectionMatrix, kamera.matrixWorldInverse));
+  }
+  for (const l of R) {
+    l.userData.uKadru = nacin === 'sva' || l.castShadow || !(l.distance > 0) ||
+      (nacin === 'kadar' && DOMET.kadar.intersectsBox(dometSvjetla(l)));
+    if (l.userData.uKadru) { treba++; }
+  }
+  S.svjetlaPotrebno = treba;
+  let K = typeof nacin === 'number' ? nacin : R.length;
+  if (nacin === 'kadar') {
+    for (const k of SVJETLA_U_KADRU) { if (treba <= k) { K = k; break; } }
+  }
+  let dopuna = Math.max(0, Math.min(K, R.length) - treba);
+  for (const l of R) {
+    if (l.userData.uKadru) { l.visible = true; }
+    else { l.visible = dopuna > 0; dopuna--; }
+  }
+}
+/* Varijante sa SVJETLA_U_KADRU svjetala: prevedu se za sve materijale
+   scene, sačeka se da ih grafika zaista spremi (bez blokiranja), pa se
+   na računaru još i iscrtaju na ekran (zagrijNaEkranu, 8 pravaca po
+   varijanti). Tek tada se svjetla van kadra gase. */
+function prevediMalo(kam) {
+  const R = S.reflektori;
+  if (!R || R.length <= SVJETLA_U_KADRU[0]) { return; }
+  const programi = [];
+  for (const k of SVJETLA_U_KADRU) {
+    let mat = null;
+    S.svjetlaPrisilno = k;
+    rasporediSvjetla(kam);
+    try { mat = S.render.compile(S.scena, kam); } catch (e) { mat = null; }
+    S.svjetlaPrisilno = null;
+    if (!mat) { rasporediSvjetla(kam); return; }
+    mat.forEach(function (m) {
+      const p = S.render.properties.get(m).currentProgram;
+      if (p && programi.indexOf(p) < 0) { programi.push(p); }
+    });
+  }
+  rasporediSvjetla(kam);
+  const gen = S.gen;
+  const cekaj = function () {
+    if (S.gen !== gen || !S.render) { return; }
+    if (programi.some(function (p) { return p.isReady && !p.isReady(); })) { window.setTimeout(cekaj, 50); return; }
+    if (TELEFON) { S.svjetlaMalo = true; osvjeziKadar(); } else { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
+  };
+  cekaj();
 }
 
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
@@ -1451,6 +1569,7 @@ function napraviReflektor(mj, djelo, i) {
 
     S.scena.add(svjetlo.target);
     S.scena.add(svjetlo);
+    S.reflektori.push(svjetlo);
 
     /* --- SVJETILJKA: vidljivo tijelo reflektora na mjestu svjetla —
            adapter na šini, kratka cijev i kućište okrenuto ka djelu,
@@ -1476,6 +1595,8 @@ function postaviDjela(djela) {
   S.zagrijavanjeZakazano = false;
   S.drugaZagrijana = false; S.zagrijEkran = 0;
   S.svjetlaGrupa = {};
+  S.reflektori = [];
+  S.svjetlaMalo = false; S.svjetlaPrisilno = null; S.zagrijMalo = 0;
   S.kadrovi = [];
   /* Ravna normal mapa (1×1, 128/128/255): platno od početka ima
      normalMap, pa dolazak pravog reljefa ne mijenja shader. */
@@ -1680,6 +1801,8 @@ function postaviDjela(djela) {
      okrenuta nagore malo krem odsjaja zidova — kao u pravoj sali. */
   S.polulopta = new T.HemisphereLight(0xFFEEDA, 0x6B4226, 0.35);
   S.scena.add(S.polulopta);
+  /* Prije svakog crtanja (i zagrijavanja): svjetla van kadra se gase */
+  S.scena.onBeforeRender = function (r, scena, kamera) { rasporediSvjetla(kamera); };
 }
 
 /* ---------------------------------------------------------
@@ -2128,6 +2251,7 @@ function mjeriBrzinu(t) {
     S.render.setPixelRatio(S.novaOstrina);   /* sam zadrži veličinu okna */
     S.novaOstrina = 0;
     if (S.drugaZagrijana) { S.zagrijEkran = 4; }
+    if (S.svjetlaMalo) { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
     osvjeziKadar();
   }
   S.prosliCrtan = kretanje ? t : 0;
@@ -2941,6 +3065,11 @@ function petlja() {
   if (S.zagrijEkran && !S.anim && !S.ka && !S.vuce && !S.inercija) {
     zagrijNaEkranu(S.zagrijEkran);
     S.zagrijEkran--;
+    crtaj = true;
+  } else if (S.zagrijMalo && !S.anim && !S.ka && !S.vuce && !S.inercija) {
+    zagrijNaEkranu((S.zagrijMalo - 1) % 8 + 1, SVJETLA_U_KADRU[Math.floor((S.zagrijMalo - 1) / 8)]);
+    S.zagrijMalo--;
+    if (!S.zagrijMalo) { S.svjetlaMalo = true; }
     crtaj = true;
   }
   if (crtaj) {
