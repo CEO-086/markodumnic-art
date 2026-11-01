@@ -435,6 +435,11 @@ function smanjenoKretanje() {
    Prava veličina, bez normalizacije i bez uvećanja. */
 function mjereIzDimenzija(tekst, djelo) {
   const m = String(tekst || '').match(/(\d+(?:[.,]\d+)?)\s*[×xX*]\s*(\d+(?:[.,]\d+)?)/);
+  if (!m && djelo && djelo.kategorija === 'crtezi' && djelo.sirinaPx > 0 && djelo.visinaPx > 0) {
+    /* Crtež bez upisanih mjera: duža strana 42 cm (A3) */
+    const k = 0.42 / Math.max(djelo.sirinaPx, djelo.visinaPx);
+    return { sirina: djelo.sirinaPx * k, visina: djelo.visinaPx * k };
+  }
   if (!m) { return { sirina: 0.6, visina: 0.6 }; }
   let w = parseFloat(m[1].replace(',', '.'));
   let h = parseFloat(m[2].replace(',', '.'));
@@ -579,6 +584,35 @@ function raspored(n) {
     m.nx = Math.sin(m.rot);
     m.nz = Math.cos(m.rot);
   }
+  return mjesta;
+}
+
+/* CRTEŽI na prednjem zidu prve sale, lijevo i desno od prolaza — iza
+   leđa posjetioca na početnoj poziciji, iznad klupa. Do pet po polovini
+   zida. Obilazak nastavlja krug prve sale: posle desnog zida (x > 0) ide
+   polovina prednjeg zida uz njega (od ugla ka vratima), pa druga (od
+   vrata ka uglu). U data/crtezi.json `zid: "desno"` je polovina uz
+   desni zid sale (x > 0), `"lijevo"` ona uz lijevi. */
+function rasporedCrteza(crtezi) {
+  const ivica = PROLAZ.sirina / 2 + PROLAZ.okvir + 0.55;   /* od sredine vrata */
+  const kraj = POLA_X - 0.75;                               /* od ugla */
+  const raspon = kraj - ivica;
+  const sredina = (ivica + kraj) / 2;
+  const mjesta = [];
+  [['istok', 1], ['zapad', -1]].forEach(function (par) {
+    const grupa = crtezi.filter(function (c) { return (c.zid === 'desno' ? 'istok' : 'zapad') === par[0]; });
+    const n = grupa.length;
+    for (let i = 0; i < n; i++) {
+      /* od ugla ka vratima na x > 0, od vrata ka uglu na x < 0 */
+      const udio = (i + 0.5) / n;
+      const x = par[1] > 0 ? kraj - raspon * udio : -(ivica + raspon * udio);
+      mjesta.push({
+        x: x, z: POLA_Z, rot: Math.PI, y: VISINA_DJELA,
+        nx: Math.sin(Math.PI), nz: Math.cos(Math.PI),
+        grupa: par[0], cx: par[1] * sredina, raspon: raspon
+      });
+    }
+  });
   return mjesta;
 }
 
@@ -742,9 +776,33 @@ async function ucitajPodatke() {
   /* Ostali radovi vise u drugoj sali, koja se vidi kroz prolaz */
   S.ostali = svi.filter(function (r) { return r && !r.istaknuto && r.slika; });
   if (!izbor.length) { throw { vrsta: 'prazno' }; }
-  /* Sva djela idu na zidove: istaknuta u prvu salu, ostala u drugu */
+  /* Crteži (data/crtezi.json) — samo za salu; ako fajla nema, sala radi bez njih */
+  let crtezi = [];
+  try {
+    const o = await fetch(izKorijena('data/crtezi.json'), { cache: 'no-cache' });
+    if (o.ok) {
+      crtezi = (((await o.json()) || {}).crtezi || []).filter(function (c) { return c && c.slika; }).map(function (c) {
+        const d = Object.assign({}, c);
+        const prevod = IT ? c.it : EN ? c.en : null;
+        if (prevod) { Object.assign(d, prevod); }
+        if (!d.naziv) { d.naziv = TEKST.crtez; }
+        d.kategorija = 'crtezi';
+        d.slika = izKorijena(d.slika);
+        if (d.slikaVelika) { d.slikaVelika = izKorijena(d.slikaVelika); }
+        return d;
+      });
+      /* najviše pet po polovini zida */
+      const po = { desno: 0, lijevo: 0 };
+      crtezi = crtezi.filter(function (c) { const z = c.zid === 'desno' ? 'desno' : 'lijevo'; c.zid = z; return ++po[z] <= 5; });
+      /* redoslijed obilaska: prvo polovina uz desni zid sale */
+      crtezi = crtezi.filter(function (c) { return c.zid === 'desno'; }).concat(crtezi.filter(function (c) { return c.zid !== 'desno'; }));
+    }
+  } catch (e) { crtezi = []; }
+  /* Sva djela idu na zidove: istaknuta u prvu salu, crteži na njen
+     prednji zid, ostala u drugu */
   S.uPrvoj = izbor.length;
-  return izbor.concat(S.ostali.slice(0, MJESTA_DRUGE));
+  S.crtezi = crtezi.length;
+  return izbor.concat(crtezi, S.ostali.slice(0, MJESTA_DRUGE));
 }
 
 /* ---------------------------------------------------------
@@ -1336,19 +1394,85 @@ function paziNaDrugu() {
   if (dz / d > 0.35 || S.poz.z > POLA_Z - 1.5 || S.sala === 2) { ucitajDrugu(); }
 }
 
+/* Reflektor na šini nad djelom (vidi postaviDjela) */
+function napraviReflektor(mj, djelo, i) {
+    const T = S.tri;
+    const vodoravno = DALJINA_SVJETLA * Math.sin(UGAO_UPADA);
+    const uspravno = DALJINA_SVJETLA * Math.cos(UGAO_UPADA);
+    const svjetlo = new T.SpotLight(SVJETLO_TOPLO);
+    /* Intenzitet je u fizičkoj skali (candela) — od r155 Three.js
+       nema više "legacy lights", pa vrijednosti liče na stvarne
+       sijalice, a ne na stare brojeve oko 1. Uz decay = 2 i
+       daljinu od 3 m, 26 cd daje osvijetljen rad i zidove u polumraku. */
+    const osvjetljenost = OSVJETLJENOST[djelo.kategorija] || OSVJETLJENOST.ulja;
+    /* 17 cd je bilo kalibrisano na 3 m; svjetlo je sad bliže, pa se
+       jačina skalira sa kvadratom daljine da rasvjeta djela ostane ista. */
+    svjetlo.intensity = 17 * Math.pow(DALJINA_SVJETLA / 3.0, 2) * osvjetljenost;
+    svjetlo.distance = DALJINA_SVJETLA * 2.2;
+    svjetlo.angle = UGAO_SNOPA;
+    svjetlo.penumbra = 0.6;    /* mekana ivica — muzejski reflektor ne crta oštar krug na zidu */
+    svjetlo.decay = 2;
+    svjetlo.position.set(
+      mj.x + mj.nx * vodoravno,
+      mj.y + uspravno,
+      mj.z + mj.nz * vodoravno
+    );
+    svjetlo.target.position.set(mj.x, mj.y, mj.z);
+    if (mj.grupa) {
+      /* Zajednički snop za grupu crteža: iz sredine grupe, dalje od
+         zida i širi, da pokrije sve crteže na toj polovini zida. */
+      const dalje = 1.9, gore = SOBA.visina - 0.35;
+      svjetlo.position.set(mj.cx + mj.nx * dalje, gore, mj.z + mj.nz * dalje);
+      svjetlo.target.position.set(mj.cx, mj.y, mj.z);
+      const daljina = svjetlo.position.distanceTo(svjetlo.target.position);
+      svjetlo.angle = Math.min(1.0, Math.atan((mj.raspon / 2 + 0.5) / daljina));
+      svjetlo.penumbra = 0.5;
+      svjetlo.distance = daljina * 2.2;
+      svjetlo.intensity = 17 * Math.pow(daljina / 3.0, 2) * osvjetljenost;
+    }
+
+    /* SJENKU BACA SAMO JEDNO SVJETLO, ne svih sedam.
+       Sjenke su najskuplja stvar u sceni; sedam shadow mapa bi
+       ubilo brzinu na slabijoj grafici, a dobitak je jedna mekana
+       sjenka ispod rama koju ionako vidite samo kod prvog djela. */
+    if (i === 0 && !mj.grupa) {
+      svjetlo.castShadow = true;
+      svjetlo.shadow.mapSize.width = 1024;
+      svjetlo.shadow.mapSize.height = 1024;
+      svjetlo.shadow.camera.near = 0.5;
+      svjetlo.shadow.camera.far = DALJINA_SVJETLA * 2.2;
+      svjetlo.shadow.bias = -0.0008;
+    } else {
+      svjetlo.castShadow = false;
+    }
+
+    S.scena.add(svjetlo.target);
+    S.scena.add(svjetlo);
+
+    /* --- SVJETILJKA: vidljivo tijelo reflektora na mjestu svjetla —
+           adapter na šini, kratka cijev i kućište okrenuto ka djelu,
+           sa toplim sočivom. Svjetlo u sceni izlazi tačno iz sočiva. */
+    postaviSvjetiljku(svjetlo.position, svjetlo.target.position);
+  return svjetlo;
+}
+
 /* ---------------------------------------------------------
    Djela na zidovima + reflektor nad svakim + odraz u podu
    --------------------------------------------------------- */
 function postaviDjela(djela) {
   const T = S.tri;
   const uPrvoj = Math.min(djela.length, S.uPrvoj || djela.length);
-  const mjesta = raspored(uPrvoj).concat(rasporedDruge(djela.length - uPrvoj));
+  const nCrt = Math.min(djela.length - uPrvoj, S.crtezi || 0);
+  const mjesta = raspored(uPrvoj)
+    .concat(rasporedCrteza(djela.slice(uPrvoj, uPrvoj + nCrt)))
+    .concat(rasporedDruge(djela.length - uPrvoj - nCrt));
   S.teksture = [];
   S.drugaKrenula = false;
 
   S.drugaZakazana = false;
   S.zagrijavanjeZakazano = false;
   S.drugaZagrijana = false; S.zagrijEkran = false;
+  S.svjetlaGrupa = {};
   S.kadrovi = [];
   /* Ravna normal mapa (1×1, 128/128/255): platno od početka ima
      normalMap, pa dolazak pravog reljefa ne mijenja shader. */
@@ -1517,51 +1641,14 @@ function postaviDjela(djela) {
 
            Snop ide iz sočiva svjetiljke u centar platna. Nijedna
            koordinata svjetla nije upisana ručno. --- */
-    const vodoravno = DALJINA_SVJETLA * Math.sin(UGAO_UPADA);
-    const uspravno = DALJINA_SVJETLA * Math.cos(UGAO_UPADA);
 
-    const svjetlo = new T.SpotLight(SVJETLO_TOPLO);
-    /* Intenzitet je u fizičkoj skali (candela) — od r155 Three.js
-       nema više "legacy lights", pa vrijednosti liče na stvarne
-       sijalice, a ne na stare brojeve oko 1. Uz decay = 2 i
-       daljinu od 3 m, 26 cd daje osvijetljen rad i zidove u polumraku. */
-    const osvjetljenost = OSVJETLJENOST[djelo.kategorija] || OSVJETLJENOST.ulja;
-    /* 17 cd je bilo kalibrisano na 3 m; svjetlo je sad bliže, pa se
-       jačina skalira sa kvadratom daljine da rasvjeta djela ostane ista. */
-    svjetlo.intensity = 17 * Math.pow(DALJINA_SVJETLA / 3.0, 2) * osvjetljenost;
-    svjetlo.distance = DALJINA_SVJETLA * 2.2;
-    svjetlo.angle = UGAO_SNOPA;
-    svjetlo.penumbra = 0.6;    /* mekana ivica — muzejski reflektor ne crta oštar krug na zidu */
-    svjetlo.decay = 2;
-    svjetlo.position.set(
-      mj.x + mj.nx * vodoravno,
-      mj.y + uspravno,
-      mj.z + mj.nz * vodoravno
-    );
-    svjetlo.target.position.set(mj.x, mj.y, mj.z);
+    /* CRTEŽI dijele reflektor: jedan širi snop po polovini prednjeg zida,
+       ne po jedan za svaki crtež — svako svjetlo više košta u svakom
+       kadru, a crteži ionako traže blaže svjetlo (OSVJETLJENOST). */
+    const grupa = mj.grupa ? (S.svjetlaGrupa || (S.svjetlaGrupa = {})) : null;
+    const svjetlo = grupa && grupa[mj.grupa] ? grupa[mj.grupa] : napraviReflektor(mj, djelo, i);
+    if (grupa) { grupa[mj.grupa] = svjetlo; }
 
-    /* SJENKU BACA SAMO JEDNO SVJETLO, ne svih sedam.
-       Sjenke su najskuplja stvar u sceni; sedam shadow mapa bi
-       ubilo brzinu na slabijoj grafici, a dobitak je jedna mekana
-       sjenka ispod rama koju ionako vidite samo kod prvog djela. */
-    if (i === 0) {
-      svjetlo.castShadow = true;
-      svjetlo.shadow.mapSize.width = 1024;
-      svjetlo.shadow.mapSize.height = 1024;
-      svjetlo.shadow.camera.near = 0.5;
-      svjetlo.shadow.camera.far = DALJINA_SVJETLA * 2.2;
-      svjetlo.shadow.bias = -0.0008;
-    } else {
-      svjetlo.castShadow = false;
-    }
-
-    S.scena.add(svjetlo.target);
-    S.scena.add(svjetlo);
-
-    /* --- SVJETILJKA: vidljivo tijelo reflektora na mjestu svjetla —
-           adapter na šini, kratka cijev i kućište okrenuto ka djelu,
-           sa toplim sočivom. Svjetlo u sceni izlazi tačno iz sočiva. */
-    postaviSvjetiljku(svjetlo.position, svjetlo.target.position);
 
     /* Zapamti mjesto, da kamera zna gdje da stane */
     S.mjesta.push({
@@ -2849,6 +2936,7 @@ function otvoriPanel(djelo) {
   el.pDimenzije.textContent = djelo.dimenzije || '—';
   el.pOpis.textContent = djelo.opis || '';
   el.pLink.setAttribute('href', 'djelo/' + encodeURIComponent(djelo.id || '') + '.html');
+  el.pLink.style.display = djelo.kategorija === 'crtezi' ? 'none' : '';   /* crteži još nemaju svoju stranicu */
   postaviKarticu(false);
   korijen.setAttribute('data-panel', 'otvoren');
   /* Petlja se namjerno NE pauzira dok je panel otvoren — sala ostaje živa iza njega. */
