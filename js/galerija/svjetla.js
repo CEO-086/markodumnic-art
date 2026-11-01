@@ -102,7 +102,8 @@ function postaviSine() {
 function zagrijDrugu() {
   if (!S.render || !S.tri || !S.scena || S.drugaZagrijana) { return; }
   /* ne dok se kamera kreće (klizanje, točkić, zamah, prevlačenje), ne dok
-     teksture još idu na GPU (ili čekaju da se nacrtaju, vidi kadMiruje) i
+     teksture još idu na GPU (ili čekaju da se nacrtaju, vidi kadMiruje u
+     teksture.js) i
      ne prije nego što platna druge sale dobiju sićušne slike (mapa
      mijenja shader) */
   if (kameraIde() || (S.kadrovi && S.kadrovi.length) || S.crtanjaNaCekanju > 0 || !maleDrugeStigle()) { window.setTimeout(zagrijDrugu, 400); return; }
@@ -292,7 +293,7 @@ function prevediMalo(kam) {
   cekaj();
 }
 
-/* Reflektor na šini nad djelom (vidi postaviDjela) */
+/* Reflektor na šini nad djelom (vidi postaviDjela u scena.js) */
 function napraviReflektor(mj, djelo, i) {
     const T = S.tri;
     const vodoravno = DALJINA_SVJETLA * Math.sin(UGAO_UPADA);
@@ -331,8 +332,8 @@ function napraviReflektor(mj, djelo, i) {
       svjetlo.intensity = 17 * Math.pow(daljina / 3.0, 2) * CRTEZI_SVJETLO.jacina;
     }
 
-    /* SJENKU BACA SAMO JEDNO SVJETLO, ne svih sedam.
-       Sjenke su najskuplja stvar u sceni; sedam shadow mapa bi
+    /* SJENKU BACA SAMO JEDNO SVJETLO, ne svaki reflektor.
+       Sjenke su najskuplja stvar u sceni; shadow mapa po djelu bi
        ubilo brzinu na slabijoj grafici, a dobitak je jedna mekana
        sjenka ispod rama koju ionako vidite samo kod prvog djela. */
     if (i === 0 && !mj.grupa) {
@@ -390,7 +391,7 @@ function postaviBocno(ukljuci) {
 }
 
 /* Mapa sjenke se crta u sljedećem kadru. To je jedini put do nove
-   sjenke (shadowMap.autoUpdate je ugašen, vidi pokreni). */
+   sjenke (shadowMap.autoUpdate je ugašen, vidi pokreni u glavni.js). */
 function osvjeziSjenke() {
   if (S.render) { S.render.shadowMap.needsUpdate = true; }
   osvjeziKadar();

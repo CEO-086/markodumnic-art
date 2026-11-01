@@ -98,16 +98,17 @@ const BOJA = {
    pravoj galeriji. Paleta je zemljana (okeri, sijena, bor) i
    hladno svjetlo bi joj ubilo okere — zato toplo.
 
-   0xFFB87B = rgb(255, 184, 123) — 3200 K po uobičajenoj
-   aproksimaciji crnog tijela u sRGB. Ne mijenjati "da bude
-   ljepše" bez razloga: ovo je fizička vrijednost.
+   Sirovih 3200 K je 0xFFB87B = rgb(255, 184, 123), po uobičajenoj
+   aproksimaciji crnog tijela u sRGB. Toliko toplo svjetlo razbija
+   okere i more pretvara u pijesak, pa SVJETLO_TOPLO nosi 3200 K uz
+   hromatsku adaptaciju (oko se navikne na toplo svjetlo): 0xFFEBDD.
+   Ne mijenjati "da bude ljepše" bez razloga.
 
    Ambijent je izveden IZ tokena: --ink-soft iz .soba-tamna
    (#C9BEAB), topao i razbijeljen taupe. Ambijent puni cijelu
    sobu, pa bi puna zasićenost od 3200 K sve prelila u narandžasto.
    --------------------------------------------------------- */
-const SVJETLO_TOPLO = 0xFFEBDD;   /* 3200 K uz hromatsku adaptaciju — jača
-                                     toplina razbija okere i pretvara more u pijesak */  /* 3200 K — reflektori nad djelima */
+const SVJETLO_TOPLO = 0xFFEBDD;   /* 3200 K uz hromatsku adaptaciju — reflektori nad djelima */
 const SVJETLO_AMBIJENT = 0xE9D6BC;  /* topao ambijent — kao svjetlo odbijeno od parketa i krem zidova */
 /* Ton krečenog zida: topla krem boja umjesto sivkastog maltera.
    Množi se sa teksturom zida, pa je ovo nijansa, ne puna boja. */
@@ -219,7 +220,7 @@ const LUPA = { precnik: 0.34, min: 130, max: 260, uvecanje: 3 };
 
 /* Rezolucija u koju se djelo rasterizuje za izbliza i pod uglom */
 /* Po KRAĆOJ strani ekrana, ne po trenutnoj širini — telefon otvoren
-   položeno ne smije dobiti desktop teksture (7 × 17 MB na GPU-u). */
+   položeno ne smije dobiti desktop teksture (~17 MB po djelu na GPU-u). */
 const MAX_TEKSTURA = Math.min(
   (window.screen && screen.width) || 1024,
   (window.screen && screen.height) || 1024
@@ -290,7 +291,8 @@ const S = {
   raycaster: null,
   platna: [],           /* mesh-evi djela — SAMO ovo gleda raycaster */
   odrazi: [],           /* ogledalne kopije — nikad klikabilne */
-  mjesta: [],           /* { poz, normala, sirina, visina, djelo } po djelu */
+  mjesta: [],           /* { soba, mesh, x, y, z, nx, nz, sirina, visina, djelo, svjetlo… }
+                           po djelu (vidi postaviDjela u scena.js) */
   zaCiscenje: [],       /* geometrije, materijali, teksture */
   petlja: 0,
   sat: 0,
@@ -301,7 +303,9 @@ const S = {
   djela: [],
   izabrano: -1,         /* -1 = pregled sobe */
   /* Klizanje kamere */
-  anim: null,           /* { odPoz, doPoz, odCilja, doCilja, pocetak } */
+  anim: null,           /* klizanje { tacke, ciljevi, duz, trajanje, pocetak, uvod? } ili
+                           hod { hod, put, duzinaPuta, cilj0, cilj1, trajanje, pocetak }
+                           (vidi kreniKa i uvod u kamera.js) */
   poz: null,            /* trenutna pozicija kamere (Vector3) */
   cilj: null,           /* trenutna tačka u koju kamera gleda (Vector3) */
   mis: { x: 0, y: 0 },  /* normalizovano -1..1 za paralaksu */
@@ -314,11 +318,11 @@ const S = {
   prsti: new Map(),     /* aktivni pokazivači — za štipanje sa dva prsta */
   stipanje: 0,          /* razmak prstiju u prošlom kadru */
   bocno: false,         /* bočno svjetlo na izabranom djelu */
-  tura: null,           /* vođena tura: { i, korak, faza, pauza, od, do, osnova } */
+  tura: null,           /* vođena tura: { i, start, korak, faza, pauza, od, do, osnova } */
   uvod: 0,              /* trenutak ulaska — svjetla se pale */
   anizotropija: 1,
-  /* Teksture djela: red preuzimanja po prioritetu (vidi `uRed`) */
-  teksture: [],         /* { djelo, soba, platno, odraz, tex, nivo, gen } po djelu */
+  /* Teksture djela: red preuzimanja po prioritetu (vidi `uRed` u teksture.js) */
+  teksture: [],         /* { djelo, soba, platno, odraz, mesh, tex, nivo, gen } po djelu */
   red: [], redBroj: 0, redAktivno: 0,
   gen: 0,               /* raste na svakom izlasku — stari poslovi se odbacuju */
   drugaKrenula: false,  /* teksture druge sale su naručene */
@@ -378,7 +382,7 @@ function graniceSale(soba) {
 function salaTacke(z) { return z > POLA_Z + PROLAZ.zid / 2 ? 2 : 1; }
 
 /* Scena se promijenila (tekstura, svjetlo, veličina…) — sljedećih
-   nekoliko kadrova se crta i kad kamera stoji (vidi petlju). */
+   nekoliko kadrova se crta i kad kamera stoji (vidi petlja() u glavni.js). */
 function osvjeziKadar() { S.crtajJos = 6; }
 
 function sada() {

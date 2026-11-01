@@ -385,7 +385,8 @@ function mjeri() {
 }
 
 /* ---------------------------------------------------------
-   Vođena tura, mapa sale, savjeti pri svakom ulasku
+   Vođena tura, uvod, paralaksa i šta je pod pokazivačem
+   (mapa sale i savjeti su u ui.js)
    --------------------------------------------------------- */
 
 /* VOĐENA TURA: kamera sama ide od djela do djela (i kroz prolaz u
@@ -519,7 +520,7 @@ function uvod() {
     duz: [0, 1],
     trajanje: 2800,
     pocetak: S.uvod + 250,
-    uvod: true            /* teksture idu i u uvodu, kao i ranije (vidi uUvodu) */
+    uvod: true            /* teksture idu i u uvodu, kao i ranije (vidi uUvodu, osnova.js) */
   };
 }
 

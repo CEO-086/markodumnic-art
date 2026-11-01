@@ -15,7 +15,7 @@ const { EN, IT, TEKST } = G;   /* tekstovi.js */
 const { postaviKarticu, osvjeziUronjeno, osvjeziMob } = G;   /* telefon.js */
 
 /* ---------------------------------------------------------
-   Pomoćne funkcije
+   Stanja prikaza i 2D rezerva
    --------------------------------------------------------- */
 
 /* Postavlja stanje prikaza: 'ulaz' | 'ucitavanje' | 'soba' | '2d' */
@@ -26,7 +26,7 @@ function stanje(novo) {
 
 /* Prelazak na 2D mrežu, sa razlogom koji CSS otkriva.
    Vrijednosti: webgl | fajl | cdn | podaci | json | prazno
-   (smanjeno kretanje NIJE među njima — vidi `smanjenoKretanje`) */
+   (smanjeno kretanje NIJE među njima — vidi `smanjenoKretanje` u osnova.js) */
 function na2D(razlog) {
   korijen.setAttribute('data-razlog', razlog);
   stanje('2d');

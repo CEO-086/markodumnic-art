@@ -50,7 +50,8 @@ function slusaj(cilj, tip, f, opcije) {
    Da je slušalac na window-u, strelice bi i dalje hvatale preventDefault
    dok korisnik čita dno stranice — stranica bi prestala da se skroluje,
    a Escape bi iz bilo kojeg mjesta rušio salu. Ovako tipke rade samo dok
-   je fokus u galeriji (canvas je fokusabilan, vidi tabindex u pokreni). */
+   je fokus u galeriji (canvas je fokusabilan, vidi tabindex u pokreni,
+   glavni.js). */
 function tipkaDole(e) {
   if (!S.radi) { return; }
 

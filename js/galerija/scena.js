@@ -621,7 +621,7 @@ function postaviDjela(djela) {
     S.odrazi.push(odrazRam);
 
     /* --- Tekstura djela i RELJEF PASTE (normal mapa) ne učitavaju se
-           ovdje, nego kroz red (vidi `rasporediTeksture`): prvo sićušna
+           ovdje, nego kroz red (`rasporediTeksture`, teksture.js): prvo sićušna
            slika svih djela, pa prava slika prve sale, pa njen reljef.
            Druga sala čeka dok posjetilac ne krene ka njoj. Do tada platno
            stoji u rezervnoj boji, pa u sićušnoj slici — nikad prazno. --- */
@@ -726,7 +726,7 @@ function postaviDjela(djela) {
    three.js bi inače u svakom kadru iznova slagao matricu svakog objekta
    (updateMatrix + množenje sa roditeljem). Zato se njihova matrica složi
    jednom — iste vrijednosti, samo bez ponavljanja. Svjetla ostaju živa
-   (bočno svjetlo ih pomjera, vidi postaviBocno).
+   (bočno svjetlo ih pomjera, vidi postaviBocno u svjetla.js).
    PAZI: objekat koji bi se posle gradnje pomjerao (position, rotation,
    scale) mora zadržati matrixAutoUpdate — ili posle pomjeranja pozvati
    updateMatrix(). */

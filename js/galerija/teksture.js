@@ -187,8 +187,9 @@ function zatvoriBitmapu(x) {
 /* ---------------------------------------------------------
    Teksture djela — red preuzimanja
 
-   Svih 13 fotografija i 13 normal mapa odjednom na telefonu znači da
-   sala stoji siva i minut i po. Zato red sa prioritetima i najviše
+   Sve fotografije i normal mape odjednom na telefonu znače da sala
+   stoji siva i minut i po (izmjereno još sa 13 djela, a sada ih je
+   više). Zato red sa prioritetima i najviše
    RED_MAX poslova istovremeno (manji broj = ranije):
      —    sićušne slike (img/sala/<id>-160.webp, ~4 KB) svih djela
           idu odmah, mimo reda
@@ -225,7 +226,8 @@ function pumpaj() {
     if (window.requestIdleCallback) { window.requestIdleCallback(kreni, { timeout: 2500 }); }
     else { window.setTimeout(kreni, 800); }
   }
-  /* Druga sala je učitana: jednom je „zagrij“ (vidi zagrijDrugu), sada
+  /* Druga sala je učitana: jednom je „zagrij“ (vidi zagrijDrugu u
+     svjetla.js), sada
      sa pravim teksturama. */
   if (!S.redAktivno && !S.red.length && S.drugaKrenula && !S.zagrijavanjeZakazano) {
     S.zagrijavanjeZakazano = true;
@@ -239,7 +241,7 @@ function pumpaj() {
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
    u istom kadru — dvanaest slika odjednom je zastoj od pola sekunde.
    `tesko`: prava slika ili reljef (do 2048 px) — ide samo dok kamera
-   stoji (i u uvodu, vidi uUvodu), osim za platno pred očima (`m`, vidi
+   stoji (i u uvodu, vidi uUvodu u osnova.js), osim za platno pred očima (`m`, vidi
    predOcima). Sićušna slika (~160 px) ne košta ništa, pa ide i u pokretu. */
 function uKadar(posao, tesko, m) {
   posao.tesko = !!tesko;

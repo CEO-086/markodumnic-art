@@ -53,17 +53,18 @@ function imaWebGL() {
 }
 
 /* ---------------------------------------------------------
-   Preuzimanje Three.js — tek na klik, preko importmape
+   Preuzimanje Three.js — tek na klik, iz vendor/three/
 
-   `import('three')` razrješava importmapa u galerija.html na
-   three@0.186.1/build/three.module.js. Minifikovanog `.min.js`
-   builda od r186 više nema, pa se skida puni ES modul.
+   Dinamički import() minifikovanog ES modula r186 sa istog sajta
+   (vendor/three/three.module.min.js); on sam uvozi
+   ./three.core.min.js. Importmape nema: inline bi je CSP blokirao,
+   a adresa se ionako gradi ovdje.
    --------------------------------------------------------- */
 async function ucitajThree() {
-  /* PAZI: ovo je KLASIČAN skript, pa se relativni `import()` razrješava
-     prema adresi STRANICE, ne prema adresi ovog fajla. Zato se putanja
-     gradi od document.baseURI — tako radi i u korijenu i kad je sajt
-     objavljen pod prefiksom. Sa '../' je ispadala iznad korijena. */
+  /* PAZI: adresa je apsolutna, od KORIJENA SAJTA (izKorijena,
+     osnova.js), a ne relativna: ne zavisi od toga prema čemu se
+     razrješava `import()` iz klasičnog skripta, i radi i u korijenu, i
+     sa en/ i it/, i kad je sajt objavljen pod prefiksom. */
   const put = izKorijena(THREE_FAJLOVI[0]);
   return await import(/* webpackIgnore: true */ put);
 }
@@ -105,7 +106,8 @@ function najaviKadTreba() {
 }
 
 /* ---------------------------------------------------------
-   Podaci o djelima — sva sa "istaknuto": true
+   Podaci o djelima: istaknuta (prva sala), crteži (njen prednji
+   zid) i ostali radovi (druga sala), iz data/radovi.json
 
    Tri različita ishoda greške, svaki sa svojom porukom:
    'podaci' (404 / nema veze), 'json' (nije ispravan JSON),
@@ -249,7 +251,7 @@ function pokreni(djela) {
   S.render.shadowMap.enabled = true;
   S.render.shadowMap.type = T.PCFShadowMap;
   /* Sala stoji, pa se mapa sjenke ne crta u svakom kadru, nego samo
-     kad se nešto u sceni promijeni (vidi osvjeziSjenke) — na telefonu
+     kad se nešto u sceni promijeni (vidi osvjeziSjenke, svjetla.js) — na telefonu
      i na računaru. Sjenka izgleda isto, a grafika ima manje posla. */
   S.render.shadowMap.autoUpdate = false;
   S.render.shadowMap.needsUpdate = true;
@@ -329,7 +331,8 @@ function petlja() {
   const dt = Math.min(0.1, Math.max(0, (t - (S.prosli || t)) / 1000));
   S.prosli = t;
 
-  /* Kretanje na početku kadra (vidi jedanPosaoKadra i zagrijavanje) */
+  /* Kretanje na početku kadra (vidi jedanPosaoKadra u teksture.js i
+     zagrijavanje u svjetla.js) */
   const stajala = !kameraIde();
   const hodala = !!(S.anim && S.anim.hod);
   const uvodila = uUvodu();
@@ -374,8 +377,8 @@ function petlja() {
   /* Tekstura ide na GPU tek kad se zna kretanje (i kadar) ovog kadra:
      velika samo ako kamera ne ide ni na početku ni na kraju koraka — ni
      u kadru u kom klizanje stiže na cilj, ni u kom tura krene ka
-     sljedećem djelu. Izuzeci: uvod (vidi uUvodu) i platno pred očima
-     (vidi predOcima). */
+     sljedećem djelu. Izuzeci: uvod (vidi uUvodu, osnova.js) i platno
+     pred očima (vidi predOcima, teksture.js). */
   jedanPosaoKadra(hodala || !!(S.anim && S.anim.hod), uvodila || (stajala && !kameraIde()));
 
   /* CRTANJE PO POTREBI: kad se ništa ne mijenja (kamera stoji, nema
@@ -551,7 +554,9 @@ async function ulaz() {
     modul = await obecanjeThree;
     if (!modul || !modul.WebGLRenderer) { throw new Error('nepotpun modul'); }
   } catch (g) {
-    /* CDN blokiran, nema interneta, ili importmapa nije razriješena */
+    /* Three.js nije stigao iz vendor/three/ (nema veze, blokiran) ili je
+       nepotpun. Razlog se i dalje zove 'cdn' — tako ga čitaju CSS i
+       galerija.html (data-razlog). */
     na2D('cdn');
     return;
   }
@@ -582,7 +587,7 @@ if (G.dijelovi.length !== document.querySelectorAll('script[src*="js/galerija/"]
    Početno stanje
 
    Smanjeno kretanje NE vodi više na 2D: sala radi, kamera samo
-   skače umjesto da klizi (vidi `kreniKa`). Poruka o tome je na
+   skače umjesto da klizi (vidi `kreniKa` u kamera.js). Poruka o tome je na
    ulaznom ekranu i otkriva je CSS.
    --------------------------------------------------------- */
 if (korijen) {

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Normal mape reljefa paste za virtuelnu galeriju (js/galerija.js).
+"""Normal mape reljefa paste za virtuelnu galeriju (js/galerija/).
 
 Pokretanje iz bilo kog mjesta:  python3 alati/reljef.py <id> [<id> ...]   [--sve]
                                                          [--izlaz <folder>]

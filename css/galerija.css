@@ -36,8 +36,8 @@
 }
 
 /* Tamna soba (ulaz + platno) — skrivena kad se ide na 2D, i prije nego
-   JS postavi data-stanje (bez JS-a, ili bez podrške za ES module,
-   dugme "Uđi u salu" ne bi radilo) */
+   JS postavi data-stanje (bez JS-a, ili bez podrške za dinamički
+   import() — Three.js je ES modul — dugme "Uđi u salu" ne bi radilo) */
 .galerija:not([data-stanje]) .galerija-scena,
 .galerija[data-stanje="2d"] .galerija-scena { display: none; }
 
@@ -46,7 +46,7 @@
 .galerija:not([data-stanje]) .galerija-2d,
 .galerija[data-stanje="2d"] .galerija-2d { display: block; }
 
-/* JS radi (js/rano.js postavi <html data-js>), ali galerija.js još nije
+/* JS radi (js/rano.js postavi <html data-js>), ali js/galerija/ još nije
    postavio stanje: mreža ostaje skrivena — inače bi se njene lijene
    slike preuzimale ni za koga. Umjesto nje se drži mjesto za salu, da
    stranica ne poskoči. Bez JS-a i u stanju 2d (nema WebGL-a, greška)
@@ -311,7 +311,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
    VIDLJIVOG dijela. Lijeva ivica sale ode van okna (overflow: hidden),
    desna je ionako pod panelom. Procenat u translate se računa od
    širine samog platna, koja je jednaka širini okna — isto kao širina
-   panela. Pogađanje djela klikom radi i dalje: js/galerija.js čita
+   panela. Pogađanje djela klikom radi i dalje: js/galerija/kamera.js čita
    getBoundingClientRect(), koji pomjeraj uračunava. */
 .galerija-platno {
   transition: transform var(--dur-slow) var(--ease);
@@ -326,7 +326,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   width: 100%;
   height: 100%;
   border-radius: var(--radius);
-  /* U pregledu sobe prevlačenje LIJEVO-DESNO okreće pogled (js/galerija.js),
+  /* U pregledu sobe prevlačenje LIJEVO-DESNO okreće pogled (js/galerija/unos.js),
      a gore-dolje i dalje pripada stranici: `pan-y` pušta prst da skroluje
      stranicu preko platna, a vodoravni pokret predaje skriptu. `none` bi
      ovdje zarobio prst nad salom. Dvoklik-zum je ugašen i ovim, pa tap
@@ -346,7 +346,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 
 .galerija[data-izabrano] .galerija-platno canvas:active { cursor: grabbing; }
 
-/* Platno dobija fokus kad se uđe u salu (tabindex u js/galerija.js), pa
+/* Platno dobija fokus kad se uđe u salu (tabindex u js/galerija/glavni.js), pa
    fokus mora biti vidljiv — unutrašnji outline, da ga ivica ploče ne reže. */
 .galerija-platno canvas:focus-visible {
   outline: 2px solid var(--focus);
@@ -549,7 +549,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
    Pozadina --paper (unutar .soba-tamna je tamna), tanka linija, bez sjenke.
 
    Panel se otvara zajedno sa kretanjem kamere ka djelu i NE otima
-   fokus (vidi js/galerija.js — role="region", ne "dialog"), pa je
+   fokus (vidi js/galerija/ui.js — role="region", ne "dialog"), pa je
    `visibility: hidden` ovdje bezbjedan: ništa fokusabilno u njemu
    se ne traži dok je sakriven.
    --------------------------------------------------------- */
@@ -576,7 +576,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   visibility: visible;
 }
 
-/* Panel prima fokus na klik (vidi js/galerija.js), ali nije stanica za
+/* Panel prima fokus na klik (vidi js/galerija/telefon.js), ali nije stanica za
    Tab — okvir fokusa oko cijelog panela bi samo smetao. */
 .galerija-panel:focus { outline: none; }
 
@@ -606,7 +606,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 }
 
 /* Strelica koja izvlači i sklapa karticu — postoji samo na uspravnom
-   telefonu, gdje je panel odozdo (upit niže). Pravi je js/galerija.js. */
+   telefonu, gdje je panel odozdo (upit niže). Pravi je js/galerija/telefon.js. */
 .galerija-panel__vise { display: none; }
 
 .galerija-panel__oznaka {
@@ -996,7 +996,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 
 /* Uspravni telefon: kartica djela odozdo je SKLOPLJENA — vide se samo
    serija i naziv, a slika ostaje slobodna. Strelica, dodir na karticu
-   ili prevlačenje nagore je izvlači (js/galerija.js, data-kartica).
+   ili prevlačenje nagore je izvlači (js/galerija/telefon.js, data-kartica).
    Visinu kartice nosi --visina-panela, pa je platno, HUD i poruka
    prate same. Položen telefon ima panel sa strane i ovo ga ne dira. */
 @media (max-width: 720px) and (orientation: portrait),
@@ -1206,7 +1206,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 
 /* ---------------------------------------------------------
    Smanjeno kretanje — panel se pojavljuje bez klizanja.
-   Sala i dalje RADI: u js/galerija.js kamera u tom slučaju skače
+   Sala i dalje RADI: u js/galerija/kamera.js kamera u tom slučaju skače
    odmah na izabrano djelo i paralaksa je ugašena. Ovdje se gase
    samo CSS prelazi.
    --------------------------------------------------------- */
@@ -1287,7 +1287,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 }
 
 /* ---------------------------------------------------------
-   Lupa — krug koji uvećava dio djela (js/galerija.js, LUPA)
+   Lupa — krug koji uvećava dio djela (js/galerija/izbliza.js, LUPA)
    Stoji u .galerija-platno, pa se pomjera zajedno sa njim kad
    panel gurne platno ulijevo. Ne hvata pokazivač: miš i prst
    prolaze kroz nju do 3D platna.
@@ -1584,7 +1584,7 @@ html.galerija-izbliza-otvoreno { overflow: hidden; }
 
 .galerija-mapa__djelo { cursor: pointer; outline: none; }
 .galerija-mapa__meta { fill: transparent; }
-/* Nevidljiva meta, ≥ 24 px na ekranu (poluprečnik računa js/galerija.js) */
+/* Nevidljiva meta, ≥ 24 px na ekranu (poluprečnik računa js/galerija/ui.js) */
 .galerija-mapa__pogodak { fill: transparent; }
 .galerija-mapa__tacka {
   fill: #E9DFCF;
@@ -1976,7 +1976,7 @@ html.galerija-izbliza-otvoreno { overflow: hidden; }
 
 /* ---------------------------------------------------------
    TELEFON: sala preko cijelog ekrana, slika u centru
-   html.galerija-uronjena postavlja js/galerija.js (osvjeziUronjeno)
+   html.galerija-uronjena postavlja js/galerija/telefon.js (osvjeziUronjeno)
    dok je sala otvorena na uskom ekranu ili položenom telefonu. Sala
    tada pokrije cijeli ekran (zaglavlje i stranica ostaju ispod), a od
    dugmadi ostaju dvije tanke, providne trake preko kadra. Sve ostale
