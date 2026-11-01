@@ -461,6 +461,39 @@
 }
 
 /* ---------------------------------------------------------
+   LAPTOP I DESKTOP — djelo cijelo u prvom ekranu
+   Uspravne slike su bile više od ekrana (na 13" laptopu se dno
+   odsijecalo i do 500 px). Slika sada ne može biti viša od prostora
+   ispod zaglavlja i putanje; uža slika stoji u sredini svoje kolone.
+   Gornji razmak se prilagođava visini ekrana. Telefon i uski ekrani
+   (do 860 px, jedna kolona) ostaju kako su bili.
+   --------------------------------------------------------- */
+
+@media (min-width: 861px) {
+  :root {
+    --djelo-pad: clamp(1.5rem, 4svh, 6rem);      /* gornji razmak sekcije */
+    --djelo-put: clamp(1rem, 3svh, 2rem);        /* ispod putanje */
+    --djelo-dno: clamp(1rem, 3svh, 2.5rem);      /* vazduh ispod slike */
+  }
+
+  /* Sekcija ima var(--s-9) gore; putanja se podigne za razliku. */
+  .djelo-putanja {
+    margin-top: calc(var(--djelo-pad) - var(--s-9));
+    margin-bottom: var(--djelo-put);
+  }
+
+  /* Širina = najviše kolona, a najviše onoliko koliko dozvoljava visina
+     ekrana puta odnos stranica (--omjer: širina / visina fotografije,
+     upisan na <img>). Bez --omjer ostaje puna širina kolone, kao ranije. */
+  .djelo__slika {
+    width: min(100%, calc((100svh - var(--h-zaglavlje) - var(--djelo-pad)
+                           - 1.5rem - var(--djelo-put) - var(--djelo-dno))
+                          * var(--omjer, 100)));
+    margin-inline: auto;
+  }
+}
+
+/* ---------------------------------------------------------
    MOBILNO — jedna kolona, slika gore
    --------------------------------------------------------- */
 

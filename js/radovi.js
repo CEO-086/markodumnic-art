@@ -455,6 +455,8 @@
         if (djelo.sirinaPx && djelo.visinaPx) {
           slika.setAttribute('width', String(djelo.sirinaPx));
           slika.setAttribute('height', String(djelo.visinaPx));
+          /* odnos stranica za CSS: na laptopu slika staje u prvi ekran (radovi.css) */
+          slika.style.setProperty('--omjer', djelo.sirinaPx + ' / ' + djelo.visinaPx);
         }
         slika.setAttribute('alt', djelo.opis || djelo.naziv);
         dodajIzvore(slika, djelo);
