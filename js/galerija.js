@@ -3165,6 +3165,24 @@ function korakUvoda(t) {
   if (p >= 1) { S.uvod = 0; osvjeziKadar(); }
 }
 
+/* NEPOKRETNO: zidovi, pod, plafon, klupe, ramovi, platna, odrazi,
+   legende, svjetiljke i šine se posle gradnje više ne pomjeraju, a
+   three.js bi inače u svakom kadru iznova slagao matricu svakog objekta
+   (updateMatrix + množenje sa roditeljem). Zato se njihova matrica složi
+   jednom — iste vrijednosti, samo bez ponavljanja. Svjetla ostaju živa
+   (bočno svjetlo ih pomjera, vidi postaviBocno).
+   PAZI: objekat koji bi se posle gradnje pomjerao (position, rotation,
+   scale) mora zadržati matrixAutoUpdate — ili posle pomjeranja pozvati
+   updateMatrix(). */
+function zamrzniNepokretno() {
+  S.scena.matrixAutoUpdate = false;
+  S.scena.traverse(function (o) {
+    if (o === S.scena || o.isLight || !o.matrixAutoUpdate) { return; }
+    o.matrixAutoUpdate = false;
+    o.updateMatrix();
+  });
+}
+
 /* ---------------------------------------------------------
    Petlja
    --------------------------------------------------------- */
@@ -3232,9 +3250,11 @@ function petlja() {
     S.lupa.na || (S.kadrovi && S.kadrovi.length) || S.novaOstrina;
   if (S.crtajJos > 0) { S.crtajJos--; }
 
-  /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova */
+  /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova,
+     a matrice novih nepokretnih objekata se slože jednom */
   if (S.scena.children.length !== S.sjenkeDjeca) {
     S.sjenkeDjeca = S.scena.children.length;
+    zamrzniNepokretno();
     osvjeziSjenke();
   }
   if (S.zagrijEkran && !S.anim && !S.ka && !S.vuce && !S.inercija) {
