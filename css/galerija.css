@@ -76,20 +76,50 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
    Ulazni ekran
    --------------------------------------------------------- */
 
+/* Mreža od 6 redova: prazan red gore, oznaka, naslov, uvod, dugme i
+   red za potpis dolje. Gornji i donji red dijele višak visine na
+   jednako, pa je tekst sa dugmetom uvijek u sredini ploče (kao prije),
+   a donji red ide tačno od dugmeta do dna ploče — potpis u njegovoj
+   sredini je na pola puta od dugmeta do dna. Prva kolona je široka
+   koliko dugme; potpis stoji u njoj, pa je širok tačno kao dugme.
+   --ulaz-vrh: najmanji razmak od vrha ploče do teksta;
+   --ulaz-potpis: najmanji razmak iznad i ispod potpisa (kad je tijesno);
+   --ulaz-gore / --ulaz-dno: gornji i donji red. Gdje ploča ima zadatu
+   visinu oba rastu jednako (1fr); gdje je visoka koliko i sadržaj
+   (telefon, položen ekran) nema viška za dijeljenje, pa gornji red
+   uzima svoj najmanji razmak, a donji koliko potpis traži. Najmanji
+   donji red računa potpis do 4rem visine (najšire dugme, IT ≈ 61px). */
 .galerija-ulaz {
+  --ulaz-vrh: var(--s-7);
+  --ulaz-potpis: var(--s-5);
+  --ulaz-gore: minmax(calc(var(--ulaz-vrh) - var(--s-4)), 1fr);
+  --ulaz-dno: minmax(calc(2 * var(--ulaz-potpis) + 4rem - var(--s-4)), 1fr);
   display: none;
   position: relative;
   min-height: var(--visina-sale);
   box-sizing: border-box;
-  padding: var(--s-7) var(--gutter);
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: var(--s-4);
+  padding: 0 var(--gutter);
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: var(--ulaz-gore) repeat(4, auto) var(--ulaz-dno);
+  row-gap: var(--s-4);
+  justify-items: start;
   max-width: 54ch;
 }
 
-.galerija[data-stanje="ulaz"] .galerija-ulaz { display: flex; }
+.galerija[data-stanje="ulaz"] .galerija-ulaz { display: grid; }
+
+.galerija-ulaz > * { grid-column: 1 / -1; }
+.galerija-ulaz__oznaka { grid-row: 2; }
+.galerija-ulaz__naslov { grid-row: 3; }
+.galerija-ulaz__uvod   { grid-row: 4; }
+
+/* Smanjeno kretanje: napomena dobija svoj red između dugmeta i potpisa */
+@media (prefers-reduced-motion: reduce) {
+  .galerija-ulaz {
+    grid-template-rows: var(--ulaz-gore) repeat(5, auto) var(--ulaz-dno);
+  }
+  .galerija-ulaz__napomena--kretanje { grid-row: -3; }
+}
 
 /* Tiha šrafura u donjem desnom uglu ploče — potpis sajta.
    Stoji na .galerija-scena, ne na .galerija-ulaz: ulaz je sužen na 54ch
@@ -180,7 +210,6 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
     -webkit-tap-highlight-color: transparent;
   }
 
-  .galerija[data-stanje="ulaz"] .galerija-ulaz { padding-top: var(--s-6); }
 
   /* Svjetlo pada odozgo, uži snop nego na računaru. */
   .galerija-ulaz-slika::before {
@@ -265,27 +294,26 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 }
 
 .galerija-ulaz__dugme {
+  grid-row: 5;
+  grid-column: 1;
   margin-top: var(--s-3);
   min-height: 44px;          /* dodirna meta */
 }
 
-/* Dugme i Markov potpis ispod njega. Omotač je širok koliko dugme
-   (u stupcu ulaza stoji uz lijevu ivicu), a potpis ne utiče na tu
-   širinu (width: 0) nego je samo prati (min-width: 100%) — zato je
-   potpis na svakom jeziku tačno širok kao dugme. Isti crtež kao u
-   podnožju, u svijetloj boji teksta tamne ploče. Čisti ukras. */
-.galerija-ulaz__akcija {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: calc(var(--s-5) + var(--s-1));
-}
-
+/* Markov potpis — isti crtež kao u podnožju, u svijetloj boji teksta
+   tamne ploče. Širok kao dugme: ne utiče na širinu kolone (width: 0),
+   nego je samo popunjava (min-width: 100%). Centriran u donjem redu;
+   gornja margina je za razmak reda (--s-4) manja od donje, pa mu je
+   sredina tačno na pola puta od dna dugmeta do dna ploče. Čisti ukras. */
 .galerija-ulaz__potpis {
+  grid-row: -2;
+  grid-column: 1;
+  align-self: center;
   display: block;
   width: 0;
   min-width: 100%;
   height: auto;
+  margin-block: calc(var(--ulaz-potpis) - var(--s-4)) var(--ulaz-potpis);
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
@@ -907,8 +935,12 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 
   /* Ulazni ekran nosi dosta teksta — ne treba mu cijeli ekran */
   .galerija-ulaz {
+    --ulaz-vrh: var(--s-6);
+    --ulaz-potpis: var(--s-6);
+    --ulaz-gore: calc(var(--ulaz-vrh) - var(--s-4));
+    --ulaz-dno: auto;
     min-height: 0;
-    padding: var(--s-6) var(--s-5);
+    padding: 0 var(--s-5);
     max-width: none;
   }
 
@@ -1156,7 +1188,13 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
     }
   }
 
-  .galerija-ulaz { min-height: 0; max-width: none; }
+  .galerija-ulaz {
+    --ulaz-potpis: var(--s-6);
+    --ulaz-gore: calc(var(--ulaz-vrh) - var(--s-4));
+    --ulaz-dno: auto;
+    min-height: 0;
+    max-width: none;
+  }
   .galerija-scena { min-height: 0; }
 
   .galerija-panel {
