@@ -23,7 +23,7 @@ const G = /** @type {any} */ (window).__galerija;
 const {
   SOBA, POLA_X, POLA_Z, VISINA_OKA, VIDNO_POLJE, PUNJENJE_KADRA, MIN_DALJINA, MAX_DALJINA, HOD,
   VISINA_PREGLEDA, TRAJANJE_KLIZANJA, PARALAKSA, ORBITA, UGAO_PRESETA, PROLAZ, korijen, el, S,
-  smanjenoKretanje, graniceSale, salaTacke, osvjeziKadar, sada, poruka
+  smanjenoKretanje, graniceSale, salaTacke, POCETNA_SALA, jeDruga, osvjeziKadar, sada, poruka
 } = G;
 const { TEKST } = G;   /* tekstovi, osnova.js */
 const { postaviBocno } = G;   /* svjetla, scena.js */
@@ -47,7 +47,7 @@ const { otvoriIzbliza, postaviLupu } = G;   /* izbliza, sucelje.js */
    uz prednji zid i pokaže koliko može — bolje nego da izađe kroz zid. */
 function pozicijaPregleda() {
   const T = S.tri;
-  /* Pregled druge sale: stoji se odmah iza vrata, pogled na zadnji zid */
+  /* Pregled male sale: stoji se odmah iza vrata, pogled na zadnji zid */
   if (S.sala === 2) {
     const z0 = POLA_Z + PROLAZ.zid;
     const poz2 = new T.Vector3(0, VISINA_PREGLEDA, z0 + 0.45);
@@ -167,7 +167,7 @@ function ugao(vrsta) {
 
 /* Pokretanje klizanja (ili skoka, uz smanjeno kretanje) */
 function kreniKa(poz, cilj) {
-  if (salaTacke(poz.z) === 2) { ucitajDrugu(); }
+  if (jeDruga(salaTacke(poz.z))) { ucitajDrugu(); }
   if (smanjenoKretanje()) {
     S.poz.copy(poz);
     S.cilj.copy(cilj);
@@ -340,7 +340,7 @@ function naPregled(vratiFokus) {
 function uSalu(sala) {
   if (!S.radi) { return; }
   S.sala = sala === 2 ? 2 : 1;
-  if (S.sala === 2) { ucitajDrugu(); }
+  if (jeDruga(S.sala)) { ucitajDrugu(); }
   S.pogled = 0;
   S.inercija = 0;
   if (S.izabrano >= 0 || panelOtvoren()) { naPregled(false); }
@@ -354,7 +354,7 @@ function uSalu(sala) {
 /* Iz pregleda strelice kreću od prvog djela sale u kojoj se stoji */
 function prvoUSali() {
   for (let i = 0; i < S.mjesta.length; i++) {
-    if ((S.mjesta[i].soba || 1) === (S.sala || 1)) { return i; }
+    if ((S.mjesta[i].soba || POCETNA_SALA) === (S.sala || POCETNA_SALA)) { return i; }
   }
   return 0;
 }
@@ -437,7 +437,7 @@ function idiNaTuri(i) {
   t.faza = 'ide';
   /* Tura stiže do druge sale: teksture se naručuju jedno djelo unaprijed */
   const sljedece = S.mjesta[(t.i + 1) % S.mjesta.length];
-  if (S.mjesta[t.i].soba === 2 || (sljedece && sljedece.soba === 2)) { ucitajDrugu(); }
+  if (jeDruga(S.mjesta[t.i].soba) || (sljedece && jeDruga(sljedece.soba))) { ucitajDrugu(); }
   postaviLupu(false);
   izaberi(t.i);
   /* Kartica u panelu kaže gdje smo u obilasku */
@@ -477,7 +477,7 @@ function zavrsiTuru(tiho) {
   osvjeziDugmeTure();
   if (tiho) { return; }
   poruka(TEKST.kraj, 3600);
-  if (S.sala === 2) { uSalu(1); } else { naPregled(false); }
+  if (jeDruga(S.sala)) { uSalu(POCETNA_SALA); } else { naPregled(false); }
 }
 
 /* Jedan korak ture u petlji */
@@ -612,7 +612,7 @@ const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   POLA_Z, PRAG_KLIKA, ORBITA, PROLAZ, stediPodatke, korijen, el, S, smanjenoKretanje, svedi, salaTacke,
-  osvjeziKadar, sada, poruka
+  POCETNA_SALA, jeDruga, osvjeziKadar, sada, poruka
 } = G;
 const { PORUKA_GRAFIKE } = G;   /* tekstovi, osnova.js */
 const { zagrijDrugu, postaviBocno, osvjeziSjenke } = G;   /* svjetla, scena.js */
@@ -704,7 +704,7 @@ function tipkaDole(e) {
 
   if (e.key === 'Escape') {
     if (S.izabrano >= 0 || panelOtvoren()) { naPregled(true); }
-    else if (S.sala === 2) { uSalu(1); }
+    else if (jeDruga(S.sala)) { uSalu(POCETNA_SALA); }
     else { G.izadji(); }   /* glavni.js */
     e.preventDefault();
     return;
@@ -1103,7 +1103,7 @@ function vezi() {
   if (el.sala) {
     slusaj(el.sala, 'click', function () { uSalu(S.sala === 2 ? 1 : 2); });
     /* Namjera prije klika: druga sala kreće dok je miš na dugmetu */
-    const najaviDrugu = function () { if (S.radi && S.sala !== 2 && !stediPodatke()) { ucitajDrugu(); } };
+    const najaviDrugu = function () { if (S.radi && !jeDruga(S.sala) && !stediPodatke()) { ucitajDrugu(); } };
     slusaj(el.sala, 'pointerenter', najaviDrugu);
     slusaj(el.sala, 'focus', najaviDrugu);
   }

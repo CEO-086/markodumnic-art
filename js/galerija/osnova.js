@@ -4,11 +4,11 @@
    Mjere sale i ostale konstante, elementi stranice, zajedničko
    stanje S i sitni pomoćnici koje koriste svi ostali dijelovi.
 
-   Dvije sale: u prvoj istaknuta djela na tri zida i crteži na
-   prednjem zidu, iza otvorenog prolaza druga sala sa ostalim
-   radovima (sve iz data/radovi.json). Nema slobodnog hodanja: klik
-   na platno vodi kameru pred njega, a iz sale u salu se hoda kroz
-   prolaz.
+   Dvije sale (sve iz data/radovi.json): posjetilac ulazi u malu salu
+   (soba 2) sa istaknutim djelima na tri zida, a kroz otvoreni prolaz
+   je velika (soba 1) sa ostalim uljima na tri zida i crtežima na
+   zidu sa prolazom. Nema slobodnog hodanja: klik na platno vodi kameru
+   pred njega, a iz sale u salu se hoda kroz prolaz.
 
    FAJLOVI I DIJELOVI (galerija.html ih učitava OVIM REDOM). Dio je
    jedna cjelina u svom omotaču; fajl drži jedan ili više dijelova:
@@ -200,7 +200,8 @@
  * Podaci (glavni.js, ucitajPodatke)
  * @property {Object<string, string>} [serije]
  * @property {Djelo[]} [ostali]
- * @property {number} [uPrvoj]
+ * @property {number} [uMaloj]
+ * @property {number} [uVelikoj]
  * @property {number} [crtezi]
  *
  * Scena, svjetla i zagrijavanje (scena.js)
@@ -577,8 +578,18 @@ function graniceSale(soba) {
   return { x0: -POLA_X + o, x1: POLA_X - o, z0: -POLA_Z + o, z1: POLA_Z - o };
 }
 
-/* U kojoj je sali tačka: sve iza ravni prolaza je druga sala */
+/* U kojoj je sali tačka: sve iza ravni prolaza je soba 2 (mala sala) */
 function salaTacke(z) { return z > POLA_Z + PROLAZ.zid / 2 ? 2 : 1; }
+
+/* POČETNA SALA: posjetilac ulazi pravo u malu salu (soba 2, iza
+   prolaza), sa istaknutim djelima. Broj sobe je samo geometrija
+   (1 = velika, 14 × 9 m; 2 = mala, 9 × 6 m). „Prva“ i „druga“ sala u
+   kodu znače redoslijed posjete: prva je početna, druga je ona iza
+   prolaza — ona se učitava i zagrijava tek kad joj posjetilac krene,
+   njoj idu natpis „Sala 2“ i dugme „Nazad u prvu salu“. */
+const POCETNA_SALA = 2;
+/** @param {number} [soba] */
+function jeDruga(soba) { return (soba || POCETNA_SALA) !== POCETNA_SALA; }
 
 /* Scena se promijenila (tekstura, svjetlo, veličina…) — sljedećih
    nekoliko kadrova se crta i kad kamera stoji (vidi petlja() u glavni.js). */
@@ -606,7 +617,7 @@ Object.assign(G, {
   VISINA_PREGLEDA, TRAJANJE_KLIZANJA, PARALAKSA, PRAG_KLIKA, ORBITA, UGAO_PRESETA, ODMAK_OD_ZIDA,
   UGAO_BOCNO, OSVJETLJENOST, CRTEZI_SVJETLO, PROLAZ, LEGENDA, LUPA, MAX_TEKSTURA, TELEFON, stediPodatke,
   ODRAZ_PROZIRNOST, POD_PROZIRNOST, korijen, el, S, smanjenoKretanje, kameraIde, uUvodu, svedi, lako,
-  pamti, graniceSale, salaTacke, osvjeziKadar, sada, poruka
+  pamti, graniceSale, salaTacke, POCETNA_SALA, jeDruga, osvjeziKadar, sada, poruka
 });
 G.dijelovi.push('osnova');
 
