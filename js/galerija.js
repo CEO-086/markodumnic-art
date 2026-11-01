@@ -826,7 +826,7 @@ function napraviSobu() {
    mora postati bijela, inače se sve potamni drugi put. */
 function tekstureSobe(T, mat, osnova, ponavljanje, uSRGB) {
   const uzmi = (ime, boja) => {
-    const t = sobnaMapa(T, ime);
+    const t = pamti(sobnaMapa(T, ime));   /* oslobađa se na izlasku */
     t.wrapS = t.wrapT = T.RepeatWrapping;
     t.repeat.set(ponavljanje[0], ponavljanje[1]);
     if (boja) t.colorSpace = T.SRGBColorSpace;   /* samo albedo je boja */
@@ -3952,8 +3952,11 @@ function izadji() {
   S.mjesta.length = 0;
 
   if (S.scena) {
+    /* reflektor sa sjenkom drži i mapu sjenke na grafici */
+    S.scena.traverse(function (o) { if (o.isLight && o.dispose) { o.dispose(); } });
     while (S.scena.children.length) { S.scena.remove(S.scena.children[0]); }
   }
+  S.reflektori = [];
 
   if (S.render) {
     S.render.dispose();
