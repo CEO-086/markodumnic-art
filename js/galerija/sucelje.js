@@ -325,7 +325,7 @@ G.dijelovi.push('telefon');
 const G = /** @type {any} */ (window).__galerija;
 const { izKorijena, SOBA, POLA_X, POLA_Z, VIDNO_POLJE, PROLAZ, korijen, el, S } = G;   /* osnova.js */
 const { EN, IT, TEKST } = G;   /* tekstovi, osnova.js */
-const { postaviKarticu, osvjeziUronjeno, osvjeziMob } = G;   /* telefon, sucelje.js */
+const { postaviKarticu, uronjeno, osvjeziUronjeno, osvjeziMob } = G;   /* telefon, sucelje.js */
 
 /* ---------------------------------------------------------
    Stanja prikaza i 2D rezerva
@@ -335,6 +335,49 @@ const { postaviKarticu, osvjeziUronjeno, osvjeziMob } = G;   /* telefon, sucelje
 function stanje(novo) {
   korijen.setAttribute('data-stanje', novo);
   osvjeziUronjeno();
+}
+
+/* Računar: visina trake ispod sale (dugmad i mapa, sa razmakom iznad)
+   ide u CSS kao --visina-trake, pa CSS na nižem ekranu skrati salu
+   toliko da i sala i traka stanu ispod zaglavlja. Traka ne zavisi od
+   visine sale, pa nema kruga. Mjeri se na ulasku i kad se mijenja prozor. */
+function izmjeriTraku() {
+  const a = el.alati;
+  if (!a || !a.getClientRects().length) { return; }
+  const v = Math.ceil(a.getBoundingClientRect().height +
+    (parseFloat(getComputedStyle(a).marginTop) || 0)) + 'px';
+  if (korijen.style.getPropertyValue('--visina-trake') !== v) {
+    korijen.style.setProperty('--visina-trake', v);
+  }
+}
+
+/* Računar: po ulasku sala sa trakom ispod nje stoji u sredini dijela
+   ekrana ispod zaglavlja (CSS ih skrati tako da ostane bar RAZMAK_SALE
+   gore i dolje). Na vrlo niskom prozoru, gdje ni to ne pomaže, sala je
+   cijela na ekranu, do RAZMAK_SALE ispod zaglavlja. Na telefonu je sala
+   preko cijelog ekrana — tu se ne dira. */
+const RAZMAK_SALE = 16;   /* = --s-4 u css/galerija.css */
+function centrirajSalu() {
+  if (uronjeno()) { return; }
+  const scena = korijen.querySelector('.galerija-scena');
+  if (!scena || !scena.getClientRects().length) { return; }
+  const zaglavlje = document.querySelector('.zaglavlje');
+  const gore = zaglavlje ? Math.max(0, zaglavlje.getBoundingClientRect().bottom) : 0;
+  const vrh = scena.getBoundingClientRect().top;
+  const donji = el.alati && el.alati.getClientRects().length ? el.alati : scena;
+  const visina = donji.getBoundingClientRect().bottom - vrh;
+  const prostor = window.innerHeight - gore;
+  const razmak = visina <= prostor ? (prostor - visina) / 2
+    : Math.min(RAZMAK_SALE, Math.max(0, (prostor - scena.getBoundingClientRect().height) / 2));
+  const pomak = Math.round(vrh - (gore + razmak));
+  if (Math.abs(pomak) < 2) { return; }
+  /* Skok, ne klizanje: sala se upravo pojavljuje, a savjeti odmah
+     poslije čitaju gdje su na ekranu. */
+  const h = document.documentElement;
+  const bilo = h.style.scrollBehavior;
+  h.style.scrollBehavior = 'auto';
+  window.scrollBy(0, pomak);
+  h.style.scrollBehavior = bilo;
 }
 
 /* Prelazak na 2D mrežu, sa razlogom koji CSS otkriva.
@@ -732,8 +775,9 @@ function natpis(i, x, y) {
 }
 
 Object.assign(G, {
-  stanje, na2D, najavi, osvjeziKretanje, napraviMapu, velicinaMeta, osvjeziMapu, pokaziSavjete,
-  zatvoriSavjete, savjetiOtvoreni, otvoriPanel, zatvoriPanel, panelOtvoren, natpis
+  stanje, izmjeriTraku, centrirajSalu, na2D, najavi, osvjeziKretanje, napraviMapu, velicinaMeta,
+  osvjeziMapu, pokaziSavjete, zatvoriSavjete, savjetiOtvoreni, otvoriPanel, zatvoriPanel, panelOtvoren,
+  natpis
 });
 G.dijelovi.push('ui');
 

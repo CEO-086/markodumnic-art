@@ -26,8 +26,8 @@ const {
 } = G;
 /* ui, sucelje.js */
 const {
-  stanje, na2D, osvjeziKretanje, napraviMapu, osvjeziMapu, pokaziSavjete, zatvoriSavjete, zatvoriPanel,
-  natpis
+  stanje, izmjeriTraku, centrirajSalu, na2D, osvjeziKretanje, napraviMapu, osvjeziMapu, pokaziSavjete,
+  zatvoriSavjete, zatvoriPanel, natpis
 } = G;
 const { zatvoriIzbliza, postaviLupu, osvjeziLupu } = G;   /* izbliza, sucelje.js */
 /* kamera, kretanje.js */
@@ -302,6 +302,7 @@ function pokreni(djela) {
   S.fpsBrojac = 0;
 
   stanje('soba');
+  izmjeriTraku();
   korijen.setAttribute('data-fps', S.fpsVidljiv ? 'da' : 'ne');
   if (el.fpsPrekidac) { el.fpsPrekidac.setAttribute('aria-pressed', S.fpsVidljiv ? 'true' : 'false'); }
   vezi();
@@ -310,6 +311,7 @@ function pokreni(djela) {
   osvjeziDugmeTure();
   uvod();
   petlja();
+  centrirajSalu();
   /* Svaki ulazak, na svakom uređaju: kratko uputstvo u tri sličice i
      pitanje „sa vodičem ili sam“. Fokus tada ide na prvo dugme u njemu. */
   if (el.savjeti) { pokaziSavjete(); return; }

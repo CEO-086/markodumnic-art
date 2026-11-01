@@ -26,10 +26,13 @@
      ove promjenljive, a HUD i panel ih čitaju — pa se dugmad i panel
      nikad ne preklapaju, ma koja da je širina.
      --visina-sale   visina okna (ulaz, platno)
+     --sala-mirno    visina okna van sale na računaru i tabletu (u sali je
+                     najviše toliko, a manje ako traka ispod ne bi stala)
      --sirina-panela panel sa desne strane (desktop, tablet, telefon položeno)
      --visina-panela panel odozdo (uspravni telefon)
      --hud-odmak     razmak dugmadi od ivice okna */
-  --visina-sale:   min(72vh, 680px);
+  --sala-mirno:    min(72vh, 680px);
+  --visina-sale:   var(--sala-mirno);
   --sirina-panela: min(30rem, 86%);
   --visina-panela: 40%;
   --hud-odmak:     var(--s-4);
@@ -910,7 +913,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 @media (min-width: 721px) and (max-width: 1024px) {
   .galerija {
     --sirina-panela: min(21rem, 46%);
-    --visina-sale:   min(72vh, 820px);
+    --sala-mirno:    min(72vh, 820px);
   }
   .galerija-panel { padding: var(--s-5) var(--s-5) var(--s-6); }
 }
@@ -1317,6 +1320,19 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   padding: 0;
   margin: 0;
   gap: var(--s-2);
+}
+
+/* Računar i tablet: u sali i sala i traka ispod nje treba da stanu
+   ispod zaglavlja, sa razmakom od --s-4 gore i dolje — JS ih po ulasku
+   centrira u tom dijelu ekrana. Na nižem ekranu sala je zato onoliko
+   niža koliko traci treba (visinu trake, sa razmakom iznad, mjeri JS:
+   --visina-trake), ali ne niža od 33rem — toliko traži prozor
+   „Dobro došli“ (italijanski je najviši: 480px + 2 × 24px). */
+@media (min-width: 721px) and (min-height: 501px) {
+  .galerija[data-stanje="soba"] {
+    --visina-sale: min(var(--sala-mirno), max(33rem,
+      calc(100vh - var(--h-zaglavlje) - var(--visina-trake, 10.25rem) - 2 * var(--s-4))));
+  }
 }
 
 /* Na telefonu sala ustupa mjesto traci, da dugmad budu na ekranu

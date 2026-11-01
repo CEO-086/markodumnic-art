@@ -618,7 +618,7 @@ const { PORUKA_GRAFIKE } = G;   /* tekstovi, osnova.js */
 const { zagrijDrugu, postaviBocno, osvjeziSjenke } = G;   /* svjetla, scena.js */
 const { ucitajDrugu } = G;   /* teksture, scena.js */
 const { uronjeno, postaviOpcije, opcijeOtvorene, dugmadOpcija, prebaciCisto } = G;   /* telefon, sucelje.js */
-const { pokaziSavjete, zatvoriSavjete, savjetiOtvoreni, panelOtvoren, natpis } = G;   /* ui, sucelje.js */
+const { izmjeriTraku, pokaziSavjete, zatvoriSavjete, savjetiOtvoreni, panelOtvoren, natpis } = G;   /* ui, sucelje.js */
 const { postaviLupu, pomjeriLupu } = G;   /* izbliza, sucelje.js */
 /* kamera, kretanje.js */
 const {
@@ -1039,7 +1039,7 @@ function vezi() {
   const c = S.render.domElement;
   slusaj(korijen, 'keydown', tipkaDole);
   slusaj(korijen, 'focusout', fokusIzasao);
-  slusaj(window, 'resize', mjeri);
+  slusaj(window, 'resize', function () { izmjeriTraku(); mjeri(); });
   /* Okno mijenja veličinu i bez promjene prozora (CSS, rotacija
      telefona, adresna traka) — bez ovoga se crtež razvuče. */
   if (window.ResizeObserver && el.platno) {
