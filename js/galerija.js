@@ -1368,8 +1368,8 @@ function rasporediSvjetla(kamera) {
 }
 /* Varijante sa SVJETLA_U_KADRU svjetala: prevedu se za sve materijale
    scene, sačeka se da ih grafika zaista spremi (bez blokiranja), pa se
-   na računaru još i iscrtaju na ekran (zagrijNaEkranu, 8 pravaca po
-   varijanti). Tek tada se svjetla van kadra gase. */
+   još i iscrtaju na ekran (zagrijNaEkranu, 8 pravaca po varijanti, samo
+   dok kamera stoji). Tek tada se svjetla van kadra gase. */
 function prevediMalo(kam) {
   const R = S.reflektori;
   if (!R || R.length <= SVJETLA_U_KADRU[0]) { return; }
@@ -1391,7 +1391,9 @@ function prevediMalo(kam) {
   const cekaj = function () {
     if (S.gen !== gen || S.svjetlaKrug !== krug || !S.render) { return; }
     if (programi.some(function (p) { return p.isReady && !p.isReady(); })) { window.setTimeout(cekaj, 50); return; }
-    if (TELEFON) { S.svjetlaMalo = true; osvjeziKadar(); } else { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
+    /* i na telefonu: novi shaderi se prvi put crtaju dok kamera stoji
+       (iOS/ANGLE-Metal spremaju stanje tek pri prvom crtanju) */
+    S.zagrijMalo = 8 * SVJETLA_U_KADRU.length;
   };
   cekaj();
 }
