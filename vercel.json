@@ -2,6 +2,38 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/djelo/kuca-u-sumrak",
+      "destination": "/djelo/sumrak",
+      "permanent": true
+    },
+    {
+      "source": "/djelo/kuca-u-sumrak.html",
+      "destination": "/djelo/sumrak",
+      "permanent": true
+    },
+    {
+      "source": "/en/djelo/kuca-u-sumrak",
+      "destination": "/en/djelo/sumrak",
+      "permanent": true
+    },
+    {
+      "source": "/en/djelo/kuca-u-sumrak.html",
+      "destination": "/en/djelo/sumrak",
+      "permanent": true
+    },
+    {
+      "source": "/it/djelo/kuca-u-sumrak",
+      "destination": "/it/djelo/sumrak",
+      "permanent": true
+    },
+    {
+      "source": "/it/djelo/kuca-u-sumrak.html",
+      "destination": "/it/djelo/sumrak",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

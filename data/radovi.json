@@ -799,11 +799,11 @@
       ]
     },
     {
-      "id": "kuca-u-sumrak",
-      "naziv": "Bez naziva",
+      "id": "sumrak",
+      "naziv": "Sumrak",
       "godina": 2026,
       "tehnika": "Ulje na platnu",
-      "dimenzije": "",
+      "dimenzije": "30 × 20 cm",
       "kategorija": "rodni-grad",
       "istaknuto": false,
       "opis": "Kamena kuća sa crvenkastim krovom u sumrak i jednim upaljenim žutim prozorom; iza nje tamne krošnje pod ružičastim nebom.",
@@ -814,17 +814,17 @@
         "#E5A9A5",
         "#70555B"
       ],
-      "slika": "img/radovi/kuca-u-sumrak.jpg",
-      "slikaVelika": "img/radovi/velike/kuca-u-sumrak.jpg",
+      "slika": "img/radovi/sumrak.jpg",
+      "slikaVelika": "img/radovi/velike/sumrak.jpg",
       "sirinaPx": 982,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Untitled",
+        "naziv": "Dusk",
         "opis": "A stone house with a reddish roof at dusk, one window lit yellow; dark treetops behind it under a pink sky.",
         "tehnika": "Oil on canvas"
       },
       "it": {
-        "naziv": "Senza titolo",
+        "naziv": "Crepuscolo",
         "opis": "Una casa di pietra dal tetto rossastro al crepuscolo, con una sola finestra accesa di giallo; dietro, chiome scure sotto un cielo rosa.",
         "tehnika": "Olio su tela"
       },
