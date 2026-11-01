@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — osnova
    Mjere sale i ostale konstante, elementi stranice, zajedničko
@@ -47,13 +48,199 @@
    Komentari na crnogorskom.
    ========================================================= */
 
+/* ---------------------------------------------------------
+   TIPOVI (samo JSDoc, za `tsc --checkJs` — vidi testovi/galerija/).
+   Van omotača, da ih vide svi dijelovi. Ime iz G koje ovdje nije
+   zapisano je `any`; S, el i korijen nose pun tip, pa tsc u svakom
+   dijelu hvata pogrešno ime polja.
+   --------------------------------------------------------- */
+/**
+ * Objekat G (vidi DIJELJENJE IMENA gore).
+ * @typedef {{ dijelovi: string[], S?: Stanje, el?: Elementi, korijen?: HTMLElement } & Object<string, any>} Galerija
+ */
+/**
+ * Elementi stranice. Prva grupa je u HTML-u (null ako ga nema), a
+ * panelVise i mob prave telefon.js (pripremiKarticu, pripremiMob).
+ * @typedef {Object} Elementi
+ * @property {HTMLElement} ulaz
+ * @property {HTMLElement} pokreni
+ * @property {HTMLElement} platno
+ * @property {HTMLElement} ucitavanje
+ * @property {HTMLElement} izadji
+ * @property {HTMLElement} fps
+ * @property {HTMLElement} fpsPrekidac
+ * @property {HTMLElement} pregled
+ * @property {HTMLElement} prethodni
+ * @property {HTMLElement} sljedeci
+ * @property {HTMLElement} sala
+ * @property {HTMLElement} panel
+ * @property {HTMLElement} panelZatvori
+ * @property {HTMLElement} pNaziv
+ * @property {HTMLElement} pKat
+ * @property {HTMLElement} pGodina
+ * @property {HTMLElement} pTehnika
+ * @property {HTMLElement} pDimenzije
+ * @property {HTMLElement} pOpis
+ * @property {HTMLElement} pLink
+ * @property {HTMLElement} bocno
+ * @property {HTMLElement} lupa
+ * @property {HTMLElement[]} uglovi
+ * @property {HTMLElement} tura
+ * @property {HTMLElement} mapa
+ * @property {HTMLElement} savjeti
+ * @property {HTMLElement} pomoc
+ * @property {HTMLElement} poruka
+ * @property {HTMLElement} najava
+ * @property {HTMLElement} hud
+ * @property {HTMLElement} alati
+ * @property {HTMLButtonElement} [panelVise]  strelica kartice (uspravni telefon)
+ * @property {Object<string, any>} [mob]  trake režima preko cijelog ekrana
+ */
+/**
+ * Jedno djelo iz data/radovi.json, u jeziku stranice (glavni.js,
+ * ucitajPodatke): id, naziv, opis, tehnika, godina, dimenzije, slika…
+ * @typedef {Object<string, any>} Djelo
+ */
+/**
+ * Mjesto djela u sali (scena.js, postaviDjela).
+ * @typedef {Object} Mjesto
+ * @property {number} soba        1 ili 2
+ * @property {any} mesh           lice djela — lupa gađa samo njega
+ * @property {number} x
+ * @property {number} y
+ * @property {number} z
+ * @property {number} nx          normala zida (ka sali)
+ * @property {number} nz
+ * @property {number} sirina      platno, u metrima
+ * @property {number} visina
+ * @property {Djelo} djelo
+ * @property {any} svjetlo        reflektor nad djelom (ili zajednički za crteže)
+ * @property {any} svjetloPoz     njegov početni položaj (bočno svjetlo ga pomjera)
+ * @property {number} svjetloJacina
+ */
+/**
+ * Zajedničko stanje sale (const S, niže u omotaču). Polja bez [zagrada]
+ * postoje od početka, u literalu; polja u [zagradama] upisuju dijelovi
+ * kad zatrebaju, a do tada su undefined. Three.js objekti su `any`
+ * (tipova Three.js nema u repou).
+ * @typedef {Object} Stanje
+ * @property {any} tri
+ * @property {any} scena
+ * @property {any} kamera
+ * @property {any} render
+ * @property {any} raycaster
+ * @property {any[]} platna
+ * @property {any[]} odrazi
+ * @property {Mjesto[]} mjesta
+ * @property {any[]} zaCiscenje
+ * @property {number} petlja       requestAnimationFrame id (0 = stoji)
+ * @property {number} sat
+ * @property {boolean} fpsVidljiv
+ * @property {number} fpsBrojac
+ * @property {number} fpsOd
+ * @property {boolean} radi
+ * @property {Djelo[]} djela
+ * @property {number} izabrano
+ * @property {Object<string, any>} anim
+ * @property {any} poz
+ * @property {any} cilj
+ * @property {{ x: number, y: number }} mis
+ * @property {boolean} vuce
+ * @property {{ x: number, y: number }} pocetak
+ * @property {number} put
+ * @property {{ skretanje: number, nagib: number, daljina: number }} orbita
+ * @property {Object<string, any>} lupa
+ * @property {Map<number, { x: number, y: number }>} prsti
+ * @property {number} stipanje
+ * @property {boolean} bocno
+ * @property {Object<string, any>} tura
+ * @property {number} uvod
+ * @property {number} anizotropija
+ * @property {Object<string, any>[]} teksture
+ * @property {Object<string, any>[]} red
+ * @property {number} redBroj
+ * @property {number} redAktivno
+ * @property {number} gen
+ * @property {boolean} drugaKrenula
+ * @property {boolean} najavljeno
+ *
+ * Kretanje kamere (kamera.js, unos.js, glavni.js)
+ * @property {{ poz: any, cilj: any }} [ka]  prigušeno praćenje: kamo kamera ide
+ * @property {number} [pogled]     smjer pogleda u pregledu (radijani)
+ * @property {number} [inercija]   zamah poslije prevlačenja
+ * @property {number} [brzina]
+ * @property {number} [zadnjiPomak]
+ * @property {{ x: number, y: number }} [misKlijent]
+ * @property {number} [pincPregled]
+ * @property {number} [pincTajmer]
+ * @property {number} [sala]       1 ili 2: sala u kojoj je kamera
+ * @property {any} [velicina]      Vector2, veličina okna
+ * @property {ResizeObserver} [posmatrac]
+ *
+ * Petlja i crtanje (glavni.js)
+ * @property {number} [prosli]
+ * @property {number} [crtajJos]   još toliko kadrova se crta i kad kamera stoji
+ * @property {number[]} [zadnjaMatrica]
+ * @property {number} [zadnjiKadar]
+ * @property {number} [sjenkeDjeca]
+ * @property {number} [prosliCrtan]
+ * @property {number[]} [kadroviMjera]
+ * @property {number} [novaOstrina]
+ * @property {number} [natpisT]
+ * @property {boolean} [kontekstIzgubljen]
+ *
+ * Podaci (glavni.js, ucitajPodatke)
+ * @property {Object<string, string>} [serije]
+ * @property {Djelo[]} [ostali]
+ * @property {number} [uPrvoj]
+ * @property {number} [crtezi]
+ *
+ * Scena, svjetla i zagrijavanje (scena.js, svjetla.js)
+ * @property {any} [ambijent]
+ * @property {any} [polulopta]
+ * @property {any} [matZid]
+ * @property {any} [matPlafon]
+ * @property {any[]} [reflektori]
+ * @property {Object<string, any>} [svjetlaGrupa]
+ * @property {boolean} [svjetlaMalo]
+ * @property {string|number} [svjetlaPrisilno]  'sva', ili broj svjetala (SVJETLA_U_KADRU)
+ * @property {number} [svjetlaPotrebno]
+ * @property {number} [svjetlaKrug]
+ * @property {boolean} [drugaZagrijana]
+ * @property {boolean} [drugaZakazana]
+ * @property {boolean} [zagrijavanjeZakazano]
+ * @property {number} [zagrijEkran]
+ * @property {number} [zagrijMalo]
+ *
+ * Teksture (teksture.js)
+ * @property {any[]} [kadrovi]  poslovi koji čekaju kadar, jedan po kadru (uKadar)
+ * @property {number} [crtanjaNaCekanju]
+ * @property {Object<string, boolean>} [velikeUcitane]
+ * @property {number} [velikaTajmer]
+ *
+ * Sučelje (ui.js, telefon.js, izbliza.js, osnova.js)
+ * @property {boolean} [mreza2D]
+ * @property {number} [najavaTajmer]
+ * @property {number} [porukaTajmer]
+ * @property {HTMLElement} [natpis]
+ * @property {SVGSVGElement} [mapaSvg]
+ * @property {SVGElement} [mapaJa]
+ * @property {SVGElement[]} [mapaTacke]
+ * @property {string} [mapaZadnje]
+ * @property {number} [mapaIzabrano]
+ * @property {HTMLElement} [savjetiPovratak]
+ * @property {boolean} [cistoRecen]
+ * @property {{ el: HTMLElement, povratak: any, tipka: any }} [izbliza]  otvoren prozor Izbliza
+ */
+
 (function () {
 'use strict';
 
 /* Zajednički objekat dijelova (vidi zaglavlje). `dijelovi`: imena
    dijelova koji su se do kraja izvršili — glavni.js ne pokreće salu
    ako neki fali (nije stigao sa mreže). */
-const G = window.__galerija = { dijelovi: [] };
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija = { dijelovi: [] };
 
 /* ---------------------------------------------------------
    KORIJEN SAJTA
@@ -63,7 +250,7 @@ const G = window.__galerija = { dijelovi: [] };
    bi sa en/galerija.html išle na en/img/… i padale.
    --------------------------------------------------------- */
 const KORIJEN_SAJTA = (function () {
-  const s = document.currentScript;
+  const s = /** @type {HTMLScriptElement} */ (document.currentScript);
   try { return s && s.src ? new URL('../../', s.src).href : new URL('../', document.baseURI).href; }
   catch (e) { return document.baseURI; }
 })();
@@ -234,7 +421,7 @@ const TELEFON = MAX_TEKSTURA <= 1024;
    prije klika, ni velika fotografija, ni druga sala prije polaska). */
 const MANJE_PODATAKA = window.matchMedia ? window.matchMedia('(prefers-reduced-data: reduce)') : null;
 function stediPodatke() {
-  const veza = navigator.connection;
+  const veza = /** @type {any} */ (navigator).connection;
   return !!((veza && veza.saveData) || (MANJE_PODATAKA && MANJE_PODATAKA.matches));
 }
 
@@ -248,6 +435,7 @@ const POD_PROZIRNOST = 0.9;       /* pod mora biti blago proziran da se odraz vi
    --------------------------------------------------------- */
 const korijen = document.getElementById('galerija');
 
+/** @type {Elementi} — tip je na vrhu fajla */
 const el = {
   ulaz:         document.getElementById('galerija-ulaz'),
   pokreni:      document.getElementById('galerija-pokreni'),
@@ -285,6 +473,7 @@ const el = {
 /* ---------------------------------------------------------
    Stanje
    --------------------------------------------------------- */
+/** @type {Stanje} — tip, i sa poljima koja se upisuju kasnije, je na vrhu fajla */
 const S = {
   tri: null,            /* modul `three` kad se učita */
   scena: null,
@@ -331,7 +520,7 @@ const S = {
   najavljeno: false     /* modulepreload za Three.js je već u <head> */
 };
 /* Automatski testovi (Playwright): ?proba izlaže stanje kao window.__S. */
-if (/(^|[?&])proba(=|&|$)/.test(location.search.slice(1))) window.__S = S;
+if (/(^|[?&])proba(=|&|$)/.test(location.search.slice(1))) /** @type {any} */ (window).__S = S;
 
 /* Smanjeno kretanje u postavkama sistema.
    PAZI: ovo NE vodi na 2D mrežu. Sala radi i uz smanjeno kretanje,

@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — unos
    Tastatura, miš, dodir i štipanje, točkić i touchpad, odlazak
@@ -8,7 +9,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   POLA_Z, PRAG_KLIKA, ORBITA, PROLAZ, stediPodatke, korijen, el, S, smanjenoKretanje, svedi, salaTacke,

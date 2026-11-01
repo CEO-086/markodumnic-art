@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — pokretanje
    Preuzimanje Three.js (tek na klik) i podataka, pokretanje sale,
@@ -8,7 +9,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   izKorijena, BOJA, VIDNO_POLJE, TELEFON, stediPodatke, korijen, el, S, smanjenoKretanje, kameraIde,
@@ -89,7 +91,7 @@ function najaviKadTreba() {
   });
   /* Dugme na ekranu: najava kad se stranica smiri — osim uz "štedi
      podatke" ili 2G, gdje se čeka da posjetilac stvarno krene ka dugmetu. */
-  const veza = navigator.connection;
+  const veza = /** @type {any} */ (navigator).connection;
   if (stediPodatke() || (veza && /(^|-)2g$/.test(veza.effectiveType || ''))) { return; }
   if (!('IntersectionObserver' in window)) { return; }
   const posmatrac = new IntersectionObserver(function (unosi) {
@@ -580,7 +582,7 @@ Object.assign(G, {
    mreže, sala se ne pokreće — kao kad nije stigla cijela skripta:
    bez data-stanje, pa js/rano.js na `load` pokaže 2D mrežu. G je
    svim dijelovima već u rukama, pa se skida sa window. */
-delete window.__galerija;
+delete /** @type {any} */ (window).__galerija;
 if (G.dijelovi.length !== document.querySelectorAll('script[src*="js/galerija/"]').length - 1) { return; }
 
 /* ---------------------------------------------------------

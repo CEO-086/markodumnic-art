@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — scena
    Raspored djela po zidovima obje sale, građenje sobe (pod, plafon,
@@ -9,7 +10,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   izKorijena, BOJA, SVJETLO_TOPLO, SVJETLO_AMBIJENT, TON_ZIDA, NEUTRALNO, SOBA, POLA_X, POLA_Z,
@@ -89,6 +91,21 @@ function napraviLegendu(djelo) {
    Trenutni data/radovi.json daje 7 istaknutih djela → 2 + 3 + 2.
    Funkcija radi za bilo koji broj: razmak se računa, ne upisuje.
    --------------------------------------------------------- */
+/**
+ * Mjesto na zidu, prije nego što dobije djelo (vidi Mjesto u osnova.js).
+ * @typedef {Object} MjestoZida
+ * @property {number} x
+ * @property {number} [y]       visina centra (VISINA_DJELA)
+ * @property {number} z
+ * @property {number} rot       okret platna oko uspravne ose
+ * @property {number} [nx]      normala zida, iz rot
+ * @property {number} [nz]
+ * @property {number} [soba]    2 = druga sala
+ * @property {number} [red]     redoslijed obilaska u drugoj sali
+ * @property {string} [grupa]   crteži: 'istok' | 'zapad' (zajednički reflektor)
+ * @property {number} [cx]      crteži: sredina grupe po x
+ * @property {number} [raspon]  crteži: širina grupe
+ */
 function raspored(n) {
   /* Zadnji zid je 14 od ukupno 32 m zidova koji nose djela */
   let nZadnji = Math.max(1, Math.round(n * SOBA.sirina / (SOBA.sirina + 2 * SOBA.dubina)));
@@ -97,6 +114,7 @@ function raspored(n) {
   const nLijevi = Math.ceil(ostatak / 2);
   const nDesni = ostatak - nLijevi;
 
+  /** @type {MjestoZida[]} */
   const mjesta = [];
 
   /* Ravnomjerno po dužini zida, sa marginom od ugla */
@@ -148,8 +166,9 @@ function rasporedCrteza(crtezi) {
   const kraj = POLA_X - 0.75;                               /* od ugla */
   const raspon = kraj - ivica;
   const sredina = (ivica + kraj) / 2;
+  /** @type {MjestoZida[]} */
   const mjesta = [];
-  [['istok', 1], ['zapad', -1]].forEach(function (par) {
+  /** @type {[string, number][]} */ ([['istok', 1], ['zapad', -1]]).forEach(function (par) {
     const grupa = crtezi.filter(function (c) { return (c.zid === 'desno' ? 'istok' : 'zapad') === par[0]; });
     const n = grupa.length;
     for (let i = 0; i < n; i++) {
@@ -178,6 +197,7 @@ function rasporedDruge(n) {
      ka dnu, zadnji zid slijeva nadesno, desni zid od dna ka vratima —
      ▶ uvijek vodi na djelo desno. Niz ispod je redoslijed popunjavanja
      kad je djela manje od mjesta. */
+  /** @type {MjestoZida[]} */
   const sva = [
     { x: -3.2, z: z0 + SD, rot: Math.PI, red: 8 },
     { x: -1.6, z: z0 + SD, rot: Math.PI, red: 7 },

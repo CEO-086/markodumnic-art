@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — sučelje
    Stanja prikaza (ulaz, učitavanje, soba, 2D) i 2D rezerva sa svim
@@ -9,7 +10,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 const { izKorijena, SOBA, POLA_X, POLA_Z, VIDNO_POLJE, PROLAZ, korijen, el, S } = G;   /* osnova.js */
 const { EN, IT, TEKST } = G;   /* tekstovi.js */
 const { postaviKarticu, osvjeziUronjeno, osvjeziMob } = G;   /* telefon.js */
@@ -298,13 +300,13 @@ function iza(ukljuci) {
 function pokaziSavjete() {
   if (!el.savjeti) { return; }
   /* Fokus se vraća onome ko je otvorio (dugme „?“), inače platnu */
-  const a = document.activeElement;
+  const a = /** @type {HTMLElement} */ (document.activeElement);
   S.savjetiPovratak = a && a !== document.body && korijen.contains(a) && !el.savjeti.contains(a) &&
     a.getClientRects().length && a !== (S.render && S.render.domElement) ? a : null;
   el.savjeti.hidden = false;
   korijen.setAttribute('data-savjeti', 'da');
   iza(true);
-  const prvo = el.savjeti.querySelector('[data-savjeti-tura]');
+  const prvo = /** @type {HTMLElement} */ (el.savjeti.querySelector('[data-savjeti-tura]'));
   if (prvo) {
     try { prvo.focus({ preventScroll: true }); } catch (e) { prvo.focus(); }
   }

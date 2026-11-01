@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — Izbliza i Lupa
    Izbliza: djelo preko cijelog ekrana, iz fotografije pune veličine.
@@ -7,7 +8,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 const { LUPA, MAX_TEKSTURA, korijen, el, S } = G;   /* osnova.js */
 const { TEKST } = G;   /* tekstovi.js */
 const { izvorDjela, izvorVelike, rasterizuj } = G;   /* teksture.js */
@@ -32,10 +34,10 @@ function otvoriIzbliza() {
       '<p class="galerija-izbliza__savjet"></p>' +
       '<button type="button" class="galerija-izbliza__zatvori">' + TEKST.zatvori + ' <span aria-hidden="true">✕</span></button>' +
     '</div>';
-  const okno = o.querySelector('.galerija-izbliza__okno');
+  const okno = /** @type {HTMLElement} */ (o.querySelector('.galerija-izbliza__okno'));
   const img = o.querySelector('img');
   const savjet = o.querySelector('.galerija-izbliza__savjet');
-  const dugme = o.querySelector('.galerija-izbliza__zatvori');
+  const dugme = /** @type {HTMLElement} */ (o.querySelector('.galerija-izbliza__zatvori'));
   img.alt = djelo.naziv || '';
   /* Okno sa slikom je fokusabilno: Enter / razmak prebacuju na punu
      veličinu (od sredine), a strelice skroluju sliku same od sebe —

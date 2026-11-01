@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — telefon
    Kartica djela koja se sklapa (uspravni telefon) i režim preko
@@ -8,7 +9,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 const { korijen, el, S, sada, poruka } = G;   /* osnova.js */
 const { TEKST } = G;   /* tekstovi.js */
 
@@ -59,7 +61,7 @@ function pripremiKarticu() {
 
   /* Dodir bilo gdje na sklopljenoj kartici je izvlači; na punoj, dodir
      na seriju ili naziv je vraća. Dugmad i veza rade svoje. */
-  el.panel.addEventListener('click', function (e) {
+  el.panel.addEventListener('click', /** @param {MouseEvent & { target: any }} e */ function (e) {
     if (!karticaSeSklapa() || (e.target.closest && e.target.closest('a, button'))) { return; }
     if (!karticaPuna()) { postaviKarticu(true); }
     else if (e.target.closest('.galerija-panel__oznaka, .galerija-panel__naziv')) { postaviKarticu(false); }
@@ -252,11 +254,11 @@ function pripremiMob() {
   glava.innerHTML = '<span class="galerija-alati__naslov"></span>' +
     '<button class="galerija-mob__dugme galerija-mob__krug" type="button" data-mob="zatvori-opcije">' + IKONA.x + '</button>';
   glava.firstChild.textContent = TEKST.opcije;
-  glava.lastChild.setAttribute('aria-label', TEKST.zatvori);
+  /** @type {Element} */ (glava.lastChild).setAttribute('aria-label', TEKST.zatvori);
   glava.lastChild.addEventListener('click', function () { postaviOpcije(false); });
   el.alati.insertBefore(glava, el.alati.firstChild);
   /* Izbor u listu ga zatvara — posjetilac odmah vidi šta je uradio */
-  el.alati.addEventListener('click', function (e) {
+  el.alati.addEventListener('click', /** @param {MouseEvent & { target: any }} e */ function (e) {
     if (!uronjeno() || !e.target.closest) { return; }
     const b = e.target.closest('button, [data-mapa-djelo]');
     if (b && !b.hasAttribute('data-mob')) { postaviOpcije(false); }

@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — jezik i tekstovi
    Ista skripta služi crnogorsku (korijen), englesku (en/) i
@@ -12,7 +13,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 
 /* Jezik stranice, iz <html lang> */
 const EN = document.documentElement.lang === 'en';

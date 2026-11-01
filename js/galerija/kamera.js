@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — kamera i kretanje
    Pregled sale i stajanje pred djelom, orbita oko djela, klizanje i
@@ -9,7 +10,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   SOBA, POLA_X, POLA_Z, VISINA_OKA, VIDNO_POLJE, PUNJENJE_KADRA, MIN_DALJINA, MAX_DALJINA, HOD,
@@ -77,6 +79,7 @@ function pozicijaPregleda() {
 /* Pozicija pred djelom: po normali platna, na daljini koja rad
    stavlja u razuman dio kadra (PUNJENJE_KADRA po kraćoj strani). */
 function pozicijaPredDjelom(i) {
+  // eslint-disable-next-line no-unused-vars -- od ranije; ostaje, izmjene su samo premještanje
   const T = S.tri;
   const m = S.mjesta[i];
   const aspekt = S.kamera ? S.kamera.aspect : 1.6;

@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — teksture djela
    Izvori slika (sićušna, prava, reljef, velika), provjera AVIF-a,
@@ -9,7 +10,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   izKorijena, NEUTRALNO, POLA_Z, VIDNO_POLJE, MAX_TEKSTURA, TELEFON, stediPodatke, S, kameraIde, uUvodu,
@@ -165,8 +167,8 @@ function kadMiruje(f, m) {
    procesoru — razlika je do 2/255, dakle ne bi bila ista slika.
    Samo u Chromium-u, gdje je to provjereno; drugdje ostaje <img>. */
 const BITMAPA = typeof window.createImageBitmap === 'function' && typeof window.fetch === 'function' &&
-  !!(navigator.userAgentData && navigator.userAgentData.brands &&
-     navigator.userAgentData.brands.some(function (b) { return b.brand === 'Chromium'; }));
+  !!(/** @type {any} */ (navigator).userAgentData && /** @type {any} */ (navigator).userAgentData.brands &&
+     /** @type {any} */ (navigator).userAgentData.brands.some(function (b) { return b.brand === 'Chromium'; }));
 function bitmapaReljefa(url) {
   return window.fetch(url).then(function (r) {
     if (!r.ok) { throw new Error('HTTP ' + r.status); }

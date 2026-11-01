@@ -1,3 +1,4 @@
+// @ts-check
 /* =========================================================
    Virtuelna galerija — svjetla
    Svjetiljke i šine (vidljiva tijela reflektora), reflektor nad
@@ -8,7 +9,8 @@
 (function () {
 'use strict';
 
-const G = window.__galerija;
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   BOJA, SVJETLO_TOPLO, POLA_X, POLA_Z, VISINA_DJELA, UGAO_UPADA, VISINA_SINE, DALJINA_SVJETLA,
@@ -361,6 +363,7 @@ function napraviReflektor(mj, djelo, i) {
 /* Bočno svjetlo: reflektor izabranog djela prelazi na stranu,
    skoro paralelno sa platnom. Isključuje se pri izboru drugog djela. */
 function postaviBocno(ukljuci) {
+  // eslint-disable-next-line no-unused-vars -- od ranije; ostaje, izmjene su samo premještanje
   const T = S.tri;
   for (let i = 0; i < S.mjesta.length; i++) {
     const m = S.mjesta[i];
