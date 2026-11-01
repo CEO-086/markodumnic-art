@@ -2420,17 +2420,22 @@ function mjeriBrzinu(t) {
       }
     }
   }
-  /* Nova oštrina tek kad kamera stane — promjena veličine slike usred
-     klizanja je sama po sebi jedan spori kadar. Poslije nje se druga sala
-     opet „zagrije“ na ekranu, za novu veličinu slike. */
-  if (S.novaOstrina && !kretanje) {
-    S.render.setPixelRatio(S.novaOstrina);   /* sam zadrži veličinu okna */
-    S.novaOstrina = 0;
-    if (S.drugaZagrijana) { S.zagrijEkran = 4; }
-    if (S.svjetlaMalo) { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
-    osvjeziKadar();
-  }
   S.prosliCrtan = kretanje ? t : 0;
+}
+/* Nova oštrina tek kad kamera stane — promjena veličine slike usred
+   klizanja je sama po sebi jedan spori kadar. Primjenjuje se u petlji
+   PRIJE crtanja tog kadra: promjena veličine briše bafer slike i čeka
+   da grafika završi sve poslato. Kadar nacrtan neposredno prije nje bio
+   bi obrisan neprikazan (platno bi taj kadar ostalo prazno), a čekanje
+   bi trajalo i za cio taj kadar. Poslije nje se druga sala opet
+   „zagrije“ na ekranu, za novu veličinu slike. */
+function primijeniOstrinu() {
+  if (!S.novaOstrina || S.anim || S.ka || S.inercija || S.vuce) { return; }
+  S.render.setPixelRatio(S.novaOstrina);   /* sam zadrži veličinu okna */
+  S.novaOstrina = 0;
+  if (S.drugaZagrijana) { S.zagrijEkran = 4; }
+  if (S.svjetlaMalo) { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
+  osvjeziKadar();
 }
 
 /* Pokretanje klizanja (ili skoka, uz smanjeno kretanje) */
@@ -3257,6 +3262,7 @@ function petlja() {
   let crtaj = promjena || S.crtajJos > 0 || S.anim || S.ka || S.inercija || S.vuce || S.uvod ||
     S.lupa.na || (S.kadrovi && S.kadrovi.length) || S.novaOstrina;
   if (S.crtajJos > 0) { S.crtajJos--; }
+  primijeniOstrinu();
 
   /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova,
      a matrice novih nepokretnih objekata se slože jednom */
