@@ -592,15 +592,20 @@ function uHex(s) {
 /* Djelo (SVG ili fotografija) iscrta se u platno visoke rezolucije.
    SVG bi TextureLoader inače rasterizovao u prirodnoj veličini
    (npr. 700 px), pa bi izbliza i pod uglom bio mutan. */
-function rasterizuj(url, max, mirno) {
+function rasterizuj(url, max, zaPlatno, stigla) {
   return new Promise(function (res, odbij) {
     const slika = new Image();
     slika.decoding = 'async';
     /* Dekodiranje van glavne niti (decode()), a crtanje u platno tek kad
        se ne hoda iz sale u salu — inače bi slika koja stigne usred hoda
-       zaustavila kadar. Velika slika (`mirno`) čeka i da kamera stane. */
+       zaustavila kadar. Prava slika djela (`zaPlatno`) čeka i da kamera
+       stane, osim ako je to platno upravo pred očima (vidi kadMiruje).
+       `stigla` se javi čim je slika preuzeta i dekodirana (vidi ucitajBoju). */
     slika.onload = function () {
-      const dalje = function () { (mirno ? kadMiruje : kadNeHoda)(crtaj); };
+      const dalje = function () {
+        if (stigla) { stigla(); }
+        if (zaPlatno) { kadMiruje(crtaj, zaPlatno); } else { kadNeHoda(crtaj); }
+      };
       if (slika.decode) { slika.decode().then(dalje, dalje); } else { dalje(); }
     };
     const crtaj = function () {
@@ -636,10 +641,37 @@ function kameraIde() {
 function uUvodu() {
   return !!(S.anim && S.anim.uvod);
 }
-/* Velika slika se crta u platno tek kad kamera stoji (vidi rasterizuj) */
-function kadMiruje(f) {
-  if (S.radi && kameraIde() && !uUvodu()) { window.setTimeout(function () { kadMiruje(f); }, 120); return; }
-  f();
+/* PRED OČIMA: platno u sali u kojoj kamera jeste, a u kadru je. Odlaganje
+   do mirnog kadra važi za ono što se sprema unaprijed (druga sala dok je
+   posjetilac u prvoj, platna van kadra) — platno koje posjetilac gleda i
+   na kom je još sićušna slika ili ravan reljef dobija pravu sliku i u
+   pokretu, jednu po kadru, kao i ranije. */
+const PRED_OCIMA = {};
+function predOcima(m, kadar) {
+  if (!m || !m.mesh || !S.kamera || !S.poz || !S.tri) { return false; }
+  if (m.soba !== (S.sala || 1) || salaTacke(S.poz.z) !== m.soba) { return false; }
+  return (kadar || kadarKamere()).intersectsObject(m.mesh);
+}
+function kadarKamere() {
+  if (!PRED_OCIMA.kadar) { PRED_OCIMA.kadar = new S.tri.Frustum(); PRED_OCIMA.matrica = new S.tri.Matrix4(); }
+  return PRED_OCIMA.kadar.setFromProjectionMatrix(
+    PRED_OCIMA.matrica.multiplyMatrices(S.kamera.projectionMatrix, S.kamera.matrixWorldInverse));
+}
+/* Velika slika se crta u platno tek kad kamera stoji (vidi rasterizuj);
+   nikad u hodu iz sale u salu. S.crtanjaNaCekanju: koliko ih još čeka
+   (zagrijDrugu čeka i njih, kao što čeka teksture u redu za GPU). */
+function cekaMir(m) {
+  return S.radi && ((S.anim && S.anim.hod) || (kameraIde() && !uUvodu() && !predOcima(m)));
+}
+function kadMiruje(f, m) {
+  if (!cekaMir(m)) { f(); return; }
+  S.crtanjaNaCekanju = (S.crtanjaNaCekanju || 0) + 1;
+  const opet = function () {
+    if (cekaMir(m)) { window.setTimeout(opet, 120); return; }
+    S.crtanjaNaCekanju--;
+    f();
+  };
+  window.setTimeout(opet, 120);
 }
 
 /* RELJEF KAO ImageBitmap: normal mapa se preuzme (fetch) i dekodira van
@@ -1410,9 +1442,10 @@ function pumpaj() {
 function zagrijDrugu() {
   if (!S.render || !S.tri || !S.scena || S.drugaZagrijana) { return; }
   /* ne dok se kamera kreće (klizanje, točkić, zamah, prevlačenje), ne dok
-     teksture još idu na GPU i ne prije nego što platna druge sale dobiju
-     sićušne slike (mapa mijenja shader) */
-  if (kameraIde() || (S.kadrovi && S.kadrovi.length) || !maleDrugeStigle()) { window.setTimeout(zagrijDrugu, 400); return; }
+     teksture još idu na GPU (ili čekaju da se nacrtaju, vidi kadMiruje) i
+     ne prije nego što platna druge sale dobiju sićušne slike (mapa
+     mijenja shader) */
+  if (kameraIde() || (S.kadrovi && S.kadrovi.length) || S.crtanjaNaCekanju > 0 || !maleDrugeStigle()) { window.setTimeout(zagrijDrugu, 400); return; }
   S.drugaZagrijana = true;
   const T = S.tri;
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
@@ -1602,10 +1635,11 @@ function prevediMalo(kam) {
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
    u istom kadru — dvanaest slika odjednom je zastoj od pola sekunde.
    `tesko`: prava slika ili reljef (do 2048 px) — ide samo dok kamera
-   stoji (i u uvodu, vidi uUvodu). Sićušna slika (~160 px) ne košta
-   ništa, pa ide i u pokretu. */
-function uKadar(posao, tesko) {
+   stoji (i u uvodu, vidi uUvodu), osim za platno pred očima (`m`, vidi
+   predOcima). Sićušna slika (~160 px) ne košta ništa, pa ide i u pokretu. */
+function uKadar(posao, tesko, m) {
   posao.tesko = !!tesko;
+  posao.m = m || null;
   (S.kadrovi || (S.kadrovi = [])).push(posao);
 }
 function jedanPosaoKadra(hod, miruje) {
@@ -1615,10 +1649,16 @@ function jedanPosaoKadra(hod, miruje) {
   if (hod) { return; }
   /* I kad kamera klizi od djela do djela (ili je pomjera točkić, zamah,
      prevlačenje): prava slika i reljef čekaju kadar u kom kamera stoji —
-     slanje velike slike usred klizanja je zastoj koji se vidi. */
+     slanje velike slike usred klizanja je zastoj koji se vidi. Osim za
+     platno pred očima (vidi predOcima): ono ide i u pokretu, jedno po kadru. */
   let i = 0;
   if (!miruje) {
-    while (i < S.kadrovi.length && S.kadrovi[i].tesko) { i++; }
+    let kadar = null;
+    while (i < S.kadrovi.length && S.kadrovi[i].tesko) {
+      const m = S.kadrovi[i].m;
+      if (m && predOcima(m, kadar || (kadar = kadarKamere()))) { break; }
+      i++;
+    }
     if (i === S.kadrovi.length) { return; }
   }
   osvjeziKadar();
@@ -1630,7 +1670,7 @@ function aktuelno(m) { return m.gen === S.gen && !!S.render; }
 
 /* Nova slika na platno i odraz — samo ako je bolja od postojeće */
 function staviBoju(m, c, nivo) {
-  uKadar(function () { staviBojuSada(m, c, nivo); }, nivo >= 2);
+  uKadar(function () { staviBojuSada(m, c, nivo); }, nivo >= 2, nivo >= 2 && m.nivo < 2 ? m : null);
 }
 function staviBojuSada(m, c, nivo) {
   if (!aktuelno(m) || nivo <= m.nivo) { return; }
@@ -1666,14 +1706,22 @@ function ucitajMalu(m) {
 function ucitajBoju(m) {
   if (!aktuelno(m)) { return null; }
   const maxStr = Math.min(MAX_TEKSTURA, S.render.capabilities.maxTextureSize || MAX_TEKSTURA);
-  return AVIF_PROVJERA.then(function () {
+  /* Mjesto u redu preuzimanja (uRed) se oslobađa čim slika stigne i
+     dekodira se, ne tek kad se nacrta: crtanje može čekati miran kadar
+     (kadMiruje), a preuzimanje ostalih slika (i druge sale) ne smije
+     zbog toga stati dok se posjetilac kreće. */
+  let oslobodi = null;
+  const stigla = new Promise(function (r) { oslobodi = r; });
+  AVIF_PROVJERA.then(function () {
     /* izvori po redu (AVIF → WebP / JPG): sljedeći tek kad prethodni padne */
     const izvori = izvoriDjela(m.djelo);
-    /* crtanje u platno (`mirno`) tek kad kamera stoji */
-    let p = rasterizuj(izvori[0], maxStr, true);
-    izvori.slice(1).forEach(function (u) { p = p.catch(function () { return rasterizuj(u, maxStr, true); }); });
+    /* crtanje u platno tek kad kamera stoji (osim za platno pred očima) */
+    let p = rasterizuj(izvori[0], maxStr, m, oslobodi);
+    izvori.slice(1).forEach(function (u) { p = p.catch(function () { return rasterizuj(u, maxStr, m, oslobodi); }); });
     return p;
-  }).then(function (c) { staviBoju(m, c, 2); }, function () { /* tišina — rezervna boja ostaje */ });
+  }).then(function (c) { staviBoju(m, c, 2); }, function () { /* tišina — rezervna boja ostaje */ })
+    .then(oslobodi, oslobodi);
+  return stigla;
 }
 /* RELJEF PASTE: normal mapa iz img/reljef/<id>.webp.
    Ovo je ono što obilazak iz više uglova čini vrijednim — svjetlo
@@ -1712,7 +1760,7 @@ function ucitajReljef(m) {
         m.platno.normalMap = nm;
         m.platno.normalScale.set(1.2, 1.2);
         pamti(nm);
-      }, true);
+      }, true, m);
     }, function () { /* nema mape — platno ostaje ravno */ });
 }
 function rasporediTeksture() {
@@ -1957,7 +2005,7 @@ function postaviDjela(djela) {
     if (djelo.slika) {
       S.teksture.push({
         djelo: djelo, soba: mj.soba || 1,
-        platno: matPlatno, odraz: matOdrazPlatno,
+        platno: matPlatno, odraz: matOdrazPlatno, mesh: platno,
         tex: null, nivo: 0, gen: S.gen
       });
     }
@@ -3329,15 +3377,17 @@ function petlja() {
   korakUvoda(t);
   osvjeziMapu();
   paziNaDrugu();
-  /* Tekstura ide na GPU tek kad se zna kretanje ovog kadra: velika samo
-     ako kamera ne ide ni na početku ni na kraju koraka — ni u kadru u kom
-     klizanje stiže na cilj, ni u kom tura krene ka sljedećem djelu. Uvod
-     je izuzet (vidi uUvodu). */
-  jedanPosaoKadra(hodala || !!(S.anim && S.anim.hod), uvodila || (stajala && !kameraIde()));
 
   S.kamera.position.copy(S.poz);
   S.kamera.lookAt(sParalaksom());
   S.kamera.updateMatrixWorld();
+
+  /* Tekstura ide na GPU tek kad se zna kretanje (i kadar) ovog kadra:
+     velika samo ako kamera ne ide ni na početku ni na kraju koraka — ni
+     u kadru u kom klizanje stiže na cilj, ni u kom tura krene ka
+     sljedećem djelu. Izuzeci: uvod (vidi uUvodu) i platno pred očima
+     (vidi predOcima). */
+  jedanPosaoKadra(hodala || !!(S.anim && S.anim.hod), uvodila || (stajala && !kameraIde()));
 
   /* CRTANJE PO POTREBI: kad se ništa ne mijenja (kamera stoji, nema
      klizanja, prevlačenja ni novih tekstura), isti kadar se ne crta
