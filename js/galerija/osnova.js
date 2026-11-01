@@ -363,8 +363,10 @@ const PUNJENJE_KADRA = 0.55;      /* koliko kadra rad zauzima kad kamera stane p
 const MIN_DALJINA = 0.8;          /* najbliže što kamera staje pred platno */
 const MAX_DALJINA = 3.2;
 /* Hod iz sale u salu: brzina šetnje (m/s), dužina koraka (m),
-   njihanje glave gore-dolje i lijevo-desno (m), udio zaleta/kočenja */
-const HOD = { brzina: 1.25, korak: 0.72, gore: 0.035, strana: 0.018, zalet: 0.22 };
+   njihanje glave gore-dolje i lijevo-desno (m), udio zaleta/kočenja,
+   i okret glave ka prolazu na polasku (ms) — po vremenu, ne po putu,
+   da se odmah vidi da je hod krenuo (vidi korakHoda). */
+const HOD = { brzina: 1.4, korak: 0.72, gore: 0.035, strana: 0.018, zalet: 0.22, okret: 800 };
 const VISINA_PREGLEDA = VISINA_OKA;  /* oko posmatrača u pregledu sobe */
 const TRAJANJE_KLIZANJA = 1200;   /* ms */
 const PARALAKSA = 2.5 * Math.PI / 180;  /* najviše 2.5° okretanja pogleda mišem */

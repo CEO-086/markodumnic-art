@@ -21,7 +21,7 @@
 const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
-  SOBA, POLA_X, POLA_Z, VISINA_OKA, VIDNO_POLJE, PUNJENJE_KADRA, MIN_DALJINA, MAX_DALJINA, HOD,
+  SOBA, POLA_Z, VISINA_OKA, VIDNO_POLJE, PUNJENJE_KADRA, MIN_DALJINA, MAX_DALJINA, HOD,
   VISINA_PREGLEDA, TRAJANJE_KLIZANJA, PARALAKSA, PRAG_KLIKA, ORBITA, UGAO_PRESETA, PROLAZ, korijen, el, S,
   smanjenoKretanje, graniceSale, salaTacke, POCETNA_SALA, jeDruga, osvjeziKadar, sada, poruka
 } = G;
@@ -40,11 +40,11 @@ const { otvoriIzbliza, postaviLupu } = G;   /* izbliza, sucelje.js */
    --------------------------------------------------------- */
 
 /* Pozicija iz koje se vidi cijela soba.
-   Udaljenost se računa iz vidnog polja i odnosa stranica okna:
-   da bi cijela širina zadnjeg zida (14 m) ušla u kadar, kamera
-   mora biti najmanje D metara od njega. Na uskom ekranu (telefon
-   uspravno) D ispadne veće od dubine sobe, pa se kamera prisloni
-   uz prednji zid i pokaže koliko može — bolje nego da izađe kroz zid. */
+   Mala sala: odmah iza vrata. Velika: 2.2 m od zida sa vratima, kao
+   čovjek koji je ušao i stao — u kadru su pod, šine sa reflektorima
+   i bočni zidovi, a ne samo zadnji zid. (Ranije se kamera primicala
+   zadnjem zidu dok njegova širina ne popuni kadar; na širokom a niskom
+   oknu laptopa to je bio krupan kadar golog zida, bez sobe.) */
 function pozicijaPregleda() {
   const T = S.tri;
   /* Pregled male sale: stoji se odmah iza vrata, pogled na zadnji zid */
@@ -60,14 +60,9 @@ function pozicijaPregleda() {
     }
     return { poz: poz2, cilj: cilj2 };
   }
-  const aspekt = S.kamera ? S.kamera.aspect : 1.6;
-  const polV = (VIDNO_POLJE / 2) * Math.PI / 180;
-  const polH = Math.atan(Math.tan(polV) * aspekt);
-  const trazeno = (POLA_X - 1.2) / Math.max(0.1, Math.tan(polH));
-  /* Kamera ne prilazi prednjem zidu bliže od 2.3 m: pri okretu za
-     180° (pogled 360°) mora stati i prolaz u kadar, a ne samo malter. */
-  const z = Math.min(POLA_Z - 2.2, -POLA_Z + trazeno);
-  const poz = new T.Vector3(0, VISINA_PREGLEDA, z);
+  /* Ne bliže zidu sa vratima od 2.2 m: pri okretu za 180° (pogled
+     360°) u kadar staje i prolaz sa crtežima, a ne samo malter. */
+  const poz = new T.Vector3(0, VISINA_PREGLEDA, POLA_Z - 2.2);
   /* Pogled blago uzdignut (2.1 m, ne 1.45): u kadar ulaze i
      reflektori na šini iznad djela, ne samo djela i pod. */
   const cilj = new T.Vector3(0, 2.2, -POLA_Z + 0.2);
@@ -216,7 +211,7 @@ function kreniKa(poz, cilj) {
       duzinaPuta: duzinaPuta,
       cilj0: ciljevi[0],
       cilj1: ciljevi[ciljevi.length - 1],
-      trajanje: Math.max(2600, Math.min(5200, 900 + duzinaPuta / HOD.brzina * 1000)),
+      trajanje: Math.max(2200, Math.min(4200, 600 + duzinaPuta / HOD.brzina * 1000)),
       pocetak: sada()
     };
     return;
@@ -261,11 +256,14 @@ function korakHoda(a, p) {
   const put = a.put;
   S.poz.copy(put.getPointAt(u));
   /* Pogled: na početku se okreće ka prolazu, u hodu gleda naprijed,
-     a pred kraj se okreće ka zidu sale. */
+     a pred kraj se okreće ka zidu sale. Okret na polasku ide po
+     VREMENU (HOD.okret): put u zaletu odmiče sporo, pa je okret vezan
+     za put prvih pola sekunde jedva krenuo — izgledalo je kao da dugme
+     nije reagovalo, a drugi pritisak je hod vraćao nazad. */
   const smjer = put.getTangentAt(Math.min(0.999, Math.max(0.001, u)));
   const naprijed = S.poz.clone().addScaledVector(smjer, 3);
   naprijed.y = 1.55;
-  const uPocetku = glatko(0, 0.28, u), predKraj = glatko(0.68, 1, u);
+  const uPocetku = glatko(0, HOD.okret, p * a.trajanje), predKraj = glatko(0.68, 1, u);
   /* Okret glave se računa po uglu, ne pravom linijom između ciljeva —
      inače bi pogled pri povratku "preskočio" kroz samu kameru. */
   const g0 = ugaoPogleda(S.poz, a.cilj0), gN = ugaoPogleda(S.poz, naprijed), g1 = ugaoPogleda(S.poz, a.cilj1);
@@ -592,6 +590,23 @@ function krozZid(zrak, daljina) {
   return false;
 }
 
+/* Za klik i dodir: ako zrak tačno ispod pokazivača ne pogodi djelo,
+   gleda se i par piksela oko njega (prst 14, miš 6) — malo ili daleko
+   djelo, crtež i legenda se lakše pogode, i kad pogled još klizi. */
+function pogodakBlizu(x, y, prst) {
+  const i = pogodak(x, y);
+  if (i >= 0) { return i; }
+  const rr = prst ? [7, 14] : [3, 6];
+  for (const r of rr) {
+    for (let k = 0; k < 8; k++) {
+      const f = k * Math.PI / 4;
+      const j = pogodak(x + r * Math.cos(f), y + r * Math.sin(f));
+      if (j >= 0) { return j; }
+    }
+  }
+  return -1;
+}
+
 /* Raycaster: koje je djelo pod pokazivačem.
    Gleda SAMO S.platna — odrazi u podu nisu u tom nizu, pa klik
    na odraz ne otvara ništa. Djelo iza zida (druga sala, ili poleđina
@@ -614,7 +629,7 @@ function pogodak(x, y) {
 Object.assign(G, {
   pozicijaPregleda, promijeniOrbitu, ugao, kreniKa, korakHoda, korakKlizanja, izaberi, naPregled, uSalu,
   prvoUSali, tackaKlika, mjeri, osvjeziDugmeTure, kreniTuru, pauzirajTuru, zavrsiTuru, korakTure, uvod,
-  korakUvoda, sParalaksom, pogodak
+  korakUvoda, sParalaksom, pogodak, pogodakBlizu
 });
 G.dijelovi.push('kamera');
 
@@ -646,13 +661,20 @@ const { postaviLupu, pomjeriLupu } = G;   /* izbliza, sucelje.js */
 /* kamera, kretanje.js */
 const {
   pozicijaPregleda, promijeniOrbitu, ugao, kreniKa, izaberi, naPregled, uSalu, prvoUSali, tackaKlika,
-  mjeri, kreniTuru, pauzirajTuru, pogodak
+  mjeri, kreniTuru, pauzirajTuru, pogodak, pogodakBlizu
 } = G;
 
 /* ---------------------------------------------------------
    Unos
    --------------------------------------------------------- */
 const slusaoci = [];
+/* Hod iz sale u salu je u toku. Dugme (i V) tada ne okreće hod
+   nazad: natpis dugmeta se promijeni odmah na pritisak, pa bi drugi
+   pritisak „da li je krenulo?“ vratio posjetioca odakle je pošao. */
+function hodaUSalu() {
+  return !!(S.anim && S.anim.hod);
+}
+
 function pokaziSalu() {
   const p = el.platno;
   if (!p || !p.getClientRects().length) { return; }
@@ -748,7 +770,7 @@ function tipkaDole(e) {
   }
   if (e.key.toLowerCase() === 'v') {
     /* V — kroz vrata, u drugu salu i nazad */
-    uSalu(S.sala === 2 ? 1 : 2);
+    if (!hodaUSalu()) { uSalu(S.sala === 2 ? 1 : 2); }
     e.preventDefault();
   } else if (e.key === 'ArrowLeft') {
     izaberi(S.izabrano < 0 ? prvoUSali() : S.izabrano - 1);
@@ -820,7 +842,7 @@ function pokazivacDole(e) {
   /* Djelo pod mišem U TRENUTKU PRITISKA — ono što posjetilac vidi i
      na šta cilja. Pogled poslije okretanja još malo klizi, pa bi na
      puštanju ispod miša moglo biti nešto drugo (ili goli zid). */
-  S.naDole = pogodak(e.clientX, e.clientY);
+  S.naDole = pogodakBlizu(e.clientX, e.clientY, !!(e.pointerType && e.pointerType !== 'mouse'));
   S.vuce = true;
   S.brzina = 0;
   S.inercija = 0;
@@ -1130,7 +1152,7 @@ function vezi() {
   }, true);
   slusaj(document, 'visibilitychange', function () { if (document.hidden) { pauzirajTuru(); } });
   if (el.sala) {
-    slusaj(el.sala, 'click', function () { uSalu(S.sala === 2 ? 1 : 2); });
+    slusaj(el.sala, 'click', function () { if (!hodaUSalu()) { uSalu(S.sala === 2 ? 1 : 2); } });
     /* Namjera prije klika: druga sala kreće dok je miš na dugmetu */
     const najaviDrugu = function () { if (S.radi && !jeDruga(S.sala) && !stediPodatke()) { ucitajDrugu(); } };
     slusaj(el.sala, 'pointerenter', najaviDrugu);

@@ -200,12 +200,13 @@ function zagrijNaEkranu(korak, malo) {   /* malo: broj svjetala (SVJETLA_U_KADRU
    Takav se za taj kadar ugasi — slika je ista do posljednjeg bita.
    Broj upaljenih mijenja shader, pa da se ništa ne prevodi usred hoda,
    upaljeno je uvijek SVE ili tačno jedan od brojeva SVJETLA_U_KADRU
-   (dopunjeno reflektorima van kadra, koji ionako daju nulu): obje sale
-   trebaju do 10, pogled kroz vrata sva. Sve varijante se
+   (dopunjeno reflektorima van kadra, koji ionako daju nulu): pregled
+   velike sale sa ulaza traži 13, pred djelima i u maloj sali manje,
+   pogled kroz vrata sva. Sve varijante se
    prevedu i zagriju unaprijed (zagrijDrugu → prevediMalo); dok to nije
    gotovo, sva svjetla su upaljena, kao i prije. Reflektor koji baca
    sjenku je uvijek upaljen (i njegova sjenka mijenja shader). */
-const SVJETLA_U_KADRU = [6, 12];
+const SVJETLA_U_KADRU = [6, 14];
 const DOMET = {};
 function dometSvjetla(l) {
   const T = S.tri;
