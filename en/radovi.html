@@ -15,7 +15,7 @@
 
 <!--
   Degradiranje bez JavaScripta:
-  svih 19 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
+  svih 20 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
   stavke. Ako JS ne radi, dugmad filtera se sklanjaju (vidi <noscript> ispod)
   da korisnik ne dobije mrtve kontrole, a mreža ostaje cijela — što je
   ispravno ponašanje za pregled radova.
@@ -111,7 +111,7 @@
           <button class="filter__dugme" type="button" data-filter="rodni-grad" aria-pressed="false">Hometown Reveries</button>
         </div>
 
-        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Showing 19 of 19 works</p>
+        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Showing 20 of 20 works</p>
 
         <p class="filter__bez-js">
           Filtering by series requires JavaScript. All the works are shown below.
@@ -239,6 +239,23 @@
             </span>
             <span class="rad__naziv">Greek Landscape</span>
             <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 50&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/novembarski-pejzaz.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/novembarski-pejzaz-480.avif 480w, ../img/radovi/w/novembarski-pejzaz-800.avif 800w, ../img/radovi/w/novembarski-pejzaz-1200.avif 1200w, ../img/radovi/w/novembarski-pejzaz-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/novembarski-pejzaz-480.webp 480w, ../img/radovi/w/novembarski-pejzaz-800.webp 800w, ../img/radovi/w/novembarski-pejzaz-1200.webp 1200w, ../img/radovi/w/novembarski-pejzaz-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/novembarski-pejzaz.jpg" width="1400" height="1096" loading="lazy" decoding="async"
+                     alt="A house among autumn trees and a path winding towards it, under a swirling grey sky with two birds.">
+              </picture>
+            </span>
+            <span class="rad__naziv">November Landscape</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Oil&nbsp;on&nbsp;canvas&nbsp;· 45&nbsp;×&nbsp;50&nbsp;cm</span>
           </a>
         </li>
 

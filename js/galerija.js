@@ -582,10 +582,10 @@ function raspored(n) {
   return mjesta;
 }
 
-/* Druga sala (iza prolaza): šest mjesta na zadnjem zidu, po tri na
+/* Druga sala (iza prolaza): pet mjesta na zadnjem zidu, po četiri na
    bočnim. Ista visina i normale kao u prvoj sali, pa za kameru,
    reflektor, legendu i lupu nema razlike u kojoj je sali djelo. */
-const MJESTA_DRUGE = 12;
+const MJESTA_DRUGE = 13;
 function rasporedDruge(n) {
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
   const z0 = POLA_Z + PROLAZ.zid;
@@ -595,18 +595,19 @@ function rasporedDruge(n) {
      ▶ uvijek vodi na djelo desno. Niz ispod je redoslijed popunjavanja
      kad je djela manje od mjesta. */
   const sva = [
-    { x: -3.5, z: z0 + SD, rot: Math.PI, red: 8 },
-    { x: -2.1, z: z0 + SD, rot: Math.PI, red: 7 },
-    { x: -0.7, z: z0 + SD, rot: Math.PI, red: 6 },
-    { x: 0.7,  z: z0 + SD, rot: Math.PI, red: 5 },
-    { x: 2.1,  z: z0 + SD, rot: Math.PI, red: 4 },
-    { x: 3.5,  z: z0 + SD, rot: Math.PI, red: 3 },
-    { x: -SW / 2, z: z0 + SD * 0.3, rot: Math.PI / 2, red: 11 },
-    { x:  SW / 2, z: z0 + SD * 0.3, rot: -Math.PI / 2, red: 0 },
-    { x: -SW / 2, z: z0 + SD * 0.75, rot: Math.PI / 2, red: 9 },
-    { x:  SW / 2, z: z0 + SD * 0.75, rot: -Math.PI / 2, red: 2 },
-    { x: -SW / 2, z: z0 + SD * 0.525, rot: Math.PI / 2, red: 10 },
-    { x:  SW / 2, z: z0 + SD * 0.525, rot: -Math.PI / 2, red: 1 }
+    { x: -3.2, z: z0 + SD, rot: Math.PI, red: 8 },
+    { x: -1.6, z: z0 + SD, rot: Math.PI, red: 7 },
+    { x: 0,    z: z0 + SD, rot: Math.PI, red: 6 },
+    { x: 1.6,  z: z0 + SD, rot: Math.PI, red: 5 },
+    { x: 3.2,  z: z0 + SD, rot: Math.PI, red: 4 },
+    { x: -SW / 2, z: z0 + SD * 0.2, rot: Math.PI / 2, red: 12 },
+    { x:  SW / 2, z: z0 + SD * 0.2, rot: -Math.PI / 2, red: 0 },
+    { x: -SW / 2, z: z0 + SD * 0.8, rot: Math.PI / 2, red: 9 },
+    { x:  SW / 2, z: z0 + SD * 0.8, rot: -Math.PI / 2, red: 3 },
+    { x: -SW / 2, z: z0 + SD * 0.4, rot: Math.PI / 2, red: 11 },
+    { x:  SW / 2, z: z0 + SD * 0.4, rot: -Math.PI / 2, red: 1 },
+    { x: -SW / 2, z: z0 + SD * 0.6, rot: Math.PI / 2, red: 10 },
+    { x:  SW / 2, z: z0 + SD * 0.6, rot: -Math.PI / 2, red: 2 }
   ];
   const mjesta = sva.slice(0, Math.max(0, n)).sort(function (a, b) { return a.red - b.red; });
   for (const m of mjesta) {
@@ -1144,12 +1145,37 @@ function pumpaj() {
     try { p = Promise.resolve(z.posao()); } catch (e) { p = Promise.resolve(); }
     p.catch(function () {}).then(function () { S.redAktivno--; pumpaj(); });
   }
+  /* Prva sala je gotova: druga se tiho učita u pozadini, dok je
+     posjetilac još u prvoj. Inače bi se 12 slika i 12 reljefa
+     obrađivalo baš dok kamera klizi kroz prolaz — trzaj i treptaj
+     kad stane. */
+  if (!S.redAktivno && !S.red.length && !S.drugaKrenula && S.teksture.length && !S.drugaZakazana) {
+    S.drugaZakazana = true;
+    const gen = S.gen;
+    const kreni = function () { if (S.gen === gen) { ucitajDrugu(); } };
+    if (window.requestIdleCallback) { window.requestIdleCallback(kreni, { timeout: 2500 }); }
+    else { window.setTimeout(kreni, 800); }
+  }
+}
+
+/* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
+   u istom kadru — dvanaest slika odjednom je zastoj od pola sekunde. */
+function uKadar(posao) {
+  (S.kadrovi || (S.kadrovi = [])).push(posao);
+}
+function jedanPosaoKadra() {
+  if (!S.kadrovi || !S.kadrovi.length) { return; }
+  const posao = S.kadrovi.shift();
+  try { posao(); } catch (e) { /* tekstura nije prošla — ostaje stara */ }
 }
 /* Posao još važi: ista sala (nije se izašlo i ponovo ušlo u međuvremenu) */
 function aktuelno(m) { return m.gen === S.gen && !!S.render; }
 
 /* Nova slika na platno i odraz — samo ako je bolja od postojeće */
 function staviBoju(m, c, nivo) {
+  uKadar(function () { staviBojuSada(m, c, nivo); });
+}
+function staviBojuSada(m, c, nivo) {
   if (!aktuelno(m) || nivo <= m.nivo) { return; }
   const T = S.tri;
   /* Rasterizovana oštro, sa mipmapama i anizotropnim filtriranjem.
@@ -1159,15 +1185,18 @@ function staviBoju(m, c, nivo) {
   tex.generateMipmaps = true;
   tex.minFilter = T.LinearMipmapLinearFilter;
   tex.anisotropy = S.anizotropija;
+  S.render.initTexture(tex);
   const stara = m.tex;
   m.tex = tex;
   m.nivo = nivo;
   /* Odraz dobija istu teksturu, da se u podu ne vidi prazna boja
      ispod obojenog platna. */
   [m.platno, m.odraz].forEach(function (mat) {
+    /* Shader se mijenja samo kad mapa prvi put dođe; zamjena jedne
+       teksture drugom ne traži novi program. */
+    if (!mat.map) { mat.needsUpdate = true; }
     mat.map = tex;
     mat.color.set(NEUTRALNO);
-    mat.needsUpdate = true;
   });
   if (stara) { stara.dispose(); }
 }
@@ -1202,12 +1231,16 @@ function ucitajReljef(m) {
   return uzmi(izvorReljefa(m.djelo, false))
     .catch(function () { return uzmi(izvorReljefa(m.djelo, true)); })
     .then(function (nm) {
-      if (!aktuelno(m)) { nm.dispose(); return; }
-      nm.anisotropy = S.anizotropija;
-      m.platno.normalMap = nm;
-      m.platno.normalScale = new T.Vector2(1.2, 1.2);
-      m.platno.needsUpdate = true;
-      pamti(nm);
+      uKadar(function () {
+        if (!aktuelno(m)) { nm.dispose(); return; }
+        nm.anisotropy = S.anizotropija;
+        S.render.initTexture(nm);
+        /* Platno od početka ima ravnu normal mapu (1×1), pa ovo je
+           samo zamjena teksture — bez novog shadera u tom kadru. */
+        m.platno.normalMap = nm;
+        m.platno.normalScale.set(1.2, 1.2);
+        pamti(nm);
+      });
     }, function () { /* nema mape — platno ostaje ravno */ });
 }
 function rasporediTeksture() {
@@ -1251,6 +1284,13 @@ function postaviDjela(djela) {
   S.teksture = [];
   S.drugaKrenula = false;
 
+  S.drugaZakazana = false;
+  S.kadrovi = [];
+  /* Ravna normal mapa (1×1, 128/128/255): platno od početka ima
+     normalMap, pa dolazak pravog reljefa ne mijenja shader. */
+  const ravnaNormala = pamti(new T.DataTexture(new Uint8Array([128, 128, 255, 255]), 1, 1));
+  ravnaNormala.needsUpdate = true;
+
   /* Ram je jedan materijal za sva djela — tanak i tamniji od platna */
   const matRam = pamti(new T.MeshStandardMaterial({
     color: BOJA.okvir, roughness: 0.8, metalness: 0.0
@@ -1287,7 +1327,8 @@ function postaviDjela(djela) {
     const matPlatno = pamti(new T.MeshStandardMaterial({
       color: rezervna,
       roughness: 0.62,       /* ulje nije sjajno, ali ni kreda */
-      metalness: 0.0
+      metalness: 0.0,
+      normalMap: ravnaNormala   /* prava mapa reljefa je samo zamijeni */
     }));
     const geoPlatno = pamti(new T.BoxGeometry(d.sirina, d.visina, DEBLJINA_PLATNA));
     /* Slika samo na licu (+Z strana kutije). Bokovi su sirovi lan —
@@ -2619,6 +2660,8 @@ function petlja() {
 
   const dt = Math.min(0.1, Math.max(0, (t - (S.prosli || t)) / 1000));
   S.prosli = t;
+
+  jedanPosaoKadra();
 
   /* --- Klizanje kamere, easeInOutCubic, po putu (i kroz prolaz) --- */
   if (S.anim) {
