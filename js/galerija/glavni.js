@@ -382,6 +382,12 @@ function petlja() {
   S.kamera.position.copy(S.poz);
   S.kamera.lookAt(sParalaksom());
   S.kamera.updateMatrixWorld();
+  /* Pogled klizi ispod mirnog miša (zamah poslije okretanja, točkić):
+     natpis prati ono što je SAD pod mišem, pa pritisak ide baš na
+     djelo koje natpis pokazuje (vidi naDole u kretanje.js). */
+  if (S.misKlijent && !S.vuce && S.izabrano < 0 && !S.anim && (S.ka || S.inercija)) {
+    natpis(pogodak(S.misKlijent.x, S.misKlijent.y), S.misKlijent.x, S.misKlijent.y);
+  }
 
   /* Tekstura ide na GPU tek kad se zna kretanje (i kadar) ovog kadra:
      velika samo ako kamera ne ide ni na početku ni na kraju koraka — ni

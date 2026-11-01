@@ -22,7 +22,7 @@ const G = /** @type {any} */ (window).__galerija;
 /* osnova.js */
 const {
   SOBA, POLA_X, POLA_Z, VISINA_OKA, VIDNO_POLJE, PUNJENJE_KADRA, MIN_DALJINA, MAX_DALJINA, HOD,
-  VISINA_PREGLEDA, TRAJANJE_KLIZANJA, PARALAKSA, ORBITA, UGAO_PRESETA, PROLAZ, korijen, el, S,
+  VISINA_PREGLEDA, TRAJANJE_KLIZANJA, PARALAKSA, PRAG_KLIKA, ORBITA, UGAO_PRESETA, PROLAZ, korijen, el, S,
   smanjenoKretanje, graniceSale, salaTacke, POCETNA_SALA, jeDruga, osvjeziKadar, sada, poruka
 } = G;
 const { TEKST } = G;   /* tekstovi, osnova.js */
@@ -556,7 +556,11 @@ function sParalaksom() {
     pomPoglad.gore = new T.Vector3();
     pomPoglad.van = new T.Vector3();
   }
-  if (smanjenoKretanje() || S.izabrano >= 0 || S.vuce || (S.mis.x === 0 && S.mis.y === 0)) {
+  /* Pritisak miša sam ne gasi paralaksu — tek pravo prevlačenje.
+     Inače bi se pogled pomjerio ispod miša između pritiska i
+     puštanja, pa bi klik na malo ili daleko djelo (crtež, legenda,
+     djelo kroz prolaz) promašio ono što natpis pokazuje. */
+  if (smanjenoKretanje() || S.izabrano >= 0 || (S.vuce && S.put >= PRAG_KLIKA) || (S.mis.x === 0 && S.mis.y === 0)) {
     return S.cilj;
   }
   pomPoglad.d.subVectors(S.cilj, S.poz);
@@ -573,9 +577,25 @@ function sParalaksom() {
   return pomPoglad.van;
 }
 
+/* Da li zrak do tačke prolazi kroz zid sa vratima: svaki put kad
+   pređe ravan tog zida (lice prema velikoj sali na POLA_Z i lice
+   prema maloj na POLA_Z + PROLAZ.zid), mora biti u otvoru. Zidovi su
+   jednostrani, pa ih raycaster s druge strane ne bi ni vidio. */
+function krozZid(zrak, daljina) {
+  const o = zrak.origin, d = zrak.direction;
+  if (Math.abs(d.z) < 1e-6) { return false; }
+  for (const zz of [POLA_Z, POLA_Z + PROLAZ.zid]) {
+    const t = (zz - o.z) / d.z;
+    if (t <= 0 || t >= daljina) { continue; }
+    if (Math.abs(o.x + d.x * t) > PROLAZ.sirina / 2 || o.y + d.y * t > PROLAZ.visina) { return true; }
+  }
+  return false;
+}
+
 /* Raycaster: koje je djelo pod pokazivačem.
    Gleda SAMO S.platna — odrazi u podu nisu u tom nizu, pa klik
-   na odraz ne otvara ništa. */
+   na odraz ne otvara ništa. Djelo iza zida (druga sala, ili poleđina
+   crteža sa zida sa vratima) se ne računa — vidi se samo kroz otvor. */
 function pogodak(x, y) {
   if (!S.render || !S.platna.length) { return -1; }
   const r = S.render.domElement.getBoundingClientRect();
@@ -585,7 +605,10 @@ function pogodak(x, y) {
   };
   S.raycaster.setFromCamera(n, S.kamera);
   const udari = S.raycaster.intersectObjects(S.platna, false);
-  return udari.length ? udari[0].object.userData.indeks : -1;
+  for (const u of udari) {
+    if (!krozZid(S.raycaster.ray, u.distance)) { return u.object.userData.indeks; }
+  }
+  return -1;
 }
 
 Object.assign(G, {
@@ -794,6 +817,10 @@ function pokazivacDole(e) {
     return;
   }
   try { S.render.domElement.setPointerCapture(e.pointerId); } catch (g) { /* nebitno */ }
+  /* Djelo pod mišem U TRENUTKU PRITISKA — ono što posjetilac vidi i
+     na šta cilja. Pogled poslije okretanja još malo klizi, pa bi na
+     puštanju ispod miša moglo biti nešto drugo (ili goli zid). */
+  S.naDole = pogodak(e.clientX, e.clientY);
   S.vuce = true;
   S.brzina = 0;
   S.inercija = 0;
@@ -884,7 +911,9 @@ function pokazivacGore(e) {
     }
     return;
   }   /* prevlačenje, ne klik */
-  const i = pogodak(e.clientX, e.clientY);
+  const dole = S.naDole;
+  S.naDole = -1;
+  const i = dole >= 0 ? dole : pogodak(e.clientX, e.clientY);
   if (i >= 0 && i === S.izabrano && uronjeno()) {
     prebaciCisto();
     return;
