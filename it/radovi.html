@@ -15,7 +15,7 @@
 
 <!--
   Degradiranje bez JavaScripta:
-  svih 15 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
+  svih 17 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
   stavke. Ako JS ne radi, dugmad filtera se sklanjaju (vidi <noscript> ispod)
   da korisnik ne dobije mrtve kontrole, a mreža ostaje cijela — što je
   ispravno ponašanje za pregled radova.
@@ -111,7 +111,7 @@
           <button class="filter__dugme" type="button" data-filter="rodni-grad" aria-pressed="false">Fantasticherie sulla città natale</button>
         </div>
 
-        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Visualizzate 15 opere su 15</p>
+        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Visualizzate 17 opere su 17</p>
 
         <p class="filter__bez-js">
           Il filtro per serie richiede JavaScript. Qui sotto sono mostrate tutte le opere.
@@ -290,6 +290,40 @@
             </span>
             <span class="rad__naziv">Fiori</span>
             <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Olio&nbsp;su&nbsp;tela&nbsp;· 35&nbsp;×&nbsp;25&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/iz-ateljea.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/iz-ateljea-480.avif 480w, ../img/radovi/w/iz-ateljea-800.avif 800w, ../img/radovi/w/iz-ateljea-1200.avif 1200w, ../img/radovi/w/iz-ateljea-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/iz-ateljea-480.webp 480w, ../img/radovi/w/iz-ateljea-800.webp 800w, ../img/radovi/w/iz-ateljea-1200.webp 1200w, ../img/radovi/w/iz-ateljea-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/iz-ateljea.jpg" width="1400" height="1100" loading="lazy" decoding="async"
+                     alt="Una bottiglia verde, una ciotola gialla e un barattolo di pennelli sul tavolo dello studio, tra tubetti di colore e matite.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Dallo studio</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Olio&nbsp;su&nbsp;tela&nbsp;· 45&nbsp;×&nbsp;55&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/slikarska-idila.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="../img/radovi/w/slikarska-idila-480.avif 480w, ../img/radovi/w/slikarska-idila-800.avif 800w, ../img/radovi/w/slikarska-idila-1200.avif 1200w, ../img/radovi/w/slikarska-idila-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="../img/radovi/w/slikarska-idila-480.webp 480w, ../img/radovi/w/slikarska-idila-800.webp 800w, ../img/radovi/w/slikarska-idila-1200.webp 1200w, ../img/radovi/w/slikarska-idila-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="../img/radovi/slikarska-idila.jpg" width="970" height="1400" loading="lazy" decoding="async"
+                     alt="Un vaso azzurro, tubetti di colore e una tavolozza sul tavolo dello studio, davanti a una parete a fiori e a quadri incorniciati.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Idillio del pittore</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Olio&nbsp;su&nbsp;tela&nbsp;· 55&nbsp;×&nbsp;40&nbsp;cm</span>
           </a>
         </li>
 

@@ -413,6 +413,82 @@
       ]
     },
     {
+      "id": "iz-ateljea",
+      "naziv": "Iz ateljea",
+      "originalniNaziv": "Iz ateljea",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "45 × 55 cm",
+      "kategorija": "atelje",
+      "istaknuto": false,
+      "opis": "Zelena boca, žuta zdjela i tegla sa četkicama na stolu u ateljeu, među tubama boje i olovkama.",
+      "paleta": [
+        "#60615D",
+        "#897D71",
+        "#A59581",
+        "#B9A692",
+        "#CDBDAC"
+      ],
+      "slika": "img/radovi/iz-ateljea.jpg",
+      "slikaVelika": "img/radovi/velike/iz-ateljea.jpg",
+      "sirinaPx": 1400,
+      "visinaPx": 1100,
+      "en": {
+        "naziv": "From the Studio",
+        "opis": "A green bottle, a yellow bowl and a jar of brushes on a studio table, among paint tubes and pencils.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Dallo studio",
+        "opis": "Una bottiglia verde, una ciotola gialla e un barattolo di pennelli sul tavolo dello studio, tra tubetti di colore e matite.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "slikarska-idila",
+      "naziv": "Slikarska idila",
+      "originalniNaziv": "Slikarska idila",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "55 × 40 cm",
+      "kategorija": "atelje",
+      "istaknuto": false,
+      "opis": "Plava vaza, tube boje i paleta na stolu u ateljeu, pred zidom sa cvjetnim šarama i slikama u ramovima.",
+      "paleta": [
+        "#584B41",
+        "#786B58",
+        "#868B7D",
+        "#B38B5C",
+        "#C6AD7C"
+      ],
+      "slika": "img/radovi/slikarska-idila.jpg",
+      "slikaVelika": "img/radovi/velike/slikarska-idila.jpg",
+      "sirinaPx": 970,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Painter’s Idyll",
+        "opis": "A blue vase, paint tubes and a palette on a studio table, before a flower-patterned wall and framed paintings.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Idillio del pittore",
+        "opis": "Un vaso azzurro, tubetti di colore e una tavolozza sul tavolo dello studio, davanti a una parete a fiori e a quadri incorniciati.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
       "id": "autoportret",
       "naziv": "Autoportret",
       "originalniNaziv": "Self-portrait",
