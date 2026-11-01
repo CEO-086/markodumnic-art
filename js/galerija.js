@@ -2022,9 +2022,14 @@ function kreniKa(poz, cilj) {
   if (od !== ka) {
     const smjer = ka === 2 ? 1 : -1;
     const vrata = new T.Vector3(0, VISINA_OKA, POLA_Z + PROLAZ.zid / 2);
-    tacke.push(vrata.clone().setZ(vrata.z - smjer * 0.9));
+    /* Tačke ispred i iza vrata ne smiju pasti iza početka ni iza
+       odredišta: pregled druge sale stoji samo 0.6 m iza vrata, pa je
+       put išao preko njega i vraćao se — pogled je tu trznuo u stranu. */
+    const prije = Math.min(0.9, Math.abs(S.poz.z - vrata.z) * 0.5);
+    const poslije = Math.min(0.9, Math.abs(poz.z - vrata.z) * 0.5);
+    tacke.push(vrata.clone().setZ(vrata.z - smjer * prije));
     ciljevi.push(new T.Vector3(0, 1.5, vrata.z + smjer * 3));
-    tacke.push(vrata.clone().setZ(vrata.z + smjer * 0.9));
+    tacke.push(vrata.clone().setZ(vrata.z + smjer * poslije));
     ciljevi.push(new T.Vector3(0, 1.5, vrata.z + smjer * 4));
   }
   tacke.push(poz.clone());
