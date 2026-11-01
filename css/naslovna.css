@@ -152,6 +152,15 @@
   }
 }
 
+/* Niži ekrani (13–14" laptop, do ~960 px visine): manji razmak ispod
+   navigacije — djelo i tekst se podignu bliže traci, a djelo dobije
+   tu visinu i bude veće. */
+@media (min-width: 48rem) and (max-height: 60rem) {
+  .hero { --hero-pad: clamp(1rem, 2.5svh, 1.75rem); }
+  /* i tekst malo više od sredine slike — prati podignuto djelo */
+  .hero__tekst { padding-bottom: clamp(1rem, 8svh, 4.5rem); }
+}
+
 /* Veliki monitor (27–32"): uvodni tekst i naslov rastu sa djelom,
    da tekst ne ostane sitan pored velike slike. */
 @media (min-width: 112.5rem) and (min-height: 56rem) {
