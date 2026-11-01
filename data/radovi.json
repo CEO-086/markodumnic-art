@@ -300,14 +300,14 @@
     },
     {
       "id": "havanac-kastro",
-      "naziv": "Havanac Kastro",
-      "originalniNaziv": "Havanese Kastro",
+      "naziv": "Havanezer Castro",
+      "originalniNaziv": "Havanese Castro",
       "godina": 2023,
       "tehnika": "Ulje na platnu",
       "dimenzije": "60 × 60 cm",
       "kategorija": "atelje",
       "istaknuto": true,
-      "opis": "Havanski bišon Kastro spava na pokrivaču u ateljeu, među jastucima i slikama na zidu.",
+      "opis": "Havanski bišon Castro spava na pokrivaču u ateljeu, među jastucima i slikama na zidu.",
       "paleta": [
         "#726558",
         "#423B34",
@@ -320,13 +320,13 @@
       "sirinaPx": 1398,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Havanese Kastro",
-        "opis": "Kastro, a Havanese dog, asleep on a blanket in the studio, among cushions and paintings on the wall.",
+        "naziv": "Havanese Castro",
+        "opis": "Castro, a Havanese dog, asleep on a blanket in the studio, among cushions and paintings on the wall.",
         "tehnika": "Oil on canvas"
       },
       "it": {
-        "naziv": "Kastro, bichon avanese",
-        "opis": "Kastro, un bichon avanese, dorme su una coperta nello studio, tra cuscini e quadri appesi alla parete.",
+        "naziv": "Castro, bichon avanese",
+        "opis": "Castro, un bichon avanese, dorme su una coperta nello studio, tra cuscini e quadri appesi alla parete.",
         "tehnika": "Olio su tela"
       },
       "varijante": [
