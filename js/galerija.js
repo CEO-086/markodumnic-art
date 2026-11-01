@@ -630,9 +630,15 @@ function kadNeHoda(f) {
 function kameraIde() {
   return !!(S.anim || S.ka || S.inercija || S.vuce);
 }
+/* Uvod (svjetla se pale, pogled obiđe salu) je izuzet: prave slike prve
+   sale stižu na platna i dok on traje, kao i do sada — posjetilac vidi
+   istu salu u istom trenutku. */
+function uUvodu() {
+  return !!(S.anim && S.anim.uvod);
+}
 /* Velika slika se crta u platno tek kad kamera stoji (vidi rasterizuj) */
 function kadMiruje(f) {
-  if (S.radi && kameraIde()) { window.setTimeout(function () { kadMiruje(f); }, 120); return; }
+  if (S.radi && kameraIde() && !uUvodu()) { window.setTimeout(function () { kadMiruje(f); }, 120); return; }
   f();
 }
 
@@ -1596,7 +1602,8 @@ function prevediMalo(kam) {
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
    u istom kadru — dvanaest slika odjednom je zastoj od pola sekunde.
    `tesko`: prava slika ili reljef (do 2048 px) — ide samo dok kamera
-   stoji. Sićušna slika (~160 px) ne košta ništa, pa ide i u pokretu. */
+   stoji (i u uvodu, vidi uUvodu). Sićušna slika (~160 px) ne košta
+   ništa, pa ide i u pokretu. */
 function uKadar(posao, tesko) {
   posao.tesko = !!tesko;
   (S.kadrovi || (S.kadrovi = [])).push(posao);
@@ -3241,7 +3248,8 @@ function uvod() {
     ciljevi: [S.cilj.clone(), c.cilj.clone()],
     duz: [0, 1],
     trajanje: 2800,
-    pocetak: S.uvod + 250
+    pocetak: S.uvod + 250,
+    uvod: true            /* teksture idu i u uvodu, kao i ranije (vidi uUvodu) */
   };
 }
 
@@ -3287,6 +3295,7 @@ function petlja() {
   /* Kretanje na početku kadra (vidi jedanPosaoKadra i zagrijavanje) */
   const stajala = !kameraIde();
   const hodala = !!(S.anim && S.anim.hod);
+  const uvodila = uUvodu();
 
   /* --- Klizanje kamere, easeInOutCubic, po putu (i kroz prolaz) --- */
   if (S.anim) {
@@ -3322,8 +3331,9 @@ function petlja() {
   paziNaDrugu();
   /* Tekstura ide na GPU tek kad se zna kretanje ovog kadra: velika samo
      ako kamera ne ide ni na početku ni na kraju koraka — ni u kadru u kom
-     klizanje stiže na cilj, ni u kom tura krene ka sljedećem djelu. */
-  jedanPosaoKadra(hodala || !!(S.anim && S.anim.hod), stajala && !kameraIde());
+     klizanje stiže na cilj, ni u kom tura krene ka sljedećem djelu. Uvod
+     je izuzet (vidi uUvodu). */
+  jedanPosaoKadra(hodala || !!(S.anim && S.anim.hod), uvodila || (stajala && !kameraIde()));
 
   S.kamera.position.copy(S.poz);
   S.kamera.lookAt(sParalaksom());
