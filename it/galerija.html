@@ -20,7 +20,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <meta name="theme-color" content="#F3EEE4">
 <meta property="og:title" content="Galleria virtuale — Marko Dumnić">
-<meta property="og:description" content="Venti opere in due sale 3D: basta un clic su una tela e la telecamera vi si ferma davanti.">
+<meta property="og:description" content="Ventotto opere in due sale 3D: basta un clic su una tela e la telecamera vi si ferma davanti.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://markodumnic.art/img/og/sajt.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -119,7 +119,7 @@
 
           <!-- Ulazni ekran. 3D se NE pokreće sam — Three.js se preuzima tek na klik. -->
           <div class="galerija-ulaz" id="galerija-ulaz">
-            <p class="galerija-ulaz__oznaka">Due sale · 20 opere</p>
+            <p class="galerija-ulaz__oznaka">Due sale · 28 opere</p>
             <h2 class="galerija-ulaz__naslov" id="naslov-sale">Ingresso</h2>
 
             <p class="galerija-ulaz__uvod">
@@ -206,7 +206,7 @@
                role="region", a ne "dialog": panel se otvara sam kad kamera stane
                pred platno i NE otima fokus — da strelice i dalje rade. Panel NIJE
                aria-live (čitao bi cio opis na svakom koraku ture); izabrano djelo
-               kratko javlja #galerija-najava ispod („naziv, godina“). -->
+               kratko javlja #galerija-najava ispod („naziv, godina, tehnika, dimenzije. k od n“). -->
           <aside class="galerija-panel" id="galerija-panel" role="region"
                  aria-labelledby="galerija-panel-naziv">
             <button class="galerija-panel__zatvori" type="button" id="galerija-panel-zatvori">
@@ -234,7 +234,7 @@
              Ostaje unutar .galerija, pa tastatura i dalje radi. -->
         <div class="galerija-alati soba-tamna" id="galerija-alati">
           <div class="galerija-kretanje">
-            <button class="galerija-kretanje__dugme galerija-tura" type="button" id="galerija-tura" aria-pressed="false">
+            <button class="galerija-kretanje__dugme galerija-tura" type="button" id="galerija-tura">
               <span class="galerija-tura__tekst">Visita la mostra</span>
             </button>
             <button class="galerija-kretanje__dugme" type="button" id="galerija-pregled">Panoramica</button>
@@ -276,13 +276,13 @@
               Per visitare la sala occorre che JavaScript sia attivo. Qui sotto trovate una selezione delle opere; la raccolta completa è nella pagina <a href="radovi.html">Opere</a>.
             </p>
             <p class="galerija-2d__razlog" data-razlog="webgl">
-              Questo browser o dispositivo non supporta la visualizzazione 3D. Provate con una versione recente di Chrome, Safari, Firefox o Edge. Qui sotto trovate una selezione delle opere.
+              Questo browser o dispositivo non supporta la visualizzazione 3D. Provate con una versione recente di Chrome, Safari, Firefox o Edge. Qui sotto trovate le opere.
             </p>
             <p class="galerija-2d__razlog" data-razlog="fajl">
               La pagina è stata aperta come file dal vostro disco, ma la sala funziona solo da un indirizzo web. Qui sotto trovate una selezione delle opere.
             </p>
             <p class="galerija-2d__razlog" data-razlog="cdn">
-              Non è stato possibile caricare la sala, probabilmente a causa di una connessione debole. Ricaricate la pagina tra qualche istante. Qui sotto trovate una selezione delle opere.
+              Non è stato possibile caricare la sala, probabilmente a causa di una connessione debole. Ricaricate la pagina tra qualche istante. Qui sotto trovate le opere.
             </p>
             <p class="galerija-2d__razlog" data-razlog="podaci">
               Le informazioni sulle opere non sono al momento disponibili. Ricaricate la pagina tra qualche istante. Qui sotto trovate una selezione delle opere.
@@ -436,7 +436,7 @@
       </div>
 
       <p class="galerija-svi-radovi">
-        Nella prima sala sono esposte sette opere; oltre la soglia, la seconda ne accoglie altre tredici. Tutte le opere si trovano anche nella pagina <a href="radovi.html">Opere</a>.
+        Nella prima sala sono esposte quindici opere; oltre la soglia, la seconda ne accoglie altre tredici. Tutte le opere si trovano anche nella pagina <a href="radovi.html">Opere</a>.
       </p>
 
     </div>
@@ -462,7 +462,7 @@
             passaggio conduce alla seconda, che accoglie il resto della mostra.
           </p>
           <dl class="galerija-cinjenice">
-            <div><dt>Opere</dt><dd>20 oli su tela</dd></div>
+            <div><dt>Opere</dt><dd>20 oli e 8 disegni</dd></div>
             <div><dt>Periodo</dt><dd>2023–2025</dd></div>
             <div><dt>Artista</dt><dd><a href="o-autoru.html">Marko Dumnić</a></dd></div>
           </dl>
@@ -539,6 +539,6 @@
      Dinamički `import('three')` unutra i dalje prolazi kroz importmapu —
      provjereno u pregledaču, importmapa važi za cio dokument, ne samo za
      modul-skripte. -->
-<script src="../js/galerija.js?v=85f255d211"></script>
+<script src="../js/galerija.js?v=19bf1b8f5b"></script>
 </body>
 </html>

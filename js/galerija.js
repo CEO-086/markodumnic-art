@@ -55,6 +55,7 @@ const TEKST = IT ? {
     'le frecce su e giù avvicinano e allontanano, L accende la luce radente.',
   tura: 'Visita la mostra', nastavi: 'Riprendi la visita', pauza: 'Pausa',
   obilazak: function (k, n) { return 'Visita: ' + k + ' di ' + n; },
+  redni: function (k, n) { return k + ' di ' + n; },
   nastavlja: 'La visita prosegue',
   pocetak: function (n) { return 'Visita alla mostra · ' + n + ' opere'; },
   pauzirano: 'Visita in pausa · «Riprendi la visita» la fa ripartire',
@@ -81,6 +82,7 @@ const TEKST = IT ? {
     'the up and down arrow keys move closer and further away, and L turns on the side light.',
   tura: 'Tour the exhibition', nastavi: 'Resume tour', pauza: 'Pause',
   obilazak: function (k, n) { return 'Tour ' + k + ' of ' + n; },
+  redni: function (k, n) { return k + ' of ' + n; },
   nastavlja: 'The tour continues',
   pocetak: function (n) { return 'Exhibition tour · ' + n + ' works'; },
   pauzirano: 'Tour paused · “Resume tour” picks it up again',
@@ -107,6 +109,7 @@ const TEKST = IT ? {
     'strelice gore i dolje približavaju, L pali bočno svjetlo.',
   tura: 'Obiđi izložbu', nastavi: 'Nastavi obilazak', pauza: 'Pauza',
   obilazak: function (k, n) { return 'Obilazak ' + k + ' od ' + n; },
+  redni: function (k, n) { return k + ' od ' + n; },
   nastavlja: 'Obilazak se nastavlja',
   pocetak: function (n) { return 'Obilazak izložbe · ' + n + ' djela'; },
   pauzirano: 'Obilazak je pauziran · „Nastavi“ ga vraća',
@@ -420,6 +423,78 @@ function stanje(novo) {
 function na2D(razlog) {
   korijen.setAttribute('data-razlog', razlog);
   stanje('2d');
+  /* U HTML-u je samo izbor djela (radi i bez JavaScripta). Kad podaci
+     mogu da stignu, mreža se dopuni do svih djela iz radovi.json. */
+  if (razlog === 'webgl' || razlog === 'cdn' || razlog === 'prazno') { popuni2D(); }
+}
+
+/* 2D mreža sa SVIM djelima iz data/radovi.json, istim oznakama kao
+   statična mreža u HTML-u (isti CSS). Statična mreža ostaje ako
+   podaci ne stignu. */
+function popuni2D() {
+  const lista = korijen.querySelector('.galerija-2d__mreza');
+  if (!lista || !window.fetch || S.mreza2D) { return; }
+  S.mreza2D = true;
+  const uzorak = lista.querySelector('source');
+  const velicine = (uzorak && uzorak.getAttribute('sizes')) || '100vw';
+  fetch(izKorijena('data/radovi.json')).then(function (o) {
+    if (!o.ok) { throw new Error('podaci'); }
+    return o.json();
+  }).then(function (podaci) {
+    const radovi = ((podaci && podaci.radovi) || []).filter(function (r) { return r && r.id && r.slika; });
+    if (!radovi.length) { return; }
+    const nova = document.createDocumentFragment();
+    radovi.forEach(function (r) {
+      const prevod = (IT ? r.it : EN ? r.en : null) || {};
+      const naziv = prevod.naziv || r.naziv || '';
+      const opis = prevod.opis || r.opis || '';
+      const tehnika = prevod.tehnika || r.tehnika || '';
+      const n = function (ime, klasa) { const e = document.createElement(ime); if (klasa) { e.className = klasa; } return e; };
+      const li = n('li');
+      const fig = n('figure', 'galerija-2d__djelo');
+      const a = n('a');
+      a.setAttribute('href', 'djelo.html?id=' + encodeURIComponent(r.id));
+      const okvir = n('span', 'galerija-2d__okvir');
+      const pic = n('picture');
+      const sirine = Array.isArray(r.varijante) ? r.varijante.map(Number).filter(function (w) { return w > 0; }) : [];
+      if (sirine.length && /^[a-z0-9-]+$/.test(String(r.id))) {
+        ['avif', 'webp'].forEach(function (ekst) {
+          const izvor = n('source');
+          izvor.setAttribute('type', 'image/' + ekst);
+          izvor.setAttribute('srcset', sirine.map(function (w) {
+            return izKorijena('img/radovi/w/' + r.id + '-' + w + '.' + ekst) + ' ' + w + 'w';
+          }).join(', '));
+          izvor.setAttribute('sizes', velicine);
+          pic.appendChild(izvor);
+        });
+      }
+      const img = n('img');
+      if (r.sirinaPx && r.visinaPx) {
+        img.setAttribute('width', String(r.sirinaPx));
+        img.setAttribute('height', String(r.visinaPx));
+      }
+      img.setAttribute('alt', opis ? naziv + ' — ' + opis : naziv);
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('src', izKorijena(r.slika));
+      pic.appendChild(img);
+      okvir.appendChild(pic);
+      a.appendChild(okvir);
+      const cap = n('figcaption');
+      const ime = n('span', 'galerija-2d__naziv');
+      ime.textContent = naziv;
+      const meta = n('span', 'galerija-2d__meta');
+      meta.textContent = [r.godina, tehnika, r.dimenzije]
+        .filter(function (v) { return v != null && String(v).trim() !== ''; }).join(' · ');
+      cap.appendChild(ime);
+      cap.appendChild(meta);
+      fig.appendChild(a);
+      fig.appendChild(cap);
+      li.appendChild(fig);
+      nova.appendChild(li);
+    });
+    lista.textContent = '';
+    lista.appendChild(nova);
+  }).catch(function () { S.mreza2D = false; /* ostaje statični izbor */ });
 }
 
 /* Da li pregledač uopšte može WebGL */
@@ -2426,16 +2501,20 @@ function izaberi(i) {
   otvoriPanel(S.mjesta[k].djelo);
   predUcitajVeliku(S.mjesta[k].djelo);
   savjetCisto();
-  najavi(S.mjesta[k].djelo);
+  najavi(S.mjesta[k].djelo, k, n);
   osvjeziKretanje();
 }
 
-/* Kratka najava za čitače ekrana: „naziv, godina“. Panel nije
-   aria-live — inače bi se na svakom izboru čitao cio opis. Prazni se
-   pa puni, da se i isto djelo izabrano ponovo najavi. */
-function najavi(djelo) {
+/* Kratka najava za čitače ekrana: „naziv, godina, tehnika, dimenzije.
+   k od n“ — isti podaci kao na kartici, bez opisa. Polja kojih nema
+   (crteži bez godine i dimenzija) se preskaču. Panel nije aria-live —
+   inače bi se na svakom izboru čitao cio opis. Prazni se pa puni, da
+   se i isto djelo izabrano ponovo najavi. */
+function najavi(djelo, k, n) {
   if (!el.najava || !djelo) { return; }
-  const tekst = [djelo.naziv, djelo.godina].filter(function (v) { return v != null && v !== ''; }).join(', ');
+  let tekst = [djelo.naziv, djelo.godina, djelo.tehnika, djelo.dimenzije]
+    .filter(function (v) { return v != null && String(v).trim() !== ''; }).join(', ');
+  if (k >= 0 && n > 0) { tekst += '. ' + TEKST.redni(k + 1, n); }
   el.najava.textContent = '';
   window.clearTimeout(S.najavaTajmer);
   S.najavaTajmer = window.setTimeout(function () { el.najava.textContent = tekst; }, 60);
@@ -2669,14 +2748,14 @@ function osvjeziDugmeTure() {
   const tekst = el.tura.querySelector('.galerija-tura__tekst') || el.tura;
   if (!t) {
     tekst.textContent = TEKST.tura;
-    el.tura.setAttribute('aria-pressed', 'false');
     el.tura.style.setProperty('--napredak', '0');
     korijen.removeAttribute('data-tura');
     osvjeziMob();
     return;
   }
+  /* Natpis kaže šta će dugme uraditi („Pauza“ / „Nastavi“), pa dugme
+     NEMA aria-pressed — čitač bi inače čuo dva suprotna stanja. */
   tekst.textContent = (t.pauza ? TEKST.nastavi : TEKST.pauza) + ' · ' + Math.min(n, t.korak + 1) + '/' + n;
-  el.tura.setAttribute('aria-pressed', t.pauza ? 'false' : 'true');
   korijen.setAttribute('data-tura', t.pauza ? 'pauza' : 'radi');
   osvjeziMob();
 }
@@ -3185,15 +3264,20 @@ function postaviKarticu(puna) {
     el.panelVise.lastChild.textContent = puna ? TEKST.karticaManje : TEKST.karticaVise;
   }
   if (!puna && el.panel) { el.panel.scrollTop = 0; }
+  /* Preko cijelog ekrana sklopljena kartica nestaje — fokus iz nje ide
+     na natpis u donjoj traci, koji je ponovo otvara. */
+  if (!puna && el.mob && uronjeno()) { fokusUTraku(el.panel, el.mob.natpis); }
 }
 
 function karticaPuna() {
   return korijen.getAttribute('data-kartica') === 'puna';
 }
 
-/* Da li je panel sada kartica odozdo — strelica postoji samo tada */
+/* Da li je panel sada kartica koja se sklapa: na telefonu preko cijelog
+   ekrana (strelica je tamo skrivena, pa se režim provjerava direktno)
+   ili kao kartica odozdo, kad se strelica vidi. */
 function karticaSeSklapa() {
-  return !!(el.panelVise && el.panelVise.getClientRects().length);
+  return uronjeno() || !!(el.panelVise && el.panelVise.getClientRects().length);
 }
 
 function pripremiKarticu() {
@@ -3275,12 +3359,37 @@ function fokusUTraku(iz, na) {
 }
 
 function postaviOpcije(otvori) {
-  if (otvori) { korijen.setAttribute('data-opcije', 'otvorene'); }
-  else {
+  if (otvori) {
+    korijen.setAttribute('data-opcije', 'otvorene');
+    /* Fokus ulazi u list (prvo vidljivo dugme, × u glavi); zatvaranje
+       ga vraća na dugme „Opcije“ (fokusUTraku ispod). */
+    const prvo = dugmadOpcija()[0];
+    /* List ulazi uz prelaz visibility, pa je do prvog kadra prelaza još
+       skriven i ne prima fokus — pokušava se iz kadra u kadar, najviše
+       2 s (spor uređaj), dok fokus ne uđe. */
+    const kraj = sada() + 2000;
+    const fokus = function () {
+      if (!prvo || !opcijeOtvorene() || el.alati.contains(document.activeElement)) { return; }
+      try { prvo.focus({ preventScroll: true }); } catch (e) { prvo.focus(); }
+      if (document.activeElement !== prvo && sada() < kraj) { window.requestAnimationFrame(fokus); }
+    };
+    fokus();
+  } else {
     korijen.removeAttribute('data-opcije');
     if (el.mob) { fokusUTraku(el.alati, el.mob.opcije); }
   }
   if (el.mob) { el.mob.opcije.setAttribute('aria-expanded', otvori ? 'true' : 'false'); }
+}
+
+function opcijeOtvorene() {
+  return korijen.getAttribute('data-opcije') === 'otvorene';
+}
+
+/* Vidljiva dugmad i tačke mape u listu „Opcije“, redom za Tab */
+function dugmadOpcija() {
+  if (!el.alati) { return []; }
+  return Array.prototype.slice.call(el.alati.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])'))
+    .filter(function (d) { return d.getClientRects().length && !d.disabled; });
 }
 
 function prebaciCisto() {
@@ -3422,7 +3531,6 @@ function osvjeziMob() {
   }
   m.tura.hidden = !(S.tura && djelo);
   if (S.tura && djelo) { m.tura.textContent = tura; }
-  m.tura.setAttribute('aria-pressed', S.tura && !S.tura.pauza ? 'true' : 'false');
 }
 
 /* Raycaster: koje je djelo pod pokazivačem.
@@ -3481,6 +3589,28 @@ function tipkaDole(e) {
       }
     }
     return;   /* dok su savjeti otvoreni, tipke pripadaju njima (Tab, Enter) */
+  }
+  /* List „Opcije“ (telefon): Esc zatvara samo list, ne salu, i fokus se
+     vraća na dugme „Opcije“; Tab kruži unutar lista. */
+  if (opcijeOtvorene()) {
+    if (e.key === 'Escape') {
+      postaviOpcije(false);
+      if (el.mob && el.mob.opcije) {
+        try { el.mob.opcije.focus({ preventScroll: true }); } catch (g) { el.mob.opcije.focus(); }
+      }
+      e.preventDefault();
+      return;
+    }
+    if (e.key === 'Tab') {
+      const d = dugmadOpcija();
+      if (d.length) {
+        const i = d.indexOf(document.activeElement);
+        const j = i < 0 ? 0 : (i + (e.shiftKey ? -1 : 1) + d.length) % d.length;
+        d[j].focus();
+        e.preventDefault();
+      }
+      return;
+    }
   }
   /* Razmak (ili T) pokreće, pauzira i nastavlja obilazak */
   if ((e.key === ' ' || e.key.toLowerCase() === 't') && e.target === (S.render && S.render.domElement)) {
