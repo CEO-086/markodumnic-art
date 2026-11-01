@@ -1387,9 +1387,9 @@ function prevediMalo(kam) {
     });
   }
   rasporediSvjetla(kam);
-  const gen = S.gen;
+  const gen = S.gen, krug = S.svjetlaKrug = (S.svjetlaKrug || 0) + 1;
   const cekaj = function () {
-    if (S.gen !== gen || !S.render) { return; }
+    if (S.gen !== gen || S.svjetlaKrug !== krug || !S.render) { return; }
     if (programi.some(function (p) { return p.isReady && !p.isReady(); })) { window.setTimeout(cekaj, 50); return; }
     if (TELEFON) { S.svjetlaMalo = true; osvjeziKadar(); } else { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
   };
@@ -3815,7 +3815,7 @@ function vidljivost() {
   if (document.hidden) {
     /* Tab nije vidljiv — petlja staje da ne troši bateriju i GPU */
     if (S.petlja) { window.cancelAnimationFrame(S.petlja); S.petlja = 0; }
-  } else if (!S.petlja) {
+  } else if (!S.petlja && !S.kontekstIzgubljen) {
     S.sat = sada();
     S.fpsOd = S.sat;
     S.fpsBrojac = 0;
@@ -3823,6 +3823,52 @@ function vidljivost() {
        animaciju u jednom kadru — pomjeri se početak na sada. */
     if (S.anim) { S.anim.pocetak = S.sat; }
     osvjeziKadar();
+    petlja();
+  }
+}
+
+/* GUBITAK WebGL KONTEKSTA: grafički drajver se resetovao, pregledač
+   je oduzeo grafiku kartici u pozadini i sl. preventDefault() traži od
+   pregledača da kontekst vrati; do tada petlja stoji, a posjetilac dobija
+   kratku poruku u postojećem obavještenju sale. Kad se vrati, three.js
+   sam ponovo napravi svoje stanje (teksture i shaderi se ponovo šalju
+   pri crtanju); ovdje se još traži nova mapa sjenke i ponovo zagrijava
+   druga sala, a dok to traje gore su sva svjetla (vidi rasporediSvjetla). */
+const PORUKA_GRAFIKE = IT ? {
+  izgubljena: 'La grafica si è fermata per un momento: la sala tornerà da sola. Se non torna, ricaricate la pagina.',
+  vracena: 'La sala è di nuovo qui'
+} : EN ? {
+  izgubljena: 'The graphics paused for a moment: the gallery will come back by itself. If it doesn’t, please reload the page.',
+  vracena: 'The gallery is back'
+} : {
+  izgubljena: 'Grafika je na trenutak zastala: sala će se sama vratiti. Ako se ne vrati, osvježite stranicu.',
+  vracena: 'Sala je ponovo tu'
+};
+function kontekstIzgubljen(e) {
+  e.preventDefault();
+  if (!S.radi) { return; }
+  S.kontekstIzgubljen = true;
+  S.svjetlaKrug = (S.svjetlaKrug || 0) + 1;   /* stari shaderi više ne postoje */
+  if (S.petlja) { window.cancelAnimationFrame(S.petlja); S.petlja = 0; }
+  poruka(PORUKA_GRAFIKE.izgubljena, 24 * 3600 * 1000);   /* stoji dok se grafika ne vrati */
+}
+function kontekstVracen() {
+  if (!S.kontekstIzgubljen) { return; }
+  S.kontekstIzgubljen = false;
+  if (!S.radi || !S.render) { return; }
+  S.svjetlaMalo = false; S.zagrijMalo = 0; S.zagrijEkran = 0;
+  if (S.drugaZagrijana) {
+    S.drugaZagrijana = false;
+    const gen = S.gen;
+    window.setTimeout(function () { if (S.gen === gen) { zagrijDrugu(); } }, 800);
+  }
+  S.zadnjaMatrica = null;
+  osvjeziSjenke();
+  poruka(PORUKA_GRAFIKE.vracena, 2600);
+  if (!S.petlja && !document.hidden) {
+    S.sat = sada();
+    S.prosli = S.sat;
+    if (S.anim) { S.anim.pocetak = S.sat; }
     petlja();
   }
 }
@@ -3840,6 +3886,8 @@ function vezi() {
   }
   slusaj(window, 'blur', pokazivacVan);
   slusaj(document, 'visibilitychange', vidljivost);
+  slusaj(c, 'webglcontextlost', kontekstIzgubljen);
+  slusaj(c, 'webglcontextrestored', kontekstVracen);
   slusaj(c, 'pointerdown', pokazivacDole);
   slusaj(c, 'pointermove', pokazivacMice);
   slusaj(c, 'pointerup', pokazivacGore);
@@ -3930,6 +3978,8 @@ function izadji() {
   S.mapaTacke = [];
   S.mapaSvg = null;
   S.uvod = 0;
+  if (S.kontekstIzgubljen && el.poruka) { el.poruka.classList.remove('je-vidljiva'); }
+  S.kontekstIzgubljen = false;
   if (!S.radi) { stanje('ulaz'); return; }
   S.radi = false;
 
