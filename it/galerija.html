@@ -28,7 +28,7 @@
 <!-- Three.js r186 iz lokalnog vendor/three/ — bez CDN-a i bez inline
      importmape (koju bi stroga CSP politika blokirala, pa sala nikad ne bi
      proradila u produkciji). Modul se učitava TEK na klik "Uđi u salu",
-     dinamičkim import()-om u js/galerija.js. Addoni se namjerno ne koriste:
+     dinamičkim import()-om u js/galerija/glavni.js. Addoni se namjerno ne koriste:
      putanje im se mijenjaju između verzija, a sala ne smije zavisiti od toga.
      Svi efekti su napisani ručno, samo nad jezgrom. -->
 <!-- hreflang -->
@@ -98,8 +98,8 @@
   <section class="sekcija" aria-labelledby="naslov-sale">
     <div class="omot omot--sirok">
 
-      <!-- data-stanje postavlja js/galerija.js. Dok ga nema (JavaScript isključen,
-           pregledač bez ES modula ili skript nije stigao), CSS prikazuje 2D mrežu —
+      <!-- data-stanje postavlja js/galerija/ (ui.js). Dok ga nema (JavaScript isključen,
+           pregledač bez ES modula ili skripte nijesu stigle), CSS prikazuje 2D mrežu —
            ne ulazni ekran sa dugmetom koje ne bi radilo. -->
       <div class="galerija" id="galerija">
 
@@ -143,7 +143,7 @@
             </p>
           </div>
 
-          <!-- Platno. Canvas ubacuje js/galerija.js. -->
+          <!-- Platno. Canvas ubacuje js/galerija/glavni.js (pokreni). -->
           <div class="galerija-platno" id="galerija-platno"></div>
 
           <!-- Poruka tokom preuzimanja biblioteke i tekstura -->
@@ -223,7 +223,7 @@
             <p class="galerija-panel__opis" id="galerija-panel-opis">—</p>
             <a class="dugme dugme--tekst galerija-panel__link" id="galerija-panel-link" href="djelo.html">Apri la pagina dell’opera</a>
           </aside>
-          <!-- Kratka najava izabranog djela za čitače ekrana (puni js/galerija.js) -->
+          <!-- Kratka najava izabranog djela za čitače ekrana (puni js/galerija/ui.js) -->
           <p class="vizuelno-skriveno" id="galerija-najava" role="status"></p>
 
         </div>
@@ -249,7 +249,7 @@
             <button class="galerija-kretanje__dugme" type="button" id="galerija-sala">Alla seconda sala</button>
           </div>
           <!-- Uglovi gledanja — vidljivi SAMO dok je djelo izabrano
-               (data-izabrano na .galerija postavlja js/galerija.js).
+               (data-izabrano na .galerija postavlja js/galerija/kamera.js).
                Na telefonu je ovo jedan red koji se skroluje vodoravno. -->
           <div class="galerija-ugao" role="group" aria-label="Angolo di visione">
             <button class="galerija-kretanje__dugme galerija-ugao__dugme galerija-ugao__prekidac" type="button" id="galerija-bocno" aria-pressed="false">Luce radente</button>
@@ -259,7 +259,7 @@
             <button class="galerija-kretanje__dugme galerija-ugao__dugme" type="button" data-ugao="izbliza">Da vicino</button>
             <button class="galerija-kretanje__dugme galerija-ugao__dugme galerija-ugao__prekidac" type="button" id="galerija-lupa" aria-pressed="false">Lente</button>
           </div>
-          <!-- Mapa sale: tlocrt, tačke djela, „vi ste ovdje“. Puni je js/galerija.js.
+          <!-- Mapa sale: tlocrt, tačke djela, „vi ste ovdje“. Puni je js/galerija/ui.js.
                Stoji u traci ispod sale, ne preko slike. -->
           <nav class="galerija-mapa" id="galerija-mapa" aria-label="Pianta delle sale"></nav>
         </div>
@@ -530,15 +530,28 @@
 </footer>
 
 <script src="../js/base.js?v=92dd296153"></script>
-<!-- NIJE type="module", i to je mjereno a ne nemar.
+<!-- Galerija: klasične skripte iz js/galerija/, OVIM REDOM — svaka uzima
+     ono što su upisale ranije (vidi zaglavlje js/galerija/osnova.js).
+     Pregledač ih traži sve odjednom, čim pročita HTML.
+     NIJE type="module", i to je mjereno a ne nemar.
      Modul-skript se povlači kao CORS zahtjev, pa se sa `file://` adrese
      uopšte NE IZVRŠI — stranica otvorena duplim klikom ostala bi bez
      `data-stanje`, pa bi umjesto poruke „otvoreno kao lokalni fajl“
      posjetilac dobio poruku „JavaScript je isključen“, što nije istina.
      Klasičan skript se izvrši i tamo, prepozna `file:` i kaže pravi razlog.
-     Dinamički `import('three')` unutra i dalje prolazi kroz importmapu —
-     provjereno u pregledaču, importmapa važi za cio dokument, ne samo za
-     modul-skripte. -->
-<script src="../js/galerija.js?v=eb00b1ff83"></script>
+     Uz to bi moduli čekali jedan na drugi (još jedan ili dva kruga do
+     servera). Three.js se i dalje preuzima tek na klik, dinamičkim
+     import()-om iz glavni.js; importmape nema (inline bi je CSP blokirao). -->
+<script src="../js/galerija/osnova.js?v=da6f62ad8c"></script>
+<script src="../js/galerija/tekstovi.js?v=77205404f1"></script>
+<script src="../js/galerija/svjetla.js?v=110ff12454"></script>
+<script src="../js/galerija/teksture.js?v=f9b95f6a94"></script>
+<script src="../js/galerija/scena.js?v=95aa43d13e"></script>
+<script src="../js/galerija/telefon.js?v=27df63caa8"></script>
+<script src="../js/galerija/ui.js?v=5b229fc472"></script>
+<script src="../js/galerija/izbliza.js?v=17db40f4a4"></script>
+<script src="../js/galerija/kamera.js?v=01235211a0"></script>
+<script src="../js/galerija/unos.js?v=6a3fbd3cae"></script>
+<script src="../js/galerija/glavni.js?v=d21aa1260a"></script>
 </body>
 </html>
