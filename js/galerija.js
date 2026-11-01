@@ -592,15 +592,15 @@ function uHex(s) {
 /* Djelo (SVG ili fotografija) iscrta se u platno visoke rezolucije.
    SVG bi TextureLoader inače rasterizovao u prirodnoj veličini
    (npr. 700 px), pa bi izbliza i pod uglom bio mutan. */
-function rasterizuj(url, max) {
+function rasterizuj(url, max, mirno) {
   return new Promise(function (res, odbij) {
     const slika = new Image();
     slika.decoding = 'async';
     /* Dekodiranje van glavne niti (decode()), a crtanje u platno tek kad
        se ne hoda iz sale u salu — inače bi slika koja stigne usred hoda
-       zaustavila kadar. */
+       zaustavila kadar. Velika slika (`mirno`) čeka i da kamera stane. */
     slika.onload = function () {
-      const dalje = function () { kadNeHoda(crtaj); };
+      const dalje = function () { (mirno ? kadMiruje : kadNeHoda)(crtaj); };
       if (slika.decode) { slika.decode().then(dalje, dalje); } else { dalje(); }
     };
     const crtaj = function () {
@@ -624,6 +624,50 @@ function rasterizuj(url, max) {
 function kadNeHoda(f) {
   if (S.anim && S.anim.hod) { window.setTimeout(function () { kadNeHoda(f); }, 120); return; }
   f();
+}
+/* Kamera se kreće: klizanje (i hod iz sale u salu, i uvod), prigušeno
+   praćenje točkića i tastature, zamah posle povlačenja, prevlačenje. */
+function kameraIde() {
+  return !!(S.anim || S.ka || S.inercija || S.vuce);
+}
+/* Velika slika se crta u platno tek kad kamera stoji (vidi rasterizuj) */
+function kadMiruje(f) {
+  if (S.radi && kameraIde()) { window.setTimeout(function () { kadMiruje(f); }, 120); return; }
+  f();
+}
+
+/* RELJEF KAO ImageBitmap: normal mapa se preuzme (fetch) i dekodira van
+   glavne niti (createImageBitmap iz Blob-a). Kroz <img> (TextureLoader)
+   pregledač je dekodira tek u samom texImage2D, NA glavnoj niti: three.js
+   za NoColorSpace traži sliku bez pretvaranja boje (UNPACK_COLORSPACE_
+   CONVERSION_WEBGL = NONE), pa je pregledač dekodira iznova iz fajla.
+   WebGL za ImageBitmap ne gleda UNPACK_FLIP_Y ni UNPACK_PREMULTIPLY_ALPHA
+   (three.js ih tada ni ne postavlja), pa se okret, alfa i boja zadaju
+   ovdje — iste kao do sada: okrenuta po visini, bez množenja alfom, bez
+   pretvaranja boje — a tekstura dobija flipY = false. Pikseli na GPU-u
+   su isti bit po bit.
+   Fotografija djela (boja) ostaje na putu kroz platno: platno na grafici
+   dekodira JPG/WebP/AVIF preko YUV-a na GPU-u, a createImageBitmap na
+   procesoru — razlika je do 2/255, dakle ne bi bila ista slika.
+   Samo u Chromium-u, gdje je to provjereno; drugdje ostaje <img>. */
+const BITMAPA = typeof window.createImageBitmap === 'function' && typeof window.fetch === 'function' &&
+  !!(navigator.userAgentData && navigator.userAgentData.brands &&
+     navigator.userAgentData.brands.some(function (b) { return b.brand === 'Chromium'; }));
+function bitmapaReljefa(url) {
+  return window.fetch(url).then(function (r) {
+    if (!r.ok) { throw new Error('HTTP ' + r.status); }
+    return r.blob();
+  }).then(function (b) {
+    return window.createImageBitmap(b, {
+      imageOrientation: 'flipY', premultiplyAlpha: 'none', colorSpaceConversion: 'none'
+    });
+  });
+}
+function jeBitmapa(x) {
+  return typeof ImageBitmap !== 'undefined' && x instanceof ImageBitmap;
+}
+function zatvoriBitmapu(x) {
+  if (jeBitmapa(x)) { x.close(); }
 }
 
 /* Legenda kao platno sa tekstom — kao kartončić na zidu muzeja */
@@ -1359,9 +1403,10 @@ function pumpaj() {
    kamera prvi put vidi drugu salu — to je bio trzaj usred klizanja. */
 function zagrijDrugu() {
   if (!S.render || !S.tri || !S.scena || S.drugaZagrijana) { return; }
-  /* ne usred klizanja, ne dok teksture još idu na GPU i ne prije nego
-     što platna druge sale dobiju sićušne slike (mapa mijenja shader) */
-  if (S.anim || (S.kadrovi && S.kadrovi.length) || !maleDrugeStigle()) { window.setTimeout(zagrijDrugu, 400); return; }
+  /* ne dok se kamera kreće (klizanje, točkić, zamah, prevlačenje), ne dok
+     teksture još idu na GPU i ne prije nego što platna druge sale dobiju
+     sićušne slike (mapa mijenja shader) */
+  if (kameraIde() || (S.kadrovi && S.kadrovi.length) || !maleDrugeStigle()) { window.setTimeout(zagrijDrugu, 400); return; }
   S.drugaZagrijana = true;
   const T = S.tri;
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
@@ -1549,17 +1594,28 @@ function prevediMalo(kam) {
 }
 
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
-   u istom kadru — dvanaest slika odjednom je zastoj od pola sekunde. */
-function uKadar(posao) {
+   u istom kadru — dvanaest slika odjednom je zastoj od pola sekunde.
+   `tesko`: prava slika ili reljef (do 2048 px) — ide samo dok kamera
+   stoji. Sićušna slika (~160 px) ne košta ništa, pa ide i u pokretu. */
+function uKadar(posao, tesko) {
+  posao.tesko = !!tesko;
   (S.kadrovi || (S.kadrovi = [])).push(posao);
 }
-function jedanPosaoKadra() {
+function jedanPosaoKadra(hod, miruje) {
   if (!S.kadrovi || !S.kadrovi.length) { return; }
   /* Hod iz sale u salu ide bez ijednog slanja na GPU — tekstura koja
      zakasni stane na platno čim kamera stane (do tada sićušna slika). */
-  if (S.anim && S.anim.hod) { return; }
+  if (hod) { return; }
+  /* I kad kamera klizi od djela do djela (ili je pomjera točkić, zamah,
+     prevlačenje): prava slika i reljef čekaju kadar u kom kamera stoji —
+     slanje velike slike usred klizanja je zastoj koji se vidi. */
+  let i = 0;
+  if (!miruje) {
+    while (i < S.kadrovi.length && S.kadrovi[i].tesko) { i++; }
+    if (i === S.kadrovi.length) { return; }
+  }
   osvjeziKadar();
-  const posao = S.kadrovi.shift();
+  const posao = S.kadrovi.splice(i, 1)[0];
   try { posao(); } catch (e) { /* tekstura nije prošla — ostaje stara */ }
 }
 /* Posao još važi: ista sala (nije se izašlo i ponovo ušlo u međuvremenu) */
@@ -1567,7 +1623,7 @@ function aktuelno(m) { return m.gen === S.gen && !!S.render; }
 
 /* Nova slika na platno i odraz — samo ako je bolja od postojeće */
 function staviBoju(m, c, nivo) {
-  uKadar(function () { staviBojuSada(m, c, nivo); });
+  uKadar(function () { staviBojuSada(m, c, nivo); }, nivo >= 2);
 }
 function staviBojuSada(m, c, nivo) {
   if (!aktuelno(m) || nivo <= m.nivo) { return; }
@@ -1606,8 +1662,9 @@ function ucitajBoju(m) {
   return AVIF_PROVJERA.then(function () {
     /* izvori po redu (AVIF → WebP / JPG): sljedeći tek kad prethodni padne */
     const izvori = izvoriDjela(m.djelo);
-    let p = rasterizuj(izvori[0], maxStr);
-    izvori.slice(1).forEach(function (u) { p = p.catch(function () { return rasterizuj(u, maxStr); }); });
+    /* crtanje u platno (`mirno`) tek kad kamera stoji */
+    let p = rasterizuj(izvori[0], maxStr, true);
+    izvori.slice(1).forEach(function (u) { p = p.catch(function () { return rasterizuj(u, maxStr, true); }); });
     return p;
   }).then(function (c) { staviBoju(m, c, 2); }, function () { /* tišina — rezervna boja ostaje */ });
 }
@@ -1621,14 +1678,26 @@ function ucitajReljef(m) {
   if (!aktuelno(m) || !m.djelo.id || m.djelo.kategorija === 'crtezi') { return null; }
   const T = S.tri;
   const ucitavac = new T.TextureLoader();
-  const uzmi = function (url) {
+  const krozImg = function (url) {
     return new Promise(function (res, odbij) { ucitavac.load(url, res, undefined, odbij); });
+  };
+  /* ImageBitmap (vidi BITMAPA); veća od najveće teksture ide kroz <img>,
+     da je three.js smanji kao i do sada */
+  const maxStr = S.render.capabilities.maxTextureSize || 4096;
+  const uzmi = !BITMAPA ? krozImg : function (url) {
+    return bitmapaReljefa(url).then(function (b) {
+      if (b.width > maxStr || b.height > maxStr) { b.close(); return krozImg(url); }
+      const t = new T.Texture(b);
+      t.flipY = false;            /* već okrenuta u createImageBitmap */
+      t.needsUpdate = true;
+      return t;
+    });
   };
   return uzmi(izvorReljefa(m.djelo, false))
     .catch(function () { return uzmi(izvorReljefa(m.djelo, true)); })
     .then(function (nm) {
       uKadar(function () {
-        if (!aktuelno(m)) { nm.dispose(); return; }
+        if (!aktuelno(m)) { nm.dispose(); zatvoriBitmapu(nm.image); return; }
         nm.anisotropy = S.anizotropija;
         S.render.initTexture(nm);
         /* Platno od početka ima ravnu normal mapu (1×1), pa ovo je
@@ -1636,7 +1705,7 @@ function ucitajReljef(m) {
         m.platno.normalMap = nm;
         m.platno.normalScale.set(1.2, 1.2);
         pamti(nm);
-      });
+      }, true);
     }, function () { /* nema mape — platno ostaje ravno */ });
 }
 function rasporediTeksture() {
@@ -3215,7 +3284,9 @@ function petlja() {
   const dt = Math.min(0.1, Math.max(0, (t - (S.prosli || t)) / 1000));
   S.prosli = t;
 
-  jedanPosaoKadra();
+  /* Kretanje na početku kadra (vidi jedanPosaoKadra i zagrijavanje) */
+  const stajala = !kameraIde();
+  const hodala = !!(S.anim && S.anim.hod);
 
   /* --- Klizanje kamere, easeInOutCubic, po putu (i kroz prolaz) --- */
   if (S.anim) {
@@ -3249,6 +3320,10 @@ function petlja() {
   korakUvoda(t);
   osvjeziMapu();
   paziNaDrugu();
+  /* Tekstura ide na GPU tek kad se zna kretanje ovog kadra: velika samo
+     ako kamera ne ide ni na početku ni na kraju koraka — ni u kadru u kom
+     klizanje stiže na cilj, ni u kom tura krene ka sljedećem djelu. */
+  jedanPosaoKadra(hodala || !!(S.anim && S.anim.hod), stajala && !kameraIde());
 
   S.kamera.position.copy(S.poz);
   S.kamera.lookAt(sParalaksom());
@@ -3277,11 +3352,13 @@ function petlja() {
     zamrzniNepokretno();
     osvjeziSjenke();
   }
-  if (S.zagrijEkran && !S.anim && !S.ka && !S.vuce && !S.inercija) {
+  /* Zagrijavanje samo u kadru u kom kamera stoji od početka do kraja
+     (ne ni u posljednjem kadru klizanja) */
+  if (S.zagrijEkran && stajala && !kameraIde()) {
     zagrijNaEkranu(S.zagrijEkran);
     S.zagrijEkran--;
     crtaj = true;
-  } else if (S.zagrijMalo && !S.anim && !S.ka && !S.vuce && !S.inercija) {
+  } else if (S.zagrijMalo && stajala && !kameraIde()) {
     zagrijNaEkranu((S.zagrijMalo - 1) % 8 + 1, SVJETLA_U_KADRU[Math.floor((S.zagrijMalo - 1) / 8)]);
     S.zagrijMalo--;
     if (!S.zagrijMalo) { S.svjetlaMalo = true; }
@@ -4262,6 +4339,8 @@ function izadji() {
   /* Oslobađanje resursa */
   for (const r of S.zaCiscenje) {
     if (r && typeof r.dispose === 'function') { r.dispose(); }
+    /* ImageBitmap pušta memoriju odmah, ne tek kad je pokupi GC */
+    if (r && r.isTexture) { zatvoriBitmapu(r.image); }
   }
   S.zaCiscenje.length = 0;
   for (const k in SVJ) { delete SVJ[k]; }   /* materijali svjetiljki su upravo oslobođeni */
