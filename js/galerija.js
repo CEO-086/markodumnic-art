@@ -1156,6 +1156,43 @@ function pumpaj() {
     if (window.requestIdleCallback) { window.requestIdleCallback(kreni, { timeout: 2500 }); }
     else { window.setTimeout(kreni, 800); }
   }
+  /* Druga sala je učitana: jednom je „zagrij“ (vidi zagrijDrugu). */
+  if (!S.redAktivno && !S.red.length && S.drugaKrenula && !S.zagrijavanjeZakazano) {
+    S.zagrijavanjeZakazano = true;
+    const gen2 = S.gen;
+    const zagrij = function () { if (S.gen === gen2) { zagrijDrugu(); } };
+    if (window.requestIdleCallback) { window.requestIdleCallback(zagrij, { timeout: 2500 }); }
+    else { window.setTimeout(zagrij, 800); }
+  }
+}
+
+/* ZAGRIJAVANJE DRUGE SALE: dok je posjetilac u prvoj, drugu sala
+   jednom iscrta u sićušnu nevidljivu sliku (64 × 64), iz sredine
+   druge sale ka svakom zidu. Tako se svi shaderi i teksture njenih
+   djela, legendi i odraza pripreme unaprijed, a ne u kadru u kom
+   kamera prvi put vidi drugu salu — to je bio trzaj usred klizanja. */
+function zagrijDrugu() {
+  if (!S.render || !S.tri || !S.scena || S.drugaZagrijana) { return; }
+  /* ne usred klizanja i ne dok teksture još idu na GPU */
+  if (S.anim || (S.kadrovi && S.kadrovi.length)) { window.setTimeout(zagrijDrugu, 400); return; }
+  S.drugaZagrijana = true;
+  const T = S.tri;
+  const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
+  const z0 = POLA_Z + PROLAZ.zid;
+  const meta = new T.WebGLRenderTarget(64, 64);
+  const kam = new T.PerspectiveCamera(100, 1, 0.1, 40);
+  kam.position.set(0, 1.6, z0 + SD * 0.5);
+  const stara = S.render.getRenderTarget();
+  try {
+    [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].forEach(function (t) {
+      kam.lookAt(t[0], VISINA_DJELA, t[1]);
+      kam.updateMatrixWorld();
+      S.render.setRenderTarget(meta);
+      S.render.render(S.scena, kam);
+    });
+  } catch (e) { /* nije uspjelo — sala radi i bez toga */ }
+  S.render.setRenderTarget(stara);
+  meta.dispose();
 }
 
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
@@ -1285,6 +1322,8 @@ function postaviDjela(djela) {
   S.drugaKrenula = false;
 
   S.drugaZakazana = false;
+  S.zagrijavanjeZakazano = false;
+  S.drugaZagrijana = false;
   S.kadrovi = [];
   /* Ravna normal mapa (1×1, 128/128/255): platno od početka ima
      normalMap, pa dolazak pravog reljefa ne mijenja shader. */
