@@ -1443,15 +1443,23 @@ const SVJETLA_U_KADRU = [6, 12];
 const DOMET = {};
 function dometSvjetla(l) {
   const T = S.tri;
-  if (!DOMET.kutija) {
-    DOMET.kutija = new T.Box3();
+  if (!DOMET.tacka) {
     DOMET.tacka = new T.Vector3();
     DOMET.osa = new T.Vector3();
     DOMET.u = new T.Vector3();
     DOMET.v = new T.Vector3();
   }
-  const P = l.position, d = l.distance, k = DOMET.kutija, t = DOMET.tacka;
-  const osa = DOMET.osa.subVectors(l.target.position, P).normalize();
+  /* Kutija zavisi samo od mjesta svjetla, mete, ugla i dometa, a oni se
+     mijenjaju tek uz bočno svjetlo — inače se ista kutija ne računa
+     iznova u svakom kadru. */
+  const P = l.position, Q = l.target.position, d = l.distance;
+  let z = l.userData.domet;
+  if (z && z.px === P.x && z.py === P.y && z.pz === P.z && z.qx === Q.x && z.qy === Q.y && z.qz === Q.z &&
+      z.ugao === l.angle && z.d === d) { return z.kutija; }
+  if (!z) { z = l.userData.domet = { kutija: new T.Box3() }; }
+  z.px = P.x; z.py = P.y; z.pz = P.z; z.qx = Q.x; z.qy = Q.y; z.qz = Q.z; z.ugao = l.angle; z.d = d;
+  const k = z.kutija, t = DOMET.tacka;
+  const osa = DOMET.osa.subVectors(Q, P).normalize();
   const c = Math.cos(l.angle), s = Math.sin(l.angle);
   DOMET.u.set(Math.abs(osa.y) < 0.9 ? 0 : 1, Math.abs(osa.y) < 0.9 ? 1 : 0, 0).cross(osa).normalize();
   DOMET.v.crossVectors(osa, DOMET.u);
