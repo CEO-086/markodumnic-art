@@ -732,7 +732,7 @@ async function ucitajPodatke() {
     if (d.slikaVelika) { d.slikaVelika = izKorijena(d.slikaVelika); }
     return d;
   });
-  /* Nazivi serija za natpis u panelu ("Torinski pejzaži"…) */
+  /* Nazivi serija za natpis u panelu ("Pejzaži"…) */
   S.serije = {};
   ((podaci && podaci.kategorije) || []).forEach(function (k) {
     if (k && k.id) { S.serije[k.id] = (IT && k.nazivIt) || (EN && k.nazivEn) || k.naziv; }
