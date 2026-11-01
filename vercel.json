@@ -70,7 +70,7 @@
       ]
     },
     {
-      "source": "/css/(.*)",
+      "source": "/css/((?!galerija\\.css$).*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -79,11 +79,29 @@
       ]
     },
     {
-      "source": "/js/(.*)",
+      "source": "/js/((?!galerija\\.js$).*)",
       "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=3600, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/js/galerija.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/css/galerija.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },
