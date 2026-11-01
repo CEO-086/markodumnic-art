@@ -2791,7 +2791,12 @@ function mjeri() {
   const h = el.platno.clientHeight || 500;
   S.kamera.aspect = w / h;
   S.kamera.updateProjectionMatrix();
-  S.render.setSize(w, h, false);
+  /* Svaka dodjela canvas.width/height (i ista vrijednost) iznova pravi
+     i briše bafer slike, a to čeka grafiku. ResizeObserver i 'resize'
+     javljaju i kad se broj piksela ne promijeni (oba za istu promjenu
+     prozora, djelić piksela, traka za skrol) — tada setSize ne treba. */
+  const v = S.render.getSize(S.velicina || (S.velicina = new S.tri.Vector2()));
+  if (v.x !== w || v.y !== h) { S.render.setSize(w, h, false); }
   velicinaMeta();
   osvjeziKadar();
 
