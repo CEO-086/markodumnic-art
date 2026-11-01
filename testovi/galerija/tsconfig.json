@@ -1,0 +1,22 @@
+{
+  "//": "tsc --checkJs nad dijelovima galerije (bez emitovanja). Tipovi su JSDoc u samim fajlovima (osnova.js, na vrhu). strict je uključen OSIM strictNullChecks i noImplicitAny: getElementById i querySelector vraćaju možda-null, a kod to provjerava na svoj način, a parametri bez JSDoc-a su any — oba bi tražila izmjene koda, ne samo tipove. catch (e) je any, kao u običnom JS-u.",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
+    "target": "es2022",
+    "lib": [
+      "es2022",
+      "dom",
+      "dom.iterable"
+    ],
+    "types": []
+  },
+  "include": [
+    "../../js/galerija/*.js"
+  ]
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lakše teksture za virtuelnu galeriju (js/galerija.js).
+"""Lakše teksture za virtuelnu galeriju (js/galerija/).
 
 Pokretanje iz korijena sajta:  python3 alati/teksture.py   [--sve]
 

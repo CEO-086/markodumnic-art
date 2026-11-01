@@ -85,13 +85,15 @@
 /js/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
-# Galerija (samo galerija.html, ME/EN/IT): svaka adresa ka ova dva fajla
-# nosi ?v=<heš sadržaja> (alati/verzije.py), a HTML se uvijek provjerava —
-# izmijenjen fajl = nova adresa, pa smiju "immutable" na godinu, kao
-# fontovi. Pravilo gleda samo putanju, ne ?v=, zato važi SAMO dok svaka
-# veza ka njima ima ?v= (provjera: python3 alati/verzije.py --provjeri).
+# Galerija (samo galerija.html, ME/EN/IT): svaka adresa ka dijelovima u
+# js/galerija/ i ka css/galerija.css nosi ?v=<heš sadržaja>
+# (alati/verzije.py), a HTML se uvijek provjerava — izmijenjen fajl =
+# nova adresa, pa smiju "immutable" na godinu, kao fontovi. Pravilo gleda
+# samo putanju, ne ?v=, zato važi SAMO dok svaka veza ka njima ima ?v=
+# (provjera: python3 alati/verzije.py --provjeri). U js/galerija/ zato
+# idu samo skripte koje galerija.html uključuje preko ovog alata.
 # "!" skida sat vremena iz /js/* i /css/* (inače bi se spojili zapetom).
-/js/galerija.js
+/js/galerija/*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 

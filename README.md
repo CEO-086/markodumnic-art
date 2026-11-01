@@ -11,4 +11,5 @@ Bez build koraka: HTML, CSS i JavaScript se služe takvi kakvi jesu.
   - `python3 alati/teksture.py` — teksture za 3D galeriju
   - `python3 alati/fontovi.py` — fontovi sa sajta (podskup znakova)
 - `izvorne-fotografije/` — spisak originalnih fotografija svih 13 radova (`izvorne-fotografije/README.md`); same fotografije nijesu u repou, nego lokalno. To je samo baza: sajt ih ne učitava, nego verzije koje od njih prave `alati/izvorne.py`, `alati/slike.py` i `alati/teksture.py`, tim redom.
-- `alati/`, `izvorne-fotografije/`, `_headers` i ovaj README se ne objavljuju na sajtu (`.vercelignore`).
+- 3D galerija: klasične skripte u `js/galerija/` (redoslijed i dogovor u zaglavlju `js/galerija/osnova.js`). Poslije izmjene u `css/` ili `js/`: `python3 alati/verzije.py`. Provjere: `node testovi/galerija/provjeri.js` (dogovor dijelova, verzije, ESLint, tsc) i `node testovi/galerija/smoke.js` (Playwright); alati se instaliraju u `testovi/galerija/` (`npm install` tamo, nikad u korijenu — Vercel bi pokušao build).
+- `alati/`, `izvorne-fotografije/`, `testovi/`, `eslint.config.js`, `_headers` i ovaj README se ne objavljuju na sajtu (`.vercelignore`).
