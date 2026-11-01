@@ -556,10 +556,12 @@ function imaWebGL() {
    samo kamera skače odmah na izabrano djelo umjesto da klizi, a
    paralaksa je ugašena. Jedina poruka o tome stoji na ulaznom ekranu
    (.galerija-ulaz__napomena--kretanje) i otkriva je CSS media upit,
-   pa se pojavljuje tačno jednom i tačno onima koje se tiče. */
+   pa se pojavljuje tačno jednom i tačno onima koje se tiče.
+   Upit se pravi jednom (zove se u svakom kadru, a matchMedia() ga svaki
+   put iznova parsira); `.matches` istog upita prati promjenu postavke. */
+const MANJE_KRETANJA = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 function smanjenoKretanje() {
-  return !!(window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  return !!(MANJE_KRETANJA && MANJE_KRETANJA.matches);
 }
 
 /* "70 × 60 cm" → { sirina: 0.70, visina: 0.60 } u METRIMA.
@@ -3430,6 +3432,7 @@ function pripremiKarticu() {
    na jednom mjestu.
    --------------------------------------------------------- */
 const UZAK_EKRAN = '(max-width: 720px), (max-height: 500px) and (pointer: coarse)';
+const UZAK = window.matchMedia ? window.matchMedia(UZAK_EKRAN) : null;   /* jedan upit; .matches prati promjenu */
 
 function uronjeno() {
   return document.documentElement.classList.contains('galerija-uronjena');
@@ -3438,7 +3441,7 @@ function uronjeno() {
 function osvjeziUronjeno() {
   const st = korijen.getAttribute('data-stanje');
   const da = (st === 'soba' || st === 'ucitavanje') &&
-    !!(window.matchMedia && window.matchMedia(UZAK_EKRAN).matches);
+    !!(UZAK && UZAK.matches);
   document.documentElement.classList.toggle('galerija-uronjena', da);
   if (!da) {
     postaviOpcije(false);
@@ -3597,11 +3600,10 @@ function pripremiMob() {
     if (b && !b.hasAttribute('data-mob')) { postaviOpcije(false); }
   });
 
-  if (window.matchMedia) {
-    const mq = window.matchMedia(UZAK_EKRAN);
+  if (UZAK) {
     const promjena = function () { osvjeziUronjeno(); };
-    if (mq.addEventListener) { mq.addEventListener('change', promjena); }
-    else if (mq.addListener) { mq.addListener(promjena); }
+    if (UZAK.addEventListener) { UZAK.addEventListener('change', promjena); }
+    else if (UZAK.addListener) { UZAK.addListener(promjena); }
   }
   osvjeziMob();
 }
