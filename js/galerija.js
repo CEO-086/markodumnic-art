@@ -250,6 +250,8 @@ const UGAO_BOCNO = 78 * Math.PI / 180;
    svjetlo. Odnos je 4:1; ovdje je 2.5:1 jer ekran nema adaptaciju oka
    koju posjetilac ima u stvarnoj sali, pa bi crtež na 1/4 bio crna rupa. */
 const OSVJETLJENOST = { ulja: 1.0, crtezi: 0.4 };
+/* Zajednički reflektor za grupu crteža (po jedan sa svake strane prolaza) */
+const CRTEZI_SVJETLO = { dalje: 3.2, gore: 3.3, nize: 0.55, preko: 0.5, penumbra: 0.55, jacina: 0.75 };
 
 /* PROLAZ: otvorena vrata na sredini prednjeg zida (zid bez djela).
    1.4 × 2.5 m — dvoje ljudi se mimoilazi, po pravilima za javne
@@ -288,7 +290,16 @@ function izvorMali(djelo) {
   return djelo.id ? izKorijena('img/sala/' + encodeURIComponent(djelo.id) + '-160.webp') : null;
 }
 function izvorDjela(djelo) {
-  return TELEFON && djelo.id ? izKorijena('img/sala/' + encodeURIComponent(djelo.id) + '-1024.webp') : djelo.slika;
+  if (TELEFON && djelo.id) { return izKorijena('img/sala/' + encodeURIComponent(djelo.id) + '-1024.webp'); }
+  /* Računar: AVIF iz img/radovi/w/ (isti fajlovi kao na stranicama
+     radova) u širini najbližoj JPG-u — oko upola manje podataka za istu
+     oštrinu. Ako AVIF ne prođe, učitava se JPG (vidi ucitajSliku). */
+  const v = (djelo.varijante || []).slice().sort(function (a, b) { return a - b; });
+  if (djelo.id && v.length && djelo.sirinaPx > 0) {
+    const w = v.filter(function (x) { return x >= djelo.sirinaPx * 0.95; })[0] || v[v.length - 1];
+    if (w >= 800) { return izKorijena('img/radovi/w/' + encodeURIComponent(djelo.id) + '-' + w + '.avif'); }
+  }
+  return djelo.slika;
 }
 function izvorReljefa(djelo, original) {
   const id = encodeURIComponent(djelo.id);
@@ -813,7 +824,7 @@ async function ucitajPodatke() {
 function sobnaMapa(T, ime) {
   const ucitac = new T.TextureLoader();
   const t = ucitac.load(izKorijena('img/soba/' + ime + '.webp'), undefined, undefined, function () {
-    ucitac.load(izKorijena('img/soba/' + ime + '.png'), function (p) { t.image = p.image; t.needsUpdate = true; }, undefined, function () {});
+    ucitac.load(izKorijena('img/soba/' + ime + '.png'), function (p) { t.image = p.image; t.needsUpdate = true; osvjeziKadar(); }, undefined, function () {});
   });
   return t;
 }
@@ -1260,17 +1271,19 @@ function zagrijDrugu() {
      dio stanja tek pri PRVOM crtanju na sam ekran. Zato još jedan
      kadar: druga sala se iscrta na ekran i odmah preko nje obična
      slika prve sale, u istom kadru, pa posjetilac to ne vidi. */
-  if (!TELEFON) { S.zagrijEkran = true; }
+  if (!TELEFON) { S.zagrijEkran = 4; }
 }
 
-function zagrijNaEkranu() {
+/* Jedan pravac po kadru (S.zagrijEkran broji 4 → 1), da nijedan kadar
+   u prvoj sali ne nosi četiri dodatna crtanja odjednom. */
+function zagrijNaEkranu(korak) {
   const T = S.tri;
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
   const z0 = POLA_Z + PROLAZ.zid;
   const kam = new T.PerspectiveCamera(100, S.kamera.aspect, 0.1, 40);
   kam.position.set(0, 1.6, z0 + SD * 0.5);
   try {
-    [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].forEach(function (t) {
+    [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].slice(korak - 1, korak).forEach(function (t) {
       kam.lookAt(t[0], VISINA_DJELA, t[1]);
       kam.updateMatrixWorld();
       S.render.render(S.scena, kam);
@@ -1285,6 +1298,7 @@ function uKadar(posao) {
 }
 function jedanPosaoKadra() {
   if (!S.kadrovi || !S.kadrovi.length) { return; }
+  osvjeziKadar();
   const posao = S.kadrovi.shift();
   try { posao(); } catch (e) { /* tekstura nije prošla — ostaje stara */ }
 }
@@ -1330,7 +1344,7 @@ function ucitajBoju(m) {
   const maxStr = Math.min(MAX_TEKSTURA, S.render.capabilities.maxTextureSize || MAX_TEKSTURA);
   const glavni = izvorDjela(m.djelo);
   return rasterizuj(glavni, maxStr).catch(function (g) {
-    /* nema WebP-a za telefon — original JPG */
+    /* nema WebP-a za telefon / AVIF-a za računar — original JPG */
     if (glavni === m.djelo.slika) { throw g; }
     return rasterizuj(m.djelo.slika, maxStr);
   }).then(function (c) { staviBoju(m, c, 2); }, function () { /* tišina — rezervna boja ostaje */ });
@@ -1421,14 +1435,16 @@ function napraviReflektor(mj, djelo, i) {
     if (mj.grupa) {
       /* Zajednički snop za grupu crteža: iz sredine grupe, dalje od
          zida i širi, da pokrije sve crteže na toj polovini zida. */
-      const dalje = 1.9, gore = SOBA.visina - 0.35;
+      /* Snop gađa malo ispod sredine crteža: pod kosim uglom najsvjetliji
+         dio kruga pada iznad cilja, pa tako krug sjedne baš na crteže. */
+      const dalje = CRTEZI_SVJETLO.dalje, gore = CRTEZI_SVJETLO.gore;
       svjetlo.position.set(mj.cx + mj.nx * dalje, gore, mj.z + mj.nz * dalje);
-      svjetlo.target.position.set(mj.cx, mj.y, mj.z);
+      svjetlo.target.position.set(mj.cx, mj.y - CRTEZI_SVJETLO.nize, mj.z);
       const daljina = svjetlo.position.distanceTo(svjetlo.target.position);
-      svjetlo.angle = Math.min(1.0, Math.atan((mj.raspon / 2 + 0.5) / daljina));
-      svjetlo.penumbra = 0.5;
-      svjetlo.distance = daljina * 2.2;
-      svjetlo.intensity = 17 * Math.pow(daljina / 3.0, 2) * osvjetljenost;
+      svjetlo.angle = Math.min(1.1, Math.atan((mj.raspon / 2 + CRTEZI_SVJETLO.preko) / daljina));
+      svjetlo.penumbra = CRTEZI_SVJETLO.penumbra;
+      svjetlo.distance = daljina * 2.5;
+      svjetlo.intensity = 17 * Math.pow(daljina / 3.0, 2) * CRTEZI_SVJETLO.jacina;
     }
 
     /* SJENKU BACA SAMO JEDNO SVJETLO, ne svih sedam.
@@ -1471,7 +1487,7 @@ function postaviDjela(djela) {
 
   S.drugaZakazana = false;
   S.zagrijavanjeZakazano = false;
-  S.drugaZagrijana = false; S.zagrijEkran = false;
+  S.drugaZagrijana = false; S.zagrijEkran = 0;
   S.svjetlaGrupa = {};
   S.kadrovi = [];
   /* Ravna normal mapa (1×1, 128/128/255): platno od početka ima
@@ -1606,6 +1622,7 @@ function postaviDjela(djela) {
         const novo = napraviLegendu(djelo);
         platnoLeg.getContext('2d').drawImage(novo, 0, 0);
         texLeg.needsUpdate = true;
+        osvjeziKadar();
       });
     }
     texLeg.colorSpace = T.SRGBColorSpace;
@@ -2089,6 +2106,37 @@ function postaviBocno(ukljuci) {
    put do nove sjenke; na većim ekranima se ionako crta svaki kadar. */
 function osvjeziSjenke() {
   if (S.render) { S.render.shadowMap.needsUpdate = true; }
+  osvjeziKadar();
+}
+
+/* Scena se promijenila (tekstura, svjetlo, veličina…) — sljedećih
+   nekoliko kadrova se crta i kad kamera stoji (vidi petlju). */
+function osvjeziKadar() { S.crtajJos = 6; }
+
+/* PRILAGODLJIVA OŠTRINA (samo računar): ako je crtanje sporo (medijana
+   kadra preko 26 ms, tj. ispod ~38 fps, dok se kamera kreće), broj
+   piksela se spusti 2 → 1.5 → 1.25. Nikad ne raste nazad usred posjete,
+   da se oštrina ne bi klackala. Na jakom računaru se ništa ne mijenja. */
+const STEPENI_OSTRINE = [2, 1.5, 1.25];
+function mjeriBrzinu(t) {
+  if (TELEFON || !S.render) { S.prosliCrtan = t; return; }
+  const kretanje = S.anim || S.ka || S.inercija || S.vuce;
+  if (kretanje && S.prosliCrtan) {
+    (S.kadroviMjera || (S.kadroviMjera = [])).push(t - S.prosliCrtan);
+    if (S.kadroviMjera.length >= 45) {
+      const niz = S.kadroviMjera.slice().sort(function (a, b) { return a - b; });
+      const medijana = niz[niz.length >> 1];
+      S.kadroviMjera = [];
+      if (medijana > 26) {
+        const sad = S.render.getPixelRatio();
+        const sljedeci = STEPENI_OSTRINE.filter(function (x) { return x < sad - 0.01; })[0];
+        if (sljedeci) {
+          S.render.setPixelRatio(sljedeci);   /* sam zadrži veličinu okna */
+        }
+      }
+    }
+  }
+  S.prosliCrtan = kretanje ? t : 0;
 }
 
 /* Pokretanje klizanja (ili skoka, uz smanjeno kretanje) */
@@ -2226,6 +2274,24 @@ function korakKlizanja(a, u) {
   S.cilj.lerpVectors(a.ciljevi[i - 1], a.ciljevi[i], k);
 }
 
+/* Fotografija pune veličine za „Izbliza“ krene čim kamera stigne pred
+   djelo (računar, ne uz „štedi podatke“) — klik je onda otvara odmah,
+   iz keša pregledača. */
+function predUcitajVeliku(djelo) {
+  const veza = navigator.connection;
+  if (TELEFON || !djelo || !djelo.slikaVelika || (veza && veza.saveData)) { return; }
+  S.velikeUcitane = S.velikeUcitane || {};
+  if (S.velikeUcitane[djelo.slikaVelika]) { return; }
+  window.clearTimeout(S.velikaTajmer);
+  S.velikaTajmer = window.setTimeout(function () {
+    if (!S.radi || S.velikeUcitane[djelo.slikaVelika]) { return; }
+    S.velikeUcitane[djelo.slikaVelika] = true;
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = djelo.slikaVelika;
+  }, 1500);
+}
+
 /* Izbor djela: kamera ide pred njega, panel se otvara */
 function izaberi(i) {
   if (!S.radi || !S.mjesta.length) { return; }
@@ -2240,6 +2306,7 @@ function izaberi(i) {
   postaviLupu(false);
   korijen.setAttribute('data-izabrano', 'da');
   otvoriPanel(S.mjesta[k].djelo);
+  predUcitajVeliku(S.mjesta[k].djelo);
   savjetCisto();
   najavi(S.mjesta[k].djelo);
   osvjeziKretanje();
@@ -2440,6 +2507,7 @@ function mjeri() {
   S.kamera.updateProjectionMatrix();
   S.render.setSize(w, h, false);
   velicinaMeta();
+  osvjeziKadar();
 
   if (S.anim) { return; }   /* usred klizanja ne preskačemo kameru */
   const c = S.izabrano < 0 ? pozicijaPregleda() : pozicijaOrbite(S.izabrano, S.orbita);
@@ -2854,6 +2922,21 @@ function petlja() {
 
   S.kamera.position.copy(S.poz);
   S.kamera.lookAt(sParalaksom());
+  S.kamera.updateMatrixWorld();
+
+  /* CRTANJE PO POTREBI: kad se ništa ne mijenja (kamera stoji, nema
+     klizanja, prevlačenja ni novih tekstura), isti kadar se ne crta
+     iznova — grafika se odmori, a kad krene pokret, nema zaostalog
+     posla. Za svaki slučaj kadar se ipak osvježi bar 4 puta u sekundi. */
+  const me = S.kamera.matrixWorld.elements;
+  let promjena = !S.zadnjaMatrica;
+  if (!promjena) {
+    for (let k = 0; k < 16; k++) { if (Math.abs(me[k] - S.zadnjaMatrica[k]) > 1e-7) { promjena = true; break; } }
+  }
+  if (promjena) { S.zadnjaMatrica = me.slice(); }
+  let crtaj = promjena || S.crtajJos > 0 || S.anim || S.ka || S.inercija || S.vuce || S.uvod ||
+    S.lupa.na || (S.kadrovi && S.kadrovi.length) || t - (S.zadnjiKadar || 0) > 250;
+  if (S.crtajJos > 0) { S.crtajJos--; }
 
   /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova */
   if (TELEFON && S.scena.children.length !== S.sjenkeDjeca) {
@@ -2861,10 +2944,17 @@ function petlja() {
     osvjeziSjenke();
   }
   if (S.zagrijEkran && !S.anim && !S.ka && !S.vuce && !S.inercija) {
-    S.zagrijEkran = false;
-    zagrijNaEkranu();
+    zagrijNaEkranu(S.zagrijEkran);
+    S.zagrijEkran--;
+    crtaj = true;
   }
-  S.render.render(S.scena, S.kamera);
+  if (crtaj) {
+    S.render.render(S.scena, S.kamera);
+    S.zadnjiKadar = t;
+    mjeriBrzinu(t);
+  } else {
+    S.prosliCrtan = 0;
+  }
   if (S.lupa.na) { osvjeziLupu(); }
 
   /* Kamera se pomjera ispod mirnog miša (klizanje, točkić) — natpis
