@@ -2212,8 +2212,8 @@ function postaviBocno(ukljuci) {
   osvjeziSjenke();   /* reflektor je promijenio mjesto */
 }
 
-/* Mapa sjenke se crta u sljedećem kadru. Na telefonu je to jedini
-   put do nove sjenke; na većim ekranima se ionako crta svaki kadar. */
+/* Mapa sjenke se crta u sljedećem kadru. To je jedini put do nove
+   sjenke (shadowMap.autoUpdate je ugašen, vidi pokreni). */
 function osvjeziSjenke() {
   if (S.render) { S.render.shadowMap.needsUpdate = true; }
   osvjeziKadar();
@@ -2541,14 +2541,12 @@ function pokreni(djela) {
   /* Sjenke. PCFSoftShadowMap je UKLONJEN u r186 — koristi se PCFShadowMap. */
   S.render.shadowMap.enabled = true;
   S.render.shadowMap.type = T.PCFShadowMap;
-  /* Telefon: sala stoji, pa se mapa sjenke ne crta u svakom kadru,
-     nego samo kad se nešto u sceni promijeni (vidi osvjeziSjenke).
-     Sjenka izgleda isto, a grafika ima manje posla. */
-  if (TELEFON) {
-    S.render.shadowMap.autoUpdate = false;
-    S.render.shadowMap.needsUpdate = true;
-    S.sjenkeDjeca = -1;
-  }
+  /* Sala stoji, pa se mapa sjenke ne crta u svakom kadru, nego samo
+     kad se nešto u sceni promijeni (vidi osvjeziSjenke) — na telefonu
+     i na računaru. Sjenka izgleda isto, a grafika ima manje posla. */
+  S.render.shadowMap.autoUpdate = false;
+  S.render.shadowMap.needsUpdate = true;
+  S.sjenkeDjeca = -1;
 
   el.platno.appendChild(S.render.domElement);
   /* Kratko ime; uputstvo za tastaturu je u skrivenom elementu na koji
@@ -3058,7 +3056,7 @@ function petlja() {
   if (S.crtajJos > 0) { S.crtajJos--; }
 
   /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova */
-  if (TELEFON && S.scena.children.length !== S.sjenkeDjeca) {
+  if (S.scena.children.length !== S.sjenkeDjeca) {
     S.sjenkeDjeca = S.scena.children.length;
     osvjeziSjenke();
   }
