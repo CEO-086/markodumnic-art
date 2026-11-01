@@ -15,7 +15,7 @@
 
 <!--
   Degradiranje bez JavaScripta:
-  svih 15 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
+  svih 19 radova je ugrađeno statički u HTML. JS samo sakriva i prikazuje
   stavke. Ako JS ne radi, dugmad filtera se sklanjaju (vidi <noscript> ispod)
   da korisnik ne dobije mrtve kontrole, a mreža ostaje cijela — što je
   ispravno ponašanje za pregled radova.
@@ -111,7 +111,7 @@
           <button class="filter__dugme" type="button" data-filter="rodni-grad" aria-pressed="false">Sanjarenja o rodnom gradu</button>
         </div>
 
-        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Prikazano 15 od 15 radova</p>
+        <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Prikazano 19 od 19 radova</p>
 
         <p class="filter__bez-js">
           Filter po seriji zahtijeva JavaScript. Ispod su prikazani svi radovi.
@@ -208,6 +208,40 @@
           </a>
         </li>
 
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/trentinski-predio.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/trentinski-predio-480.avif 480w, img/radovi/w/trentinski-predio-800.avif 800w, img/radovi/w/trentinski-predio-1200.avif 1200w, img/radovi/w/trentinski-predio-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/trentinski-predio-480.webp 480w, img/radovi/w/trentinski-predio-800.webp 800w, img/radovi/w/trentinski-predio-1200.webp 1200w, img/radovi/w/trentinski-predio-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/trentinski-predio.jpg" width="1050" height="1400" loading="lazy" decoding="async"
+                     alt="Visoko drvo i kamena kuća sa škurama iza drvene ograde; na jednom prozoru nazire se lik.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Trentinski predio</span>
+            <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 40&nbsp;×&nbsp;30&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="torino">
+          <a class="rad__veza" href="djelo/grcki-pejzaz.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/grcki-pejzaz-480.avif 480w, img/radovi/w/grcki-pejzaz-800.avif 800w, img/radovi/w/grcki-pejzaz-1200.avif 1200w, img/radovi/w/grcki-pejzaz-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/grcki-pejzaz-480.webp 480w, img/radovi/w/grcki-pejzaz-800.webp 800w, img/radovi/w/grcki-pejzaz-1200.webp 1200w, img/radovi/w/grcki-pejzaz-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/grcki-pejzaz.jpg" width="1140" height="1400" loading="lazy" decoding="async"
+                     alt="Čempresi i masline na žutom brdu pod plavim nebom, sa obljim kamenjem u prvom planu.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Grčki pejzaž</span>
+            <span class="oznaka oznaka--gola rad__meta">2025&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 50&nbsp;×&nbsp;40&nbsp;cm</span>
+          </a>
+        </li>
+
         <li class="rad" data-kategorija="atelje">
           <a class="rad__veza" href="djelo/havanac-kastro.html">
             <span class="rad__okvir">
@@ -290,6 +324,40 @@
             </span>
             <span class="rad__naziv">Cvijeće</span>
             <span class="oznaka oznaka--gola rad__meta">2024&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 35&nbsp;×&nbsp;25&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/iz-ateljea.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/iz-ateljea-480.avif 480w, img/radovi/w/iz-ateljea-800.avif 800w, img/radovi/w/iz-ateljea-1200.avif 1200w, img/radovi/w/iz-ateljea-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/iz-ateljea-480.webp 480w, img/radovi/w/iz-ateljea-800.webp 800w, img/radovi/w/iz-ateljea-1200.webp 1200w, img/radovi/w/iz-ateljea-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/iz-ateljea.jpg" width="1400" height="1100" loading="lazy" decoding="async"
+                     alt="Zelena boca, žuta zdjela i tegla sa četkicama na stolu u ateljeu, među tubama boje i olovkama.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Iz ateljea</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 45&nbsp;×&nbsp;55&nbsp;cm</span>
+          </a>
+        </li>
+
+        <li class="rad" data-kategorija="atelje">
+          <a class="rad__veza" href="djelo/slikarska-idila.html">
+            <span class="rad__okvir">
+              <picture>
+                <source type="image/avif" srcset="img/radovi/w/slikarska-idila-480.avif 480w, img/radovi/w/slikarska-idila-800.avif 800w, img/radovi/w/slikarska-idila-1200.avif 1200w, img/radovi/w/slikarska-idila-1600.avif 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <source type="image/webp" srcset="img/radovi/w/slikarska-idila-480.webp 480w, img/radovi/w/slikarska-idila-800.webp 800w, img/radovi/w/slikarska-idila-1200.webp 1200w, img/radovi/w/slikarska-idila-1600.webp 1600w"
+                        sizes="(min-width: 1010px) min(28.5vw, 350px), (min-width: 660px) 44vw, 90vw">
+                <img class="rad__slika" src="img/radovi/slikarska-idila.jpg" width="970" height="1400" loading="lazy" decoding="async"
+                     alt="Plava vaza, tube boje i paleta na stolu u ateljeu, pred zidom sa cvjetnim šarama i slikama u ramovima.">
+              </picture>
+            </span>
+            <span class="rad__naziv">Slikarska idila</span>
+            <span class="oznaka oznaka--gola rad__meta">2023&nbsp;· Ulje&nbsp;na&nbsp;platnu&nbsp;· 55&nbsp;×&nbsp;40&nbsp;cm</span>
           </a>
         </li>
 

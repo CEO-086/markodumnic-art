@@ -27,6 +27,16 @@
       "plocica": 21
     },
     {
+      "id": "trentinski-predio",
+      "naziv": "Trentinski predio",
+      "plocica": 21
+    },
+    {
+      "id": "grcki-pejzaz",
+      "naziv": "Grčki pejzaž",
+      "plocica": 21
+    },
+    {
       "id": "havanac-kastro",
       "naziv": "Havanac Kastro",
       "plocica": 21
@@ -49,6 +59,16 @@
     {
       "id": "cvijece",
       "naziv": "Cvijeće",
+      "plocica": 21
+    },
+    {
+      "id": "iz-ateljea",
+      "naziv": "Iz ateljea",
+      "plocica": 21
+    },
+    {
+      "id": "slikarska-idila",
+      "naziv": "Slikarska idila",
       "plocica": 21
     },
     {

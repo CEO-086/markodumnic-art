@@ -223,6 +223,82 @@
       ]
     },
     {
+      "id": "trentinski-predio",
+      "naziv": "Trentinski predio",
+      "originalniNaziv": "Trentinski predio",
+      "godina": 2024,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "40 × 30 cm",
+      "kategorija": "torino",
+      "istaknuto": false,
+      "opis": "Visoko drvo i kamena kuća sa škurama iza drvene ograde; na jednom prozoru nazire se lik.",
+      "paleta": [
+        "#50453E",
+        "#736B5E",
+        "#998D7A",
+        "#C1AF97",
+        "#CFD1CA"
+      ],
+      "slika": "img/radovi/trentinski-predio.jpg",
+      "slikaVelika": "img/radovi/velike/trentinski-predio.jpg",
+      "sirinaPx": 1050,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Trentino Scenery",
+        "opis": "A tall tree and a stone house with shutters behind a wooden fence; a figure can be made out at one window.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Scorcio trentino",
+        "opis": "Un albero alto e una casa di pietra con le persiane dietro una staccionata di legno; a una finestra si intravede una figura.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "grcki-pejzaz",
+      "naziv": "Grčki pejzaž",
+      "originalniNaziv": "Grčki pejzaž",
+      "godina": 2025,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "50 × 40 cm",
+      "kategorija": "torino",
+      "istaknuto": false,
+      "opis": "Čempresi i masline na žutom brdu pod plavim nebom, sa obljim kamenjem u prvom planu.",
+      "paleta": [
+        "#564E45",
+        "#847E6F",
+        "#99A3AA",
+        "#9BB8D4",
+        "#B7C1CE"
+      ],
+      "slika": "img/radovi/grcki-pejzaz.jpg",
+      "slikaVelika": "img/radovi/velike/grcki-pejzaz.jpg",
+      "sirinaPx": 1140,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Greek Landscape",
+        "opis": "Cypresses and olive trees on a yellow hillside under a blue sky, with rounded stones in the foreground.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Paesaggio greco",
+        "opis": "Cipressi e ulivi su una collina gialla sotto un cielo azzurro, con pietre tondeggianti in primo piano.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
       "id": "havanac-kastro",
       "naziv": "Havanac Kastro",
       "originalniNaziv": "Havanese Kastro",
@@ -403,6 +479,82 @@
       "it": {
         "naziv": "Fiori",
         "opis": "Due fiori viola in un bicchiere di latta sul tavolo, davanti a una parete chiara.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "iz-ateljea",
+      "naziv": "Iz ateljea",
+      "originalniNaziv": "Iz ateljea",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "45 × 55 cm",
+      "kategorija": "atelje",
+      "istaknuto": false,
+      "opis": "Zelena boca, žuta zdjela i tegla sa četkicama na stolu u ateljeu, među tubama boje i olovkama.",
+      "paleta": [
+        "#60615D",
+        "#897D71",
+        "#A59581",
+        "#B9A692",
+        "#CDBDAC"
+      ],
+      "slika": "img/radovi/iz-ateljea.jpg",
+      "slikaVelika": "img/radovi/velike/iz-ateljea.jpg",
+      "sirinaPx": 1400,
+      "visinaPx": 1100,
+      "en": {
+        "naziv": "From the Studio",
+        "opis": "A green bottle, a yellow bowl and a jar of brushes on a studio table, among paint tubes and pencils.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Dallo studio",
+        "opis": "Una bottiglia verde, una ciotola gialla e un barattolo di pennelli sul tavolo dello studio, tra tubetti di colore e matite.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "slikarska-idila",
+      "naziv": "Slikarska idila",
+      "originalniNaziv": "Slikarska idila",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "55 × 40 cm",
+      "kategorija": "atelje",
+      "istaknuto": false,
+      "opis": "Plava vaza, tube boje i paleta na stolu u ateljeu, pred zidom sa cvjetnim šarama i slikama u ramovima.",
+      "paleta": [
+        "#584B41",
+        "#786B58",
+        "#868B7D",
+        "#B38B5C",
+        "#C6AD7C"
+      ],
+      "slika": "img/radovi/slikarska-idila.jpg",
+      "slikaVelika": "img/radovi/velike/slikarska-idila.jpg",
+      "sirinaPx": 970,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Painter’s Idyll",
+        "opis": "A blue vase, paint tubes and a palette on a studio table, before a flower-patterned wall and framed paintings.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Idillio del pittore",
+        "opis": "Un vaso azzurro, tubetti di colore e una tavolozza sul tavolo dello studio, davanti a una parete a fiori e a quadri incorniciati.",
         "tehnika": "Olio su tela"
       },
       "varijante": [
