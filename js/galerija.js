@@ -401,6 +401,8 @@ const S = {
   drugaKrenula: false,  /* teksture druge sale su naručene */
   najavljeno: false     /* modulepreload za Three.js je već u <head> */
 };
+/* Automatski testovi (Playwright): ?proba izlaže stanje kao window.__S. */
+if (/(^|[?&])proba(=|&|$)/.test(location.search.slice(1))) window.__S = S;
 
 /* ---------------------------------------------------------
    Pomoćne funkcije
