@@ -1371,6 +1371,12 @@ function zagrijDrugu() {
   const kam = new T.PerspectiveCamera(100, 1, 0.1, 40);
   kam.position.set(0, 1.6, z0 + SD * 0.5);
   const stara = S.render.getRenderTarget();
+  /* Ovdje su upaljena SVA svjetla, kao pri prvom zagrijavanju: kad se
+     druga sala zagrije ponovo (prave teksture), gašenje svjetala van
+     kadra je već uključeno, pa bi ova sićušna slika tražila nove
+     varijante shadera (6/12 svjetala, bez tone mappinga) — 11 programa
+     prevedenih usred mirovanja u drugoj sali, samo za nju. */
+  S.svjetlaPrisilno = 'sva';
   try {
     [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].forEach(function (t) {
       kam.lookAt(t[0], VISINA_DJELA, t[1]);
@@ -1379,6 +1385,7 @@ function zagrijDrugu() {
       S.render.render(S.scena, kam);
     });
   } catch (e) { /* nije uspjelo — sala radi i bez toga */ }
+  S.svjetlaPrisilno = null;
   S.render.setRenderTarget(stara);
   meta.dispose();
   /* Crtež u render target ide BEZ tone mappinga i sRGB izlaza, pa su to
