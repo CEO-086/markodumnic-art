@@ -299,6 +299,44 @@
       ]
     },
     {
+      "id": "novembarski-pejzaz",
+      "naziv": "Novembarski pejzaž",
+      "originalniNaziv": "Novembarski pejzaž",
+      "godina": 2023,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "45 × 50 cm",
+      "kategorija": "torino",
+      "istaknuto": false,
+      "opis": "Kuća među jesenjim drvećem i put koji vijuga ka njoj, pod kovitlavim sivim nebom sa dvije ptice.",
+      "paleta": [
+        "#60523E",
+        "#876B46",
+        "#9D875D",
+        "#A69A76",
+        "#B3AD8E"
+      ],
+      "slika": "img/radovi/novembarski-pejzaz.jpg",
+      "slikaVelika": "img/radovi/velike/novembarski-pejzaz.jpg",
+      "sirinaPx": 1400,
+      "visinaPx": 1096,
+      "en": {
+        "naziv": "November Landscape",
+        "opis": "A house among autumn trees and a path winding towards it, under a swirling grey sky with two birds.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Paesaggio di novembre",
+        "opis": "Una casa tra alberi autunnali e un sentiero che vi serpeggia incontro, sotto un cielo grigio e vorticoso con due uccelli.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
       "id": "havanac-kastro",
       "naziv": "Havanezer Castro",
       "originalniNaziv": "Havanese Castro",

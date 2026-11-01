@@ -1,0 +1,44 @@
+{
+  "napomena": "Pločice su isječene iz fotografije djela u punoj rezoluciji (img/radovi/velike/novembarski-pejzaz.jpg). Svaka pločica je sirina × visina piksela svog nivoa, plus preklop.",
+  "id": "novembarski-pejzaz",
+  "naziv": "Novembarski pejzaž",
+  "tehnika": "Ulje na platnu",
+  "dimenzije": "45 × 50 cm",
+  "godina": 2023,
+  "rezerva": "img/radovi/novembarski-pejzaz.jpg",
+  "sadrzaj": {
+    "sirina": 600,
+    "visina": 470
+  },
+  "plocica": {
+    "sirina": 600,
+    "visina": 470
+  },
+  "preklop": 2,
+  "nivoa": 3,
+  "nivoi": [
+    {
+      "nivo": 0,
+      "kolona": 1,
+      "redova": 1,
+      "sirina": 600,
+      "visina": 470
+    },
+    {
+      "nivo": 1,
+      "kolona": 2,
+      "redova": 2,
+      "sirina": 1200,
+      "visina": 940
+    },
+    {
+      "nivo": 2,
+      "kolona": 4,
+      "redova": 4,
+      "sirina": 2400,
+      "visina": 1880
+    }
+  ],
+  "obrazac": "{nivo}/{kolona}_{red}.jpg",
+  "ukupno_plocica": 21
+}

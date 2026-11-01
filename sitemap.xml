@@ -122,6 +122,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/ponte-isabella"/>
   </url>
   <url>
+    <loc>https://markodumnic.art/djelo/novembarski-pejzaz</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/novembarski-pejzaz"/>
+  </url>
+  <url>
     <loc>https://markodumnic.art/djelo/krovovi-torina</loc>
     <lastmod>2026-10-23</lastmod>
     <changefreq>yearly</changefreq>
@@ -374,6 +384,16 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/ponte-isabella"/>
   </url>
   <url>
+    <loc>https://markodumnic.art/en/djelo/novembarski-pejzaz</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/novembarski-pejzaz"/>
+  </url>
+  <url>
     <loc>https://markodumnic.art/en/djelo/krovovi-torina</loc>
     <lastmod>2026-10-23</lastmod>
     <changefreq>yearly</changefreq>
@@ -623,6 +643,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/ponte-isabella"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/ponte-isabella"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/ponte-isabella"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/novembarski-pejzaz</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/novembarski-pejzaz"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/novembarski-pejzaz"/>
   </url>
   <url>
     <loc>https://markodumnic.art/it/djelo/krovovi-torina</loc>
