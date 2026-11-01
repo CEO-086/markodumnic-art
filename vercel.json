@@ -79,7 +79,7 @@
       ]
     },
     {
-      "source": "/js/((?!galerija\\.js$).*)",
+      "source": "/js/((?!galerija/).*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -88,7 +88,7 @@
       ]
     },
     {
-      "source": "/js/galerija.js",
+      "source": "/js/galerija/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

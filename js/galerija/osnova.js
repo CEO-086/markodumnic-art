@@ -39,7 +39,9 @@
    učitavaju; glavni.js ga na kraju skida.
 
    Svaka adresa ka ovim fajlovima nosi ?v=<heš sadržaja>
-   (alati/verzije.py), pa se keširaju „immutable“ (vercel.json).
+   (alati/verzije.py), pa se keširaju „immutable“ na godinu
+   (vercel.json, _headers). Zato u js/galerija/ idu samo skripte koje
+   galerija.html uključuje, i to samo preko tog alata.
    Bez build koraka. Three.js r186 iz vendor/three/, samo jezgro,
    bez addona — preuzima se tek na klik „Uđi u salu“ (glavni.js).
    Komentari na crnogorskom.
