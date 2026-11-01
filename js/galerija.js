@@ -2130,11 +2130,18 @@ function mjeriBrzinu(t) {
       if (medijana > 26) {
         const sad = S.render.getPixelRatio();
         const sljedeci = STEPENI_OSTRINE.filter(function (x) { return x < sad - 0.01; })[0];
-        if (sljedeci) {
-          S.render.setPixelRatio(sljedeci);   /* sam zadrži veličinu okna */
-        }
+        if (sljedeci) { S.novaOstrina = sljedeci; }
       }
     }
+  }
+  /* Nova oštrina tek kad kamera stane — promjena veličine slike usred
+     klizanja je sama po sebi jedan spori kadar. Poslije nje se druga sala
+     opet „zagrije“ na ekranu, za novu veličinu slike. */
+  if (S.novaOstrina && !kretanje) {
+    S.render.setPixelRatio(S.novaOstrina);   /* sam zadrži veličinu okna */
+    S.novaOstrina = 0;
+    if (S.drugaZagrijana) { S.zagrijEkran = 4; }
+    osvjeziKadar();
   }
   S.prosliCrtan = kretanje ? t : 0;
 }
