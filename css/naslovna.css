@@ -376,6 +376,8 @@
   background-color: var(--paper);
   color: var(--ink-soft);
   position: relative;
+  /* nagnuti Kastro (3D rotacija + sjenka) ne smije da gurne stranu u stranu */
+  overflow-x: clip;
 }
 
 .najava-galerije__unutra {
