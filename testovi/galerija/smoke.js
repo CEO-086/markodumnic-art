@@ -172,7 +172,7 @@ function tvrdi(uslov, poruka) { if (!uslov) { throw new Error(poruka); } }
 
     await test('jedan dio ne stigne: 2D mreža (rano.js)', async function () {
       const k = await kontekst();
-      await k.route(/\/js\/galerija\/kamera\.js/, function (r) { return r.fulfill({ status: 404, body: '' }); });
+      await k.route(/\/js\/galerija\/kretanje\.js/, function (r) { return r.fulfill({ status: 404, body: '' }); });
       const page = await k.newPage();
       const greske = prati(page);
       await page.goto(adresa + 'galerija.html', { waitUntil: 'load' });

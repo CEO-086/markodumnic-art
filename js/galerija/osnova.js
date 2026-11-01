@@ -10,18 +10,23 @@
    na platno vodi kameru pred njega, a iz sale u salu se hoda kroz
    prolaz.
 
-   FAJLOVI (js/galerija/, galerija.html ih učitava OVIM REDOM):
-     osnova     mjere, konstante, elementi stranice, stanje S
-     tekstovi   jezik stranice i tekstovi koje skripta sama upisuje
-     svjetla    reflektori i svjetiljke, svjetla van kadra, zagrijavanje
-     teksture   izvori slika, red preuzimanja, slanje na GPU
-     scena      raspored djela, građenje sala, djela, legende
-     telefon    kartica koja se sklapa, režim preko cijelog ekrana
-     ui         stanja prikaza, 2D rezerva, panel, mapa, savjeti, natpis
-     izbliza    Izbliza (djelo preko cijelog ekrana) i Lupa
-     kamera     pozicije, orbita, klizanje i hod, izbor djela, tura
-     unos       tastatura, miš, dodir, točkić, fokus, vidljivost
-     glavni     Three.js, podaci, pokretanje, petlja, izlaz, ulaz
+   FAJLOVI I DIJELOVI (galerija.html ih učitava OVIM REDOM). Dio je
+   jedna cjelina u svom omotaču; fajl drži jedan ili više dijelova:
+     osnova.js    osnova     mjere, konstante, elementi stranice, stanje S
+                  tekstovi   jezik stranice i tekstovi koje skripta sama upisuje
+     scena.js     svjetla    reflektori i svjetiljke, svjetla van kadra, zagrijavanje
+                  teksture   izvori slika, red preuzimanja, slanje na GPU
+                  scena      raspored djela, građenje sala, djela, legende
+     sucelje.js   telefon    kartica koja se sklapa, režim preko cijelog ekrana
+                  ui         stanja prikaza, 2D rezerva, panel, mapa, savjeti, natpis
+                  izbliza    Izbliza (djelo preko cijelog ekrana) i Lupa
+     kretanje.js  kamera     pozicije, orbita, klizanje i hod, izbor djela, tura
+                  unos       tastatura, miš, dodir, točkić, fokus, vidljivost
+     glavni.js    glavni     Three.js, podaci, pokretanje, petlja, izlaz, ulaz
+   Pet fajlova, a ne jedanaest: svaki fajl više je još jedan zahtjev
+   koji se sa CSS-om otima o vezu, a dijelovi u istom fajlu se bolje
+   komprimuju (mjereno na sporoj vezi); zato i fetchpriority="low" u
+   galerija.html. Novi fajl — samo uz novo mjerenje.
 
    KLASIČNE SKRIPTE, NE ES MODULI. Modul se sa `file://` adrese ne
    izvrši (CORS), pa bi stranica otvorena duplim klikom lagala
@@ -30,14 +35,16 @@
    klasične skripte pregledač traži odjednom, čim pročita HTML, a
    moduli bi tražili još jedan ili dva kruga do servera (mjereno).
 
-   DIJELJENJE IMENA. Svaki fajl je u svom omotaču (IIFE), pa
-   globalni prostor ostaje čist. Zajednički je samo objekat G: dio
-   na kraju upiše u G ono što drugi koriste (Object.assign), a na
-   početku uzme iz G ono što su upisali RANIJI dijelovi
-   (const { … } = G). Funkcija iz KASNIJEG dijela poziva se preko G u
-   trenutku poziva (npr. G.izaberi(i) u ui.js) — tada su svi dijelovi
-   već učitani. G je na window.__galerija samo dok se skripte
-   učitavaju; glavni.js ga na kraju skida.
+   DIJELJENJE IMENA. Svaki dio je u svom omotaču (IIFE), pa globalni
+   prostor ostaje čist. Zajednički je samo objekat G: dio na kraju
+   upiše u G ono što drugi koriste (Object.assign) i prijavi se
+   (G.dijelovi.push), a na početku uzme iz G ono što su upisali
+   RANIJI dijelovi (const { … } = G). Funkcija iz KASNIJEG dijela
+   poziva se preko G u trenutku poziva (npr. G.izaberi(i) u dijelu
+   ui) — tada su svi dijelovi već učitani. G je na window.__galerija
+   samo dok se skripte učitavaju; glavni.js provjeri da su se svi
+   dijelovi prijavili i skine ga. Novi dio: svoj omotač, prijava, i
+   ime u spisku u glavni.js (testovi/galerija/imena.js to provjerava).
 
    Svaka adresa ka ovim fajlovima nosi ?v=<heš sadržaja>
    (alati/verzije.py), pa se keširaju „immutable“ na godinu
@@ -60,7 +67,7 @@
  */
 /**
  * Elementi stranice. Prva grupa je u HTML-u (null ako ga nema), a
- * panelVise i mob prave telefon.js (pripremiKarticu, pripremiMob).
+ * panelVise i mob prave sucelje.js (pripremiKarticu, pripremiMob).
  * @typedef {Object} Elementi
  * @property {HTMLElement} ulaz
  * @property {HTMLElement} pokreni
@@ -164,7 +171,7 @@
  * @property {boolean} drugaKrenula
  * @property {boolean} najavljeno
  *
- * Kretanje kamere (kamera.js, unos.js, glavni.js)
+ * Kretanje kamere (kretanje.js, glavni.js)
  * @property {{ poz: any, cilj: any }} [ka]  prigušeno praćenje: kamo kamera ide
  * @property {number} [pogled]     smjer pogleda u pregledu (radijani)
  * @property {number} [inercija]   zamah poslije prevlačenja
@@ -195,7 +202,7 @@
  * @property {number} [uPrvoj]
  * @property {number} [crtezi]
  *
- * Scena, svjetla i zagrijavanje (scena.js, svjetla.js)
+ * Scena, svjetla i zagrijavanje (scena.js)
  * @property {any} [ambijent]
  * @property {any} [polulopta]
  * @property {any} [matZid]
@@ -212,13 +219,13 @@
  * @property {number} [zagrijEkran]
  * @property {number} [zagrijMalo]
  *
- * Teksture (teksture.js)
+ * Teksture (scena.js)
  * @property {any[]} [kadrovi]  poslovi koji čekaju kadar, jedan po kadru (uKadar)
  * @property {number} [crtanjaNaCekanju]
  * @property {Object<string, boolean>} [velikeUcitane]
  * @property {number} [velikaTajmer]
  *
- * Sučelje (ui.js, telefon.js, izbliza.js, osnova.js)
+ * Sučelje (sucelje.js, osnova.js)
  * @property {boolean} [mreza2D]
  * @property {number} [najavaTajmer]
  * @property {number} [porukaTajmer]
@@ -496,7 +503,7 @@ const S = {
   /* Klizanje kamere */
   anim: null,           /* klizanje { tacke, ciljevi, duz, trajanje, pocetak, uvod? } ili
                            hod { hod, put, duzinaPuta, cilj0, cilj1, trajanje, pocetak }
-                           (vidi kreniKa i uvod u kamera.js) */
+                           (vidi kreniKa i uvod u kretanje.js) */
   poz: null,            /* trenutna pozicija kamere (Vector3) */
   cilj: null,           /* trenutna tačka u koju kamera gleda (Vector3) */
   mis: { x: 0, y: 0 },  /* normalizovano -1..1 za paralaksu */
@@ -512,7 +519,7 @@ const S = {
   tura: null,           /* vođena tura: { i, start, korak, faza, pauza, od, do, osnova } */
   uvod: 0,              /* trenutak ulaska — svjetla se pale */
   anizotropija: 1,
-  /* Teksture djela: red preuzimanja po prioritetu (vidi `uRed` u teksture.js) */
+  /* Teksture djela: red preuzimanja po prioritetu (vidi `uRed` u scena.js) */
   teksture: [],         /* { djelo, soba, platno, odraz, mesh, tex, nivo, gen } po djelu */
   red: [], redBroj: 0, redAktivno: 0,
   gen: 0,               /* raste na svakom izlasku — stari poslovi se odbacuju */
@@ -601,5 +608,130 @@ Object.assign(G, {
   pamti, graniceSale, salaTacke, osvjeziKadar, sada, poruka
 });
 G.dijelovi.push('osnova');
+
+})();
+
+/* =========================================================
+   Virtuelna galerija — jezik i tekstovi
+   Ista skripta služi crnogorsku (korijen), englesku (en/) i
+   italijansku stranicu (it/); jezik se čita iz <html lang>.
+   Ovdje su SVI tekstovi koje skripta sama upisuje u stranicu
+   (natpisi, najave za čitače ekrana, poruke), na sva tri jezika.
+   Tekstovi koji stoje u HTML-u prevode se u en/ i it/ stranicama,
+   a nazivi, opisi i tehnike djela dolaze iz data/radovi.json
+   (polja `en` i `it`).
+   ========================================================= */
+
+(function () {
+'use strict';
+
+/** @type {Galerija} */
+const G = /** @type {any} */ (window).__galerija;
+
+/* Jezik stranice, iz <html lang> */
+const EN = document.documentElement.lang === 'en';
+const IT = document.documentElement.lang === 'it';
+
+/* Tekstovi koje skripta sama upisuje. Crnogorski je izvor. */
+const TEKST = IT ? {
+  izbliza: 'Da vicino: ', djelo: 'opera', zatvori: 'Chiudi',
+  savjetPuna: 'Trascinate o usate le frecce per muovervi sul dipinto · clic o Invio mostra l’opera intera',
+  savjetCijela: 'Fate clic sul dipinto o premete Invio per vederlo a grandezza piena',
+  slikaIzbliza: function (n) { return n + ' — Invio passa alla grandezza piena, le frecce si muovono sul dipinto'; },
+  platnoIme: 'Sala espositiva virtuale',
+  salaNazad: 'Torna alla prima sala', salaDruga: 'Alla seconda sala',
+  platno: 'Sala espositiva virtuale con le opere di Marko Dumnić. Fate clic su un dipinto per portarvi davanti la telecamera; ' +
+    'le frecce sinistra e destra passano all’opera precedente e a quella successiva, Esc torna alla panoramica della sala. ' +
+    'Davanti a un’opera: A e D girano intorno al dipinto, W e S cambiano l’altezza dello sguardo, ' +
+    'le frecce su e giù avvicinano e allontanano, L accende la luce radente.',
+  tura: 'Visita la mostra', nastavi: 'Riprendi la visita', pauza: 'Pausa',
+  obilazak: function (k, n) { return 'Visita: ' + k + ' di ' + n; },
+  redni: function (k, n) { return k + ' di ' + n; },
+  nastavlja: 'La visita prosegue',
+  pocetak: function (n) { return 'Visita alla mostra · ' + n + ' opere'; },
+  pauzirano: 'Visita in pausa · «Riprendi la visita» la fa ripartire',
+  kraj: 'Fine del percorso · grazie per la visita',
+  mapa: 'Mappa', tlocrt: 'Pianta delle sale con le opere',
+  sala1: 'SALA 1', sala2: 'SALA 2',
+  djeloBr: function (i) { return 'Opera ' + i; },
+  idiDo: 'Vai all’opera: ',
+  sakrijMapu: 'Nascondi la pianta', prikaziMapu: 'Mostra la pianta',
+  crtez: 'Disegno', ulje: 'Dipinto a olio',
+  karticaVise: 'Mostra i dati dell’opera', karticaManje: 'Nascondi i dati dell’opera',
+  opcije: 'Opzioni', iliDodir: 'o toccate un dipinto', oDjelu: 'Sull’opera',
+  cistoSavjet: 'Toccate il dipinto per nascondere i pulsanti', cistoNazad: 'Toccate di nuovo il dipinto per riavere i pulsanti'
+} : EN ? {
+  izbliza: 'Close-up: ', djelo: 'artwork', zatvori: 'Close',
+  savjetPuna: 'Drag or use the arrow keys to move around the painting · click or Enter shows the whole work',
+  savjetCijela: 'Click the painting or press Enter to view it at full size',
+  slikaIzbliza: function (n) { return n + ' — Enter switches to full size, the arrow keys move around the painting'; },
+  platnoIme: 'Virtual exhibition room',
+  salaNazad: 'Back to room one', salaDruga: 'To room two',
+  platno: 'Virtual exhibition room with works by Marko Dumnić. Click a painting to bring the camera in front of it; ' +
+    'the left and right arrow keys go to the previous and next work, and Escape returns to the overview of the room. ' +
+    'In front of a work: A and D circle around the painting, W and S change the viewing height, ' +
+    'the up and down arrow keys move closer and further away, and L turns on the side light.',
+  tura: 'Tour the exhibition', nastavi: 'Resume tour', pauza: 'Pause',
+  obilazak: function (k, n) { return 'Tour ' + k + ' of ' + n; },
+  redni: function (k, n) { return k + ' of ' + n; },
+  nastavlja: 'The tour continues',
+  pocetak: function (n) { return 'Exhibition tour · ' + n + ' works'; },
+  pauzirano: 'Tour paused · “Resume tour” picks it up again',
+  kraj: 'End of the tour · thank you for visiting',
+  mapa: 'Map', tlocrt: 'Floor plan of the rooms and the works',
+  sala1: 'ROOM 1', sala2: 'ROOM 2',
+  djeloBr: function (i) { return 'Work ' + i; },
+  idiDo: 'Go to the work: ',
+  sakrijMapu: 'Hide the floor plan', prikaziMapu: 'Show the floor plan',
+  crtez: 'Drawing', ulje: 'Oil painting',
+  karticaVise: 'Show the details of the work', karticaManje: 'Hide the details of the work',
+  opcije: 'Options', iliDodir: 'or tap a painting', oDjelu: 'About the work',
+  cistoSavjet: 'Tap the painting to hide the buttons', cistoNazad: 'Tap the painting again for the buttons'
+} : {
+  izbliza: 'Izbliza: ', djelo: 'djelo', zatvori: 'Zatvori',
+  savjetPuna: 'Prevucite ili koristite strelice za kretanje po slici · klik ili Enter vraća cijelu sliku',
+  savjetCijela: 'Klik na sliku ili Enter za punu veličinu',
+  slikaIzbliza: function (n) { return n + ' — Enter prebacuje na punu veličinu, strelice pomjeraju po slici'; },
+  platnoIme: 'Virtuelna sala',
+  salaNazad: 'Nazad u prvu salu', salaDruga: 'U drugu salu',
+  platno: 'Virtuelna sala sa djelima Marka Dumnića. Klik na sliku vodi kameru pred nju, ' +
+    'strelice lijevo i desno idu na prethodno i sljedeće djelo, Escape vraća na pregled sobe. ' +
+    'Pred djelom: A i D kruže oko slike, W i S mijenjaju visinu pogleda, ' +
+    'strelice gore i dolje približavaju, L pali bočno svjetlo.',
+  tura: 'Obiđi izložbu', nastavi: 'Nastavi obilazak', pauza: 'Pauza',
+  obilazak: function (k, n) { return 'Obilazak ' + k + ' od ' + n; },
+  redni: function (k, n) { return k + ' od ' + n; },
+  nastavlja: 'Obilazak se nastavlja',
+  pocetak: function (n) { return 'Obilazak izložbe · ' + n + ' djela'; },
+  pauzirano: 'Obilazak je pauziran · „Nastavi“ ga vraća',
+  kraj: 'Kraj obilaska · hvala na posjeti',
+  mapa: 'Mapa', tlocrt: 'Tlocrt sala sa djelima',
+  sala1: 'SALA 1', sala2: 'SALA 2',
+  djeloBr: function (i) { return 'Djelo ' + i; },
+  idiDo: 'Idi do djela: ',
+  sakrijMapu: 'Sakrij mapu sale', prikaziMapu: 'Prikaži mapu sale',
+  crtez: 'Crtež', ulje: 'Ulje',
+  karticaVise: 'Prikaži podatke o djelu', karticaManje: 'Sakrij podatke o djelu',
+  opcije: 'Opcije', iliDodir: 'ili dodirnite sliku', oDjelu: 'O djelu',
+  cistoSavjet: 'Dodir na sliku sakriva dugmad', cistoNazad: 'Dodirnite sliku da vratite dugmad'
+};
+
+/* Poruke kad se izgubi i vrati WebGL kontekst (vidi kontekstIzgubljen
+   u kretanje.js) */
+const PORUKA_GRAFIKE = IT ? {
+  izgubljena: 'La grafica si è fermata per un momento: la sala tornerà da sola. Se non torna, ricaricate la pagina.',
+  vracena: 'La sala è di nuovo qui'
+} : EN ? {
+  izgubljena: 'The graphics paused for a moment: the gallery will come back by itself. If it doesn’t, please reload the page.',
+  vracena: 'The gallery is back'
+} : {
+  izgubljena: 'Grafika je na trenutak zastala: sala će se sama vratiti. Ako se ne vrati, osvježite stranicu.',
+  vracena: 'Sala je ponovo tu'
+};
+
+Object.assign(G, {
+  EN, IT, TEKST, PORUKA_GRAFIKE
+});
+G.dijelovi.push('tekstovi');
 
 })();

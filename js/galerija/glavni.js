@@ -16,26 +16,26 @@ const {
   izKorijena, BOJA, VIDNO_POLJE, TELEFON, stediPodatke, korijen, el, S, smanjenoKretanje, kameraIde,
   uUvodu, svedi, lako, osvjeziKadar, sada
 } = G;
-const { EN, IT, TEKST } = G;   /* tekstovi.js */
-const { SVJ, zagrijNaEkranu, SVJETLA_U_KADRU, osvjeziSjenke } = G;   /* svjetla.js */
-const { zatvoriBitmapu, jedanPosaoKadra, paziNaDrugu } = G;   /* teksture.js */
+const { EN, IT, TEKST } = G;   /* tekstovi, osnova.js */
+const { SVJ, zagrijNaEkranu, SVJETLA_U_KADRU, osvjeziSjenke } = G;   /* svjetla, scena.js */
+const { zatvoriBitmapu, jedanPosaoKadra, paziNaDrugu } = G;   /* teksture, scena.js */
 const { MJESTA_DRUGE, napraviSobu, postaviDjela, zamrzniNepokretno } = G;   /* scena.js */
-/* telefon.js */
+/* telefon, sucelje.js */
 const {
   postaviKarticu, pripremiKarticu, uronjeno, fokusUTraku, postaviOpcije, pripremiMob
 } = G;
-/* ui.js */
+/* ui, sucelje.js */
 const {
   stanje, na2D, osvjeziKretanje, napraviMapu, osvjeziMapu, pokaziSavjete, zatvoriSavjete, zatvoriPanel,
   natpis
 } = G;
-const { zatvoriIzbliza, postaviLupu, osvjeziLupu } = G;   /* izbliza.js */
-/* kamera.js */
+const { zatvoriIzbliza, postaviLupu, osvjeziLupu } = G;   /* izbliza, sucelje.js */
+/* kamera, kretanje.js */
 const {
   pozicijaPregleda, korakHoda, korakKlizanja, naPregled, mjeri, osvjeziDugmeTure, zavrsiTuru, korakTure,
   uvod, korakUvoda, sParalaksom, pogodak
 } = G;
-const { vezi, odvezi } = G;   /* unos.js */
+const { vezi, odvezi } = G;   /* unos, kretanje.js */
 
 /* Three.js: modul i jezgro koje on uvozi. Oba se najavljuju kao
    <link rel="modulepreload"> čim je dugme "Uđi u salu" na vidiku, pod
@@ -253,7 +253,7 @@ function pokreni(djela) {
   S.render.shadowMap.enabled = true;
   S.render.shadowMap.type = T.PCFShadowMap;
   /* Sala stoji, pa se mapa sjenke ne crta u svakom kadru, nego samo
-     kad se nešto u sceni promijeni (vidi osvjeziSjenke, svjetla.js) — na telefonu
+     kad se nešto u sceni promijeni (vidi osvjeziSjenke, scena.js) — na telefonu
      i na računaru. Sjenka izgleda isto, a grafika ima manje posla. */
   S.render.shadowMap.autoUpdate = false;
   S.render.shadowMap.needsUpdate = true;
@@ -333,8 +333,8 @@ function petlja() {
   const dt = Math.min(0.1, Math.max(0, (t - (S.prosli || t)) / 1000));
   S.prosli = t;
 
-  /* Kretanje na početku kadra (vidi jedanPosaoKadra u teksture.js i
-     zagrijavanje u svjetla.js) */
+  /* Kretanje na početku kadra (vidi jedanPosaoKadra i zagrijavanje u
+     scena.js) */
   const stajala = !kameraIde();
   const hodala = !!(S.anim && S.anim.hod);
   const uvodila = uUvodu();
@@ -380,7 +380,7 @@ function petlja() {
      velika samo ako kamera ne ide ni na početku ni na kraju koraka — ni
      u kadru u kom klizanje stiže na cilj, ni u kom tura krene ka
      sljedećem djelu. Izuzeci: uvod (vidi uUvodu, osnova.js) i platno
-     pred očima (vidi predOcima, teksture.js). */
+     pred očima (vidi predOcima, scena.js). */
   jedanPosaoKadra(hodala || !!(S.anim && S.anim.hod), uvodila || (stajala && !kameraIde()));
 
   /* CRTANJE PO POTREBI: kad se ništa ne mijenja (kamera stoji, nema
@@ -578,18 +578,20 @@ Object.assign(G, {
   petlja, izadji
 });
 
-/* Svi dijelovi su se izvršili do kraja? Ako neki nije stigao sa
-   mreže, sala se ne pokreće — kao kad nije stigla cijela skripta:
-   bez data-stanje, pa js/rano.js na `load` pokaže 2D mrežu. G je
-   svim dijelovima već u rukama, pa se skida sa window. */
+/* Svi dijelovi su se izvršili do kraja, ovim redom? Ako neki fajl
+   nije stigao sa mreže, sala se ne pokreće — kao kad nije stigla
+   cijela skripta: bez data-stanje, pa js/rano.js na `load` pokaže 2D
+   mrežu. Spisak mora pratiti fajlove (provjera:
+   testovi/galerija/imena.js). G je svim dijelovima već u rukama, pa
+   se skida sa window. */
 delete /** @type {any} */ (window).__galerija;
-if (G.dijelovi.length !== document.querySelectorAll('script[src*="js/galerija/"]').length - 1) { return; }
+if (G.dijelovi.join() !== 'osnova,tekstovi,svjetla,teksture,scena,telefon,ui,izbliza,kamera,unos') { return; }
 
 /* ---------------------------------------------------------
    Početno stanje
 
    Smanjeno kretanje NE vodi više na 2D: sala radi, kamera samo
-   skače umjesto da klizi (vidi `kreniKa` u kamera.js). Poruka o tome je na
+   skače umjesto da klizi (vidi `kreniKa` u kretanje.js). Poruka o tome je na
    ulaznom ekranu i otkriva je CSS.
    --------------------------------------------------------- */
 if (korijen) {

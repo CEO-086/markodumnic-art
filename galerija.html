@@ -13,7 +13,7 @@
 <!-- /fontovi -->
 <link rel="stylesheet" href="css/tokens.css?v=27375fd933">
 <link rel="stylesheet" href="css/base.css?v=fd3b053f77">
-<link rel="stylesheet" href="css/galerija.css?v=8510e5380b">
+<link rel="stylesheet" href="css/galerija.css?v=6b45be27ae">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
@@ -98,7 +98,7 @@
   <section class="sekcija" aria-labelledby="naslov-sale">
     <div class="omot omot--sirok">
 
-      <!-- data-stanje postavlja js/galerija/ (ui.js). Dok ga nema (JavaScript isključen,
+      <!-- data-stanje postavlja js/galerija/ (sucelje.js). Dok ga nema (JavaScript isključen,
            pregledač bez ES modula ili skripte nijesu stigle), CSS prikazuje 2D mrežu —
            ne ulazni ekran sa dugmetom koje ne bi radilo. -->
       <div class="galerija" id="galerija">
@@ -223,7 +223,7 @@
             <p class="galerija-panel__opis" id="galerija-panel-opis">—</p>
             <a class="dugme dugme--tekst galerija-panel__link" id="galerija-panel-link" href="djelo.html">Otvori stranicu djela</a>
           </aside>
-          <!-- Kratka najava izabranog djela za čitače ekrana (puni js/galerija/ui.js) -->
+          <!-- Kratka najava izabranog djela za čitače ekrana (puni js/galerija/sucelje.js) -->
           <p class="vizuelno-skriveno" id="galerija-najava" role="status"></p>
 
         </div>
@@ -249,7 +249,7 @@
             <button class="galerija-kretanje__dugme" type="button" id="galerija-sala">U drugu salu</button>
           </div>
           <!-- Uglovi gledanja — vidljivi SAMO dok je djelo izabrano
-               (data-izabrano na .galerija postavlja js/galerija/kamera.js).
+               (data-izabrano na .galerija postavlja js/galerija/kretanje.js).
                Na telefonu je ovo jedan red koji se skroluje vodoravno. -->
           <div class="galerija-ugao" role="group" aria-label="Ugao gledanja">
             <button class="galerija-kretanje__dugme galerija-ugao__dugme galerija-ugao__prekidac" type="button" id="galerija-bocno" aria-pressed="false">Bočno svjetlo</button>
@@ -259,7 +259,7 @@
             <button class="galerija-kretanje__dugme galerija-ugao__dugme" type="button" data-ugao="izbliza">Izbliza</button>
             <button class="galerija-kretanje__dugme galerija-ugao__dugme galerija-ugao__prekidac" type="button" id="galerija-lupa" aria-pressed="false">Lupa</button>
           </div>
-          <!-- Mapa sale: tlocrt, tačke djela, „vi ste ovdje“. Puni je js/galerija/ui.js.
+          <!-- Mapa sale: tlocrt, tačke djela, „vi ste ovdje“. Puni je js/galerija/sucelje.js.
                Stoji u traci ispod sale, ne preko slike. -->
           <nav class="galerija-mapa" id="galerija-mapa" aria-label="Mapa sale"></nav>
         </div>
@@ -541,17 +541,16 @@
      Klasičan skript se izvrši i tamo, prepozna `file:` i kaže pravi razlog.
      Uz to bi moduli čekali jedan na drugi (još jedan ili dva kruga do
      servera). Three.js se i dalje preuzima tek na klik, dinamičkim
-     import()-om iz glavni.js; importmape nema (inline bi je CSP blokirao). -->
-<script src="js/galerija/osnova.js?v=b6001acd47"></script>
-<script src="js/galerija/tekstovi.js?v=40a6b25a17"></script>
-<script src="js/galerija/svjetla.js?v=2addbf13af"></script>
-<script src="js/galerija/teksture.js?v=57cc66bd33"></script>
-<script src="js/galerija/scena.js?v=22b6589301"></script>
-<script src="js/galerija/telefon.js?v=34a5470046"></script>
-<script src="js/galerija/ui.js?v=1628cb4d97"></script>
-<script src="js/galerija/izbliza.js?v=a5c92855ff"></script>
-<script src="js/galerija/kamera.js?v=2eeb7a2085"></script>
-<script src="js/galerija/unos.js?v=1fdde81b24"></script>
-<script src="js/galerija/glavni.js?v=118779c8c9"></script>
+     import()-om iz glavni.js; importmape nema (inline bi je CSP blokirao).
+     Pet fajlova (ne više) i fetchpriority="low": pregledač ih pušta iza
+     CSS-a i fontova, pa se stranica iscrta skoro kao sa jednim fajlom.
+     Mjereno: na 4G bez razlike; na sporijoj vezi (1,6 Mbit/s) ili
+     iscrtavanje kasni do ~0,1 s ili spremnost sale ~0,07 s, zavisno od
+     servera. Izvršavaju se i dalje ovdje, ovim redom. -->
+<script src="js/galerija/osnova.js?v=1c3621fe47" fetchpriority="low"></script>
+<script src="js/galerija/scena.js?v=09ac88882f" fetchpriority="low"></script>
+<script src="js/galerija/sucelje.js?v=bf3f5ef368" fetchpriority="low"></script>
+<script src="js/galerija/kretanje.js?v=17f255d1f6" fetchpriority="low"></script>
+<script src="js/galerija/glavni.js?v=a59893e714" fetchpriority="low"></script>
 </body>
 </html>
