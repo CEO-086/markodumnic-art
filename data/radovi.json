@@ -223,6 +223,82 @@
       ]
     },
     {
+      "id": "trentinski-predio",
+      "naziv": "Trentinski predio",
+      "originalniNaziv": "Trentinski predio",
+      "godina": 2024,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "40 × 30 cm",
+      "kategorija": "torino",
+      "istaknuto": false,
+      "opis": "Visoko drvo i kamena kuća sa škurama iza drvene ograde; na jednom prozoru nazire se lik.",
+      "paleta": [
+        "#50453E",
+        "#736B5E",
+        "#998D7A",
+        "#C1AF97",
+        "#CFD1CA"
+      ],
+      "slika": "img/radovi/trentinski-predio.jpg",
+      "slikaVelika": "img/radovi/velike/trentinski-predio.jpg",
+      "sirinaPx": 1050,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Trentino Scenery",
+        "opis": "A tall tree and a stone house with shutters behind a wooden fence; a figure can be made out at one window.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Scorcio trentino",
+        "opis": "Un albero alto e una casa di pietra con le persiane dietro una staccionata di legno; a una finestra si intravede una figura.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "grcki-pejzaz",
+      "naziv": "Grčki pejzaž",
+      "originalniNaziv": "Grčki pejzaž",
+      "godina": 2025,
+      "tehnika": "Ulje na platnu",
+      "dimenzije": "50 × 40 cm",
+      "kategorija": "torino",
+      "istaknuto": false,
+      "opis": "Čempresi i masline na žutom brdu pod plavim nebom, sa obljim kamenjem u prvom planu.",
+      "paleta": [
+        "#564E45",
+        "#847E6F",
+        "#99A3AA",
+        "#9BB8D4",
+        "#B7C1CE"
+      ],
+      "slika": "img/radovi/grcki-pejzaz.jpg",
+      "slikaVelika": "img/radovi/velike/grcki-pejzaz.jpg",
+      "sirinaPx": 1140,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Greek Landscape",
+        "opis": "Cypresses and olive trees on a yellow hillside under a blue sky, with rounded stones in the foreground.",
+        "tehnika": "Oil on canvas"
+      },
+      "it": {
+        "naziv": "Paesaggio greco",
+        "opis": "Cipressi e ulivi su una collina gialla sotto un cielo azzurro, con pietre tondeggianti in primo piano.",
+        "tehnika": "Olio su tela"
+      },
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
       "id": "havanac-kastro",
       "naziv": "Havanac Kastro",
       "originalniNaziv": "Havanese Kastro",

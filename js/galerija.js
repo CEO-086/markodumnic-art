@@ -582,10 +582,10 @@ function raspored(n) {
   return mjesta;
 }
 
-/* Druga sala (iza prolaza): četiri mjesta na zadnjem zidu, po tri na
+/* Druga sala (iza prolaza): šest mjesta na zadnjem zidu, po tri na
    bočnim. Ista visina i normale kao u prvoj sali, pa za kameru,
    reflektor, legendu i lupu nema razlike u kojoj je sali djelo. */
-const MJESTA_DRUGE = 10;
+const MJESTA_DRUGE = 12;
 function rasporedDruge(n) {
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
   const z0 = POLA_Z + PROLAZ.zid;
@@ -595,15 +595,17 @@ function rasporedDruge(n) {
      ▶ uvijek vodi na djelo desno. Niz ispod je redoslijed popunjavanja
      kad je djela manje od mjesta. */
   const sva = [
-    { x: -2.4, z: z0 + SD, rot: Math.PI, red: 6 },
-    { x: -0.8, z: z0 + SD, rot: Math.PI, red: 5 },
-    { x: 0.8,  z: z0 + SD, rot: Math.PI, red: 4 },
-    { x: 2.4,  z: z0 + SD, rot: Math.PI, red: 3 },
-    { x: -SW / 2, z: z0 + SD * 0.3, rot: Math.PI / 2, red: 9 },
+    { x: -3.5, z: z0 + SD, rot: Math.PI, red: 8 },
+    { x: -2.1, z: z0 + SD, rot: Math.PI, red: 7 },
+    { x: -0.7, z: z0 + SD, rot: Math.PI, red: 6 },
+    { x: 0.7,  z: z0 + SD, rot: Math.PI, red: 5 },
+    { x: 2.1,  z: z0 + SD, rot: Math.PI, red: 4 },
+    { x: 3.5,  z: z0 + SD, rot: Math.PI, red: 3 },
+    { x: -SW / 2, z: z0 + SD * 0.3, rot: Math.PI / 2, red: 11 },
     { x:  SW / 2, z: z0 + SD * 0.3, rot: -Math.PI / 2, red: 0 },
-    { x: -SW / 2, z: z0 + SD * 0.75, rot: Math.PI / 2, red: 7 },
+    { x: -SW / 2, z: z0 + SD * 0.75, rot: Math.PI / 2, red: 9 },
     { x:  SW / 2, z: z0 + SD * 0.75, rot: -Math.PI / 2, red: 2 },
-    { x: -SW / 2, z: z0 + SD * 0.525, rot: Math.PI / 2, red: 8 },
+    { x: -SW / 2, z: z0 + SD * 0.525, rot: Math.PI / 2, red: 10 },
     { x:  SW / 2, z: z0 + SD * 0.525, rot: -Math.PI / 2, red: 1 }
   ];
   const mjesta = sva.slice(0, Math.max(0, n)).sort(function (a, b) { return a.red - b.red; });
