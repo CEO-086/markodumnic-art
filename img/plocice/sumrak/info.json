@@ -1,11 +1,11 @@
 {
-  "napomena": "Pločice su isječene iz fotografije djela u punoj rezoluciji (img/radovi/velike/kuca-u-sumrak.jpg). Svaka pločica je sirina × visina piksela svog nivoa, plus preklop.",
-  "id": "kuca-u-sumrak",
-  "naziv": "Bez naziva",
+  "napomena": "Pločice su isječene iz fotografije djela u punoj rezoluciji (img/radovi/velike/sumrak.jpg). Svaka pločica je sirina × visina piksela svog nivoa, plus preklop.",
+  "id": "sumrak",
+  "naziv": "Sumrak",
   "tehnika": "Ulje na platnu",
-  "dimenzije": "",
+  "dimenzije": "30 × 20 cm",
   "godina": 2026,
-  "rezerva": "img/radovi/kuca-u-sumrak.jpg",
+  "rezerva": "img/radovi/sumrak.jpg",
   "sadrzaj": {
     "sirina": 421,
     "visina": 600
