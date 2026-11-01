@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "galerija-provjere",
+  "description": "Provjere 3D galerije (js/galerija/): dogovor dijelova, verzije, ESLint, tsc i Playwright smoke test. Samo za razvoj — ne objavljuje se (.vercelignore); package.json NE ide u korijen sajta (Vercel bi pokušao build).",
+  "scripts": {
+    "provjeri": "node provjeri.js",
+    "smoke": "node smoke.js"
+  },
+  "devDependencies": {
+    "eslint": "^10.1.0",
+    "playwright": "^1.56.1",
+    "typescript": "^6.0.2"
+  }
+}
