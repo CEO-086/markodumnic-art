@@ -810,7 +810,7 @@ async function ucitajPodatke() {
    Isti fajl učitan dvaput pregledač preuzima jednom (keš slika). */
 function sobnaMapa(T, ime) {
   const ucitac = new T.TextureLoader();
-  const t = ucitac.load(izKorijena('img/soba/' + ime + '.webp'), undefined, undefined, function () {
+  const t = ucitac.load(izKorijena('img/soba/' + ime + '.webp'), osvjeziKadar, undefined, function () {
     ucitac.load(izKorijena('img/soba/' + ime + '.png'), function (p) { t.image = p.image; t.needsUpdate = true; osvjeziKadar(); }, undefined, function () {});
   });
   return t;
@@ -2863,7 +2863,7 @@ function korakUvoda(t) {
   const p = Math.min(1, (t - S.uvod) / 1700);
   const e = 1 - Math.pow(1 - p, 3);
   S.render.toneMappingExposure = 0.15 + (1.2 - 0.15) * e;
-  if (p >= 1) { S.uvod = 0; }
+  if (p >= 1) { S.uvod = 0; osvjeziKadar(); }
 }
 
 /* ---------------------------------------------------------
@@ -2921,7 +2921,8 @@ function petlja() {
   /* CRTANJE PO POTREBI: kad se ništa ne mijenja (kamera stoji, nema
      klizanja, prevlačenja ni novih tekstura), isti kadar se ne crta
      iznova — grafika se odmori, a kad krene pokret, nema zaostalog
-     posla. Za svaki slučaj kadar se ipak osvježi bar 4 puta u sekundi. */
+     posla. Sve što mijenja sliku bez pomjeranja kamere (tekstura,
+     legenda, svjetlo, veličina okna, oštrina) zove osvjeziKadar(). */
   const me = S.kamera.matrixWorld.elements;
   let promjena = !S.zadnjaMatrica;
   if (!promjena) {
@@ -2929,7 +2930,7 @@ function petlja() {
   }
   if (promjena) { S.zadnjaMatrica = me.slice(); }
   let crtaj = promjena || S.crtajJos > 0 || S.anim || S.ka || S.inercija || S.vuce || S.uvod ||
-    S.lupa.na || (S.kadrovi && S.kadrovi.length) || t - (S.zadnjiKadar || 0) > 250;
+    S.lupa.na || (S.kadrovi && S.kadrovi.length) || S.novaOstrina;
   if (S.crtajJos > 0) { S.crtajJos--; }
 
   /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova */
@@ -3694,6 +3695,7 @@ function vidljivost() {
     /* Klizanje koje je zateklo pauzu bi inače "preskočilo" cijelu
        animaciju u jednom kadru — pomjeri se početak na sada. */
     if (S.anim) { S.anim.pocetak = S.sat; }
+    osvjeziKadar();
     petlja();
   }
 }
