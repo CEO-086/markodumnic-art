@@ -333,8 +333,12 @@ function napraviReflektor(mj, djelo, i) {
       svjetlo.position.set(mj.cx + mj.nx * dalje, gore, mj.z + mj.nz * dalje);
       svjetlo.target.position.set(mj.cx, mj.y - CRTEZI_SVJETLO.nize, mj.z);
       const daljina = svjetlo.position.distanceTo(svjetlo.target.position);
+      /* Jezgro snopa (puna jačina) pokriva sve crteže grupe, i krajnje —
+         inače su krajnji bili u polusjeni, sa ~40 % svjetla unutrašnjih.
+         Od jezgra do ivice snopa svjetlo se mekano gasi, malo van crteža. */
       svjetlo.angle = Math.min(1.1, Math.atan((mj.raspon / 2 + CRTEZI_SVJETLO.preko) / daljina));
-      svjetlo.penumbra = CRTEZI_SVJETLO.penumbra;
+      const jezgro = Math.atan(Math.max(0.1, mj.raspon / 2 + CRTEZI_SVJETLO.jezgro) / daljina);
+      svjetlo.penumbra = Math.min(0.9, Math.max(0.1, 1 - jezgro / svjetlo.angle));
       svjetlo.distance = daljina * 2.5;
       svjetlo.intensity = 17 * Math.pow(daljina / 3.0, 2) * CRTEZI_SVJETLO.jacina;
     }
@@ -385,7 +389,7 @@ function postaviBocno(ukljuci) {
       m.svjetlo.intensity = m.svjetloJacina * 0.9;
     } else {
       m.svjetlo.position.copy(m.svjetloPoz);
-      m.svjetlo.angle = UGAO_SNOPA;
+      m.svjetlo.angle = m.svjetloUgao;   /* početni snop, ne UGAO_SNOPA: crteži su širi */
       m.svjetlo.intensity = m.svjetloJacina;
     }
   }
@@ -1576,7 +1580,8 @@ function postaviDjela(djela) {
       djelo: djelo,
       svjetlo: svjetlo,
       svjetloPoz: svjetlo.position.clone(),
-      svjetloJacina: svjetlo.intensity
+      svjetloJacina: svjetlo.intensity,
+      svjetloUgao: svjetlo.angle    /* crteži imaju širi zajednički snop */
     });
   });
 
