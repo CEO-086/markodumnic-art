@@ -39,15 +39,15 @@
   /* Nazivi serija — za vezu „Serija” na stranici djela. Ako radovi.json
      donese svoje nazive (polje `kategorije`), oni imaju prednost. */
   var NAZIVI_SERIJA = ITALIJANSKI ? {
-    'torino': 'Paesaggi torinesi',
+    'torino': 'Paesaggi',
     'atelje': 'Scorci dallo studio',
     'rodni-grad': 'Fantasticherie sulla città natale'
   } : ENGLESKI ? {
-    'torino': 'Turin Landscapes',
+    'torino': 'Landscapes',
     'atelje': 'Glimpses from the Studio',
     'rodni-grad': 'Hometown Reveries'
   } : {
-    'torino': 'Torinski pejzaži',
+    'torino': 'Pejzaži',
     'atelje': 'Prizori iz ateljea',
     'rodni-grad': 'Sanjarenja o rodnom gradu'
   };
