@@ -1193,6 +1193,11 @@ function zagrijDrugu() {
   } catch (e) { /* nije uspjelo — sala radi i bez toga */ }
   S.render.setRenderTarget(stara);
   meta.dispose();
+  /* Crtež u render target ide BEZ tone mappinga i sRGB izlaza, pa su to
+     druge varijante shadera od onih na ekranu. Zato još i compile()
+     sa ekranom kao metom: pripremi baš one programe koje kadar koristi
+     (za sve objekte scene, bez obzira na to gdje kamera gleda). */
+  try { S.render.compile(S.scena, kam); } catch (e) {}
 }
 
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
