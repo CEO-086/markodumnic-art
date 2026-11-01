@@ -556,10 +556,12 @@ function imaWebGL() {
    samo kamera skače odmah na izabrano djelo umjesto da klizi, a
    paralaksa je ugašena. Jedina poruka o tome stoji na ulaznom ekranu
    (.galerija-ulaz__napomena--kretanje) i otkriva je CSS media upit,
-   pa se pojavljuje tačno jednom i tačno onima koje se tiče. */
+   pa se pojavljuje tačno jednom i tačno onima koje se tiče.
+   Upit se pravi jednom (zove se u svakom kadru, a matchMedia() ga svaki
+   put iznova parsira); `.matches` istog upita prati promjenu postavke. */
+const MANJE_KRETANJA = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 function smanjenoKretanje() {
-  return !!(window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  return !!(MANJE_KRETANJA && MANJE_KRETANJA.matches);
 }
 
 /* "70 × 60 cm" → { sirina: 0.70, visina: 0.60 } u METRIMA.
@@ -1448,15 +1450,23 @@ const SVJETLA_U_KADRU = [6, 12];
 const DOMET = {};
 function dometSvjetla(l) {
   const T = S.tri;
-  if (!DOMET.kutija) {
-    DOMET.kutija = new T.Box3();
+  if (!DOMET.tacka) {
     DOMET.tacka = new T.Vector3();
     DOMET.osa = new T.Vector3();
     DOMET.u = new T.Vector3();
     DOMET.v = new T.Vector3();
   }
-  const P = l.position, d = l.distance, k = DOMET.kutija, t = DOMET.tacka;
-  const osa = DOMET.osa.subVectors(l.target.position, P).normalize();
+  /* Kutija zavisi samo od mjesta svjetla, mete, ugla i dometa, a oni se
+     mijenjaju tek uz bočno svjetlo — inače se ista kutija ne računa
+     iznova u svakom kadru. */
+  const P = l.position, Q = l.target.position, d = l.distance;
+  let z = l.userData.domet;
+  if (z && z.px === P.x && z.py === P.y && z.pz === P.z && z.qx === Q.x && z.qy === Q.y && z.qz === Q.z &&
+      z.ugao === l.angle && z.d === d) { return z.kutija; }
+  if (!z) { z = l.userData.domet = { kutija: new T.Box3() }; }
+  z.px = P.x; z.py = P.y; z.pz = P.z; z.qx = Q.x; z.qy = Q.y; z.qz = Q.z; z.ugao = l.angle; z.d = d;
+  const k = z.kutija, t = DOMET.tacka;
+  const osa = DOMET.osa.subVectors(Q, P).normalize();
   const c = Math.cos(l.angle), s = Math.sin(l.angle);
   DOMET.u.set(Math.abs(osa.y) < 0.9 ? 0 : 1, Math.abs(osa.y) < 0.9 ? 1 : 0, 0).cross(osa).normalize();
   DOMET.v.crossVectors(osa, DOMET.u);
@@ -2419,17 +2429,22 @@ function mjeriBrzinu(t) {
       }
     }
   }
-  /* Nova oštrina tek kad kamera stane — promjena veličine slike usred
-     klizanja je sama po sebi jedan spori kadar. Poslije nje se druga sala
-     opet „zagrije“ na ekranu, za novu veličinu slike. */
-  if (S.novaOstrina && !kretanje) {
-    S.render.setPixelRatio(S.novaOstrina);   /* sam zadrži veličinu okna */
-    S.novaOstrina = 0;
-    if (S.drugaZagrijana) { S.zagrijEkran = 4; }
-    if (S.svjetlaMalo) { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
-    osvjeziKadar();
-  }
   S.prosliCrtan = kretanje ? t : 0;
+}
+/* Nova oštrina tek kad kamera stane — promjena veličine slike usred
+   klizanja je sama po sebi jedan spori kadar. Primjenjuje se u petlji
+   PRIJE crtanja tog kadra: promjena veličine briše bafer slike i čeka
+   da grafika završi sve poslato. Kadar nacrtan neposredno prije nje bio
+   bi obrisan neprikazan (platno bi taj kadar ostalo prazno), a čekanje
+   bi trajalo i za cio taj kadar. Poslije nje se druga sala opet
+   „zagrije“ na ekranu, za novu veličinu slike. */
+function primijeniOstrinu() {
+  if (!S.novaOstrina || S.anim || S.ka || S.inercija || S.vuce) { return; }
+  S.render.setPixelRatio(S.novaOstrina);   /* sam zadrži veličinu okna */
+  S.novaOstrina = 0;
+  if (S.drugaZagrijana) { S.zagrijEkran = 4; }
+  if (S.svjetlaMalo) { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
+  osvjeziKadar();
 }
 
 /* Pokretanje klizanja (ili skoka, uz smanjeno kretanje) */
@@ -2800,7 +2815,12 @@ function mjeri() {
   const h = el.platno.clientHeight || 500;
   S.kamera.aspect = w / h;
   S.kamera.updateProjectionMatrix();
-  S.render.setSize(w, h, false);
+  /* Svaka dodjela canvas.width/height (i ista vrijednost) iznova pravi
+     i briše bafer slike, a to čeka grafiku. ResizeObserver i 'resize'
+     javljaju i kad se broj piksela ne promijeni (oba za istu promjenu
+     prozora, djelić piksela, traka za skrol) — tada setSize ne treba. */
+  const v = S.render.getSize(S.velicina || (S.velicina = new S.tri.Vector2()));
+  if (v.x !== w || v.y !== h) { S.render.setSize(w, h, false); }
   velicinaMeta();
   osvjeziKadar();
 
@@ -3167,6 +3187,24 @@ function korakUvoda(t) {
   if (p >= 1) { S.uvod = 0; osvjeziKadar(); }
 }
 
+/* NEPOKRETNO: zidovi, pod, plafon, klupe, ramovi, platna, odrazi,
+   legende, svjetiljke i šine se posle gradnje više ne pomjeraju, a
+   three.js bi inače u svakom kadru iznova slagao matricu svakog objekta
+   (updateMatrix + množenje sa roditeljem). Zato se njihova matrica složi
+   jednom — iste vrijednosti, samo bez ponavljanja. Svjetla ostaju živa
+   (bočno svjetlo ih pomjera, vidi postaviBocno).
+   PAZI: objekat koji bi se posle gradnje pomjerao (position, rotation,
+   scale) mora zadržati matrixAutoUpdate — ili posle pomjeranja pozvati
+   updateMatrix(). */
+function zamrzniNepokretno() {
+  S.scena.matrixAutoUpdate = false;
+  S.scena.traverse(function (o) {
+    if (o === S.scena || o.isLight || !o.matrixAutoUpdate) { return; }
+    o.matrixAutoUpdate = false;
+    o.updateMatrix();
+  });
+}
+
 /* ---------------------------------------------------------
    Petlja
    --------------------------------------------------------- */
@@ -3233,10 +3271,13 @@ function petlja() {
   let crtaj = promjena || S.crtajJos > 0 || S.anim || S.ka || S.inercija || S.vuce || S.uvod ||
     S.lupa.na || (S.kadrovi && S.kadrovi.length) || S.novaOstrina;
   if (S.crtajJos > 0) { S.crtajJos--; }
+  primijeniOstrinu();
 
-  /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova */
+  /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova,
+     a matrice novih nepokretnih objekata se slože jednom */
   if (S.scena.children.length !== S.sjenkeDjeca) {
     S.sjenkeDjeca = S.scena.children.length;
+    zamrzniNepokretno();
     osvjeziSjenke();
   }
   if (S.zagrijEkran && !S.anim && !S.ka && !S.vuce && !S.inercija) {
@@ -3434,6 +3475,7 @@ function pripremiKarticu() {
    na jednom mjestu.
    --------------------------------------------------------- */
 const UZAK_EKRAN = '(max-width: 720px), (max-height: 500px) and (pointer: coarse)';
+const UZAK = window.matchMedia ? window.matchMedia(UZAK_EKRAN) : null;   /* jedan upit; .matches prati promjenu */
 
 function uronjeno() {
   return document.documentElement.classList.contains('galerija-uronjena');
@@ -3442,7 +3484,7 @@ function uronjeno() {
 function osvjeziUronjeno() {
   const st = korijen.getAttribute('data-stanje');
   const da = (st === 'soba' || st === 'ucitavanje') &&
-    !!(window.matchMedia && window.matchMedia(UZAK_EKRAN).matches);
+    !!(UZAK && UZAK.matches);
   document.documentElement.classList.toggle('galerija-uronjena', da);
   if (!da) {
     postaviOpcije(false);
@@ -3601,11 +3643,10 @@ function pripremiMob() {
     if (b && !b.hasAttribute('data-mob')) { postaviOpcije(false); }
   });
 
-  if (window.matchMedia) {
-    const mq = window.matchMedia(UZAK_EKRAN);
+  if (UZAK) {
     const promjena = function () { osvjeziUronjeno(); };
-    if (mq.addEventListener) { mq.addEventListener('change', promjena); }
-    else if (mq.addListener) { mq.addListener(promjena); }
+    if (UZAK.addEventListener) { UZAK.addEventListener('change', promjena); }
+    else if (UZAK.addListener) { UZAK.addListener(promjena); }
   }
   osvjeziMob();
 }
