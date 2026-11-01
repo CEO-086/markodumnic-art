@@ -55,6 +55,7 @@ const TEKST = IT ? {
     'le frecce su e giù avvicinano e allontanano, L accende la luce radente.',
   tura: 'Visita la mostra', nastavi: 'Riprendi la visita', pauza: 'Pausa',
   obilazak: function (k, n) { return 'Visita: ' + k + ' di ' + n; },
+  redni: function (k, n) { return k + ' di ' + n; },
   nastavlja: 'La visita prosegue',
   pocetak: function (n) { return 'Visita alla mostra · ' + n + ' opere'; },
   pauzirano: 'Visita in pausa · «Riprendi la visita» la fa ripartire',
@@ -81,6 +82,7 @@ const TEKST = IT ? {
     'the up and down arrow keys move closer and further away, and L turns on the side light.',
   tura: 'Tour the exhibition', nastavi: 'Resume tour', pauza: 'Pause',
   obilazak: function (k, n) { return 'Tour ' + k + ' of ' + n; },
+  redni: function (k, n) { return k + ' of ' + n; },
   nastavlja: 'The tour continues',
   pocetak: function (n) { return 'Exhibition tour · ' + n + ' works'; },
   pauzirano: 'Tour paused · “Resume tour” picks it up again',
@@ -107,6 +109,7 @@ const TEKST = IT ? {
     'strelice gore i dolje približavaju, L pali bočno svjetlo.',
   tura: 'Obiđi izložbu', nastavi: 'Nastavi obilazak', pauza: 'Pauza',
   obilazak: function (k, n) { return 'Obilazak ' + k + ' od ' + n; },
+  redni: function (k, n) { return k + ' od ' + n; },
   nastavlja: 'Obilazak se nastavlja',
   pocetak: function (n) { return 'Obilazak izložbe · ' + n + ' djela'; },
   pauzirano: 'Obilazak je pauziran · „Nastavi“ ga vraća',
@@ -283,28 +286,68 @@ const TELEFON = MAX_TEKSTURA <= 1024;
      img/sala/<id>-160.webp     sićušna slika — stoji na platnu odmah,
                                 dok prava ne stigne
      img/sala/<id>-1024.webp    fotografija za telefone (MAX_TEKSTURA 1024)
-     img/radovi/<id>.jpg        fotografija za ostale, u prirodnoj veličini
+     img/radovi/w/<id>-<w>.avif fotografija za računar (JPG kao rezerva)
+     img/radovi/<id>.jpg        rezerva, u prirodnoj veličini
      img/reljef/<id>.webp       normal mapa (telefon: <id>-512.webp)
    Ako WebP fajla nema, uzima se original (JPG / PNG). */
 function izvorMali(djelo) {
   return djelo.id ? izKorijena('img/sala/' + encodeURIComponent(djelo.id) + '-160.webp') : null;
 }
-function izvorDjela(djelo) {
-  if (TELEFON && djelo.id) { return izKorijena('img/sala/' + encodeURIComponent(djelo.id) + '-1024.webp'); }
-  /* Računar: AVIF iz img/radovi/w/ (isti fajlovi kao na stranicama
-     radova) u širini najbližoj JPG-u — oko upola manje podataka za istu
-     oštrinu. Ako AVIF ne prođe, učitava se JPG (vidi ucitajSliku). */
+/* Izvori po redu: prvi koji prođe ide na platno (vidi ucitajBoju). */
+function izvoriDjela(djelo) {
+  const id = djelo.id ? encodeURIComponent(djelo.id) : '';
+  const avif = id && avifRadi !== false;
   const v = (djelo.varijante || []).slice().sort(function (a, b) { return a - b; });
-  if (djelo.id && v.length && djelo.sirinaPx > 0) {
+  const l = [];
+  /* Štednja podataka: 800 px AVIF iz img/radovi/w/ (~100 KB), i na telefonu */
+  if (avif && stediPodatke() && v.indexOf(800) >= 0) { l.push(izKorijena('img/radovi/w/' + id + '-800.avif')); }
+  if (TELEFON && id) {
+    /* Telefon: WebP 1024 (AVIF je ovdje proban i odbačen: sitan pomak
+       boje, a ušteda tek ~20 %) */
+    l.push(izKorijena('img/sala/' + id + '-1024.webp'));
+  } else if (avif && v.length && djelo.sirinaPx > 0) {
+    /* Računar: AVIF iz img/radovi/w/ (isti fajlovi kao na stranicama
+       radova) u širini najbližoj JPG-u — oko upola manje podataka za istu
+       oštrinu. Ako AVIF ne prođe, učitava se JPG. */
     const w = v.filter(function (x) { return x >= djelo.sirinaPx * 0.95; })[0] || v[v.length - 1];
-    if (w >= 800) { return izKorijena('img/radovi/w/' + encodeURIComponent(djelo.id) + '-' + w + '.avif'); }
+    if (w >= 800) { l.push(izKorijena('img/radovi/w/' + id + '-' + w + '.avif')); }
   }
-  return djelo.slika;
+  if (djelo.slika) { l.push(djelo.slika); }
+  return l;
+}
+function izvorDjela(djelo) {
+  return izvoriDjela(djelo)[0] || djelo.slika;
+}
+/* Fotografija pune veličine za Izbliza i Lupu: originalni JPG (AVIF je
+   proban i odbačen zbog sitnog pomaka boje — boje slika moraju biti tačne). */
+function izvorVelike(djelo) {
+  return djelo.slikaVelika || djelo.slika;
 }
 function izvorReljefa(djelo, original) {
   const id = encodeURIComponent(djelo.id);
-  return izKorijena('img/reljef/' + id + (original ? '.png' : (TELEFON ? '-512.webp' : '.webp')));
+  return izKorijena('img/reljef/' + id + (original ? '.png' : (TELEFON || stediPodatke() ? '-512.webp' : '.webp')));
 }
+
+/* ŠTEDNJA PODATAKA: „štedi podatke“ (navigator.connection.saveData) ili
+   prefers-reduced-data — manje teksture i ništa unaprijed (ni Three.js
+   prije klika, ni velika fotografija, ni druga sala prije polaska). */
+const MANJE_PODATAKA = window.matchMedia ? window.matchMedia('(prefers-reduced-data: reduce)') : null;
+function stediPodatke() {
+  const veza = navigator.connection;
+  return !!((veza && veza.saveData) || (MANJE_PODATAKA && MANJE_PODATAKA.matches));
+}
+
+/* AVIF: provjera jednom, na slici 1×1 iz data: adrese (CSP img-src je
+   dozvoljava), da pregledač bez AVIF-a ne preuzima AVIF fajlove uzalud.
+   avifRadi: null dok se ne zna, pa true / false. */
+let avifRadi = null;
+const AVIF_PROVJERA = new Promise(function (res) {
+  const p = new Image();
+  const kraj = function (da) { avifRadi = da; res(da); };
+  p.onload = function () { kraj(p.naturalWidth === 1); };
+  p.onerror = function () { kraj(false); };
+  p.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADrbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAAAAAAAOcGl0bQAAAAAAAQAAAB5pbG9jAAAAAEQAAAEAAQAAAAEAAAETAAAAHgAAAChpaW5mAAAAAAABAAAAGmluZmUCAAAAAAEAAGF2MDFDb2xvcgAAAABqaXBycAAAAEtpcGNvAAAAFGlzcGUAAAAAAAAAAQAAAAEAAAAQcGl4aQAAAAADCAgIAAAADGF2MUOBAAwAAAAAE2NvbHJuY2x4AAEADQAGgAAAABdpcG1hAAAAAAAAAAEAAQQBAoMEAAAAJm1kYXQSAAoIGAAGiAhoNCAyEBlHh4Yhh5555oAAAJBAzeg=';
+});
 
 /* Three.js: modul i jezgro koje on uvozi. Oba se najavljuju kao
    <link rel="modulepreload"> čim je dugme "Uđi u salu" na vidiku, pod
@@ -401,6 +444,8 @@ const S = {
   drugaKrenula: false,  /* teksture druge sale su naručene */
   najavljeno: false     /* modulepreload za Three.js je već u <head> */
 };
+/* Automatski testovi (Playwright): ?proba izlaže stanje kao window.__S. */
+if (/(^|[?&])proba(=|&|$)/.test(location.search.slice(1))) window.__S = S;
 
 /* ---------------------------------------------------------
    Pomoćne funkcije
@@ -418,6 +463,78 @@ function stanje(novo) {
 function na2D(razlog) {
   korijen.setAttribute('data-razlog', razlog);
   stanje('2d');
+  /* U HTML-u je samo izbor djela (radi i bez JavaScripta). Kad podaci
+     mogu da stignu, mreža se dopuni do svih djela iz radovi.json. */
+  if (razlog === 'webgl' || razlog === 'cdn' || razlog === 'prazno') { popuni2D(); }
+}
+
+/* 2D mreža sa SVIM djelima iz data/radovi.json, istim oznakama kao
+   statična mreža u HTML-u (isti CSS). Statična mreža ostaje ako
+   podaci ne stignu. */
+function popuni2D() {
+  const lista = korijen.querySelector('.galerija-2d__mreza');
+  if (!lista || !window.fetch || S.mreza2D) { return; }
+  S.mreza2D = true;
+  const uzorak = lista.querySelector('source');
+  const velicine = (uzorak && uzorak.getAttribute('sizes')) || '100vw';
+  fetch(izKorijena('data/radovi.json')).then(function (o) {
+    if (!o.ok) { throw new Error('podaci'); }
+    return o.json();
+  }).then(function (podaci) {
+    const radovi = ((podaci && podaci.radovi) || []).filter(function (r) { return r && r.id && r.slika; });
+    if (!radovi.length) { return; }
+    const nova = document.createDocumentFragment();
+    radovi.forEach(function (r) {
+      const prevod = (IT ? r.it : EN ? r.en : null) || {};
+      const naziv = prevod.naziv || r.naziv || '';
+      const opis = prevod.opis || r.opis || '';
+      const tehnika = prevod.tehnika || r.tehnika || '';
+      const n = function (ime, klasa) { const e = document.createElement(ime); if (klasa) { e.className = klasa; } return e; };
+      const li = n('li');
+      const fig = n('figure', 'galerija-2d__djelo');
+      const a = n('a');
+      a.setAttribute('href', 'djelo.html?id=' + encodeURIComponent(r.id));
+      const okvir = n('span', 'galerija-2d__okvir');
+      const pic = n('picture');
+      const sirine = Array.isArray(r.varijante) ? r.varijante.map(Number).filter(function (w) { return w > 0; }) : [];
+      if (sirine.length && /^[a-z0-9-]+$/.test(String(r.id))) {
+        ['avif', 'webp'].forEach(function (ekst) {
+          const izvor = n('source');
+          izvor.setAttribute('type', 'image/' + ekst);
+          izvor.setAttribute('srcset', sirine.map(function (w) {
+            return izKorijena('img/radovi/w/' + r.id + '-' + w + '.' + ekst) + ' ' + w + 'w';
+          }).join(', '));
+          izvor.setAttribute('sizes', velicine);
+          pic.appendChild(izvor);
+        });
+      }
+      const img = n('img');
+      if (r.sirinaPx && r.visinaPx) {
+        img.setAttribute('width', String(r.sirinaPx));
+        img.setAttribute('height', String(r.visinaPx));
+      }
+      img.setAttribute('alt', opis ? naziv + ' — ' + opis : naziv);
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('src', izKorijena(r.slika));
+      pic.appendChild(img);
+      okvir.appendChild(pic);
+      a.appendChild(okvir);
+      const cap = n('figcaption');
+      const ime = n('span', 'galerija-2d__naziv');
+      ime.textContent = naziv;
+      const meta = n('span', 'galerija-2d__meta');
+      meta.textContent = [r.godina, tehnika, r.dimenzije]
+        .filter(function (v) { return v != null && String(v).trim() !== ''; }).join(' · ');
+      cap.appendChild(ime);
+      cap.appendChild(meta);
+      fig.appendChild(a);
+      fig.appendChild(cap);
+      li.appendChild(fig);
+      nova.appendChild(li);
+    });
+    lista.textContent = '';
+    lista.appendChild(nova);
+  }).catch(function () { S.mreza2D = false; /* ostaje statični izbor */ });
 }
 
 /* Da li pregledač uopšte može WebGL */
@@ -436,10 +553,12 @@ function imaWebGL() {
    samo kamera skače odmah na izabrano djelo umjesto da klizi, a
    paralaksa je ugašena. Jedina poruka o tome stoji na ulaznom ekranu
    (.galerija-ulaz__napomena--kretanje) i otkriva je CSS media upit,
-   pa se pojavljuje tačno jednom i tačno onima koje se tiče. */
+   pa se pojavljuje tačno jednom i tačno onima koje se tiče.
+   Upit se pravi jednom (zove se u svakom kadru, a matchMedia() ga svaki
+   put iznova parsira); `.matches` istog upita prati promjenu postavke. */
+const MANJE_KRETANJA = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 function smanjenoKretanje() {
-  return !!(window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  return !!(MANJE_KRETANJA && MANJE_KRETANJA.matches);
 }
 
 /* "70 × 60 cm" → { sirina: 0.70, visina: 0.60 } u METRIMA.
@@ -477,7 +596,14 @@ function rasterizuj(url, max) {
   return new Promise(function (res, odbij) {
     const slika = new Image();
     slika.decoding = 'async';
+    /* Dekodiranje van glavne niti (decode()), a crtanje u platno tek kad
+       se ne hoda iz sale u salu — inače bi slika koja stigne usred hoda
+       zaustavila kadar. */
     slika.onload = function () {
+      const dalje = function () { kadNeHoda(crtaj); };
+      if (slika.decode) { slika.decode().then(dalje, dalje); } else { dalje(); }
+    };
+    const crtaj = function () {
       const w0 = slika.naturalWidth || 1000;
       const h0 = slika.naturalHeight || 1000;
       /* Fotografija se NE uvećava: 1400 px razvučeno na 2048 ne dobija
@@ -494,6 +620,10 @@ function rasterizuj(url, max) {
     slika.onerror = odbij;
     slika.src = url;
   });
+}
+function kadNeHoda(f) {
+  if (S.anim && S.anim.hod) { window.setTimeout(function () { kadNeHoda(f); }, 120); return; }
+  f();
 }
 
 /* Legenda kao platno sa tekstom — kao kartončić na zidu muzeja */
@@ -715,7 +845,7 @@ function najaviKadTreba() {
   /* Dugme na ekranu: najava kad se stranica smiri — osim uz "štedi
      podatke" ili 2G, gdje se čeka da posjetilac stvarno krene ka dugmetu. */
   const veza = navigator.connection;
-  if (veza && (veza.saveData || /(^|-)2g$/.test(veza.effectiveType || ''))) { return; }
+  if (stediPodatke() || (veza && /(^|-)2g$/.test(veza.effectiveType || ''))) { return; }
   if (!('IntersectionObserver' in window)) { return; }
   const posmatrac = new IntersectionObserver(function (unosi) {
     if (!unosi.some(function (u) { return u.isIntersecting; })) { return; }
@@ -808,7 +938,7 @@ async function ucitajPodatke() {
    Isti fajl učitan dvaput pregledač preuzima jednom (keš slika). */
 function sobnaMapa(T, ime) {
   const ucitac = new T.TextureLoader();
-  const t = ucitac.load(izKorijena('img/soba/' + ime + '.webp'), undefined, undefined, function () {
+  const t = ucitac.load(izKorijena('img/soba/' + ime + '.webp'), osvjeziKadar, undefined, function () {
     ucitac.load(izKorijena('img/soba/' + ime + '.png'), function (p) { t.image = p.image; t.needsUpdate = true; osvjeziKadar(); }, undefined, function () {});
   });
   return t;
@@ -824,7 +954,7 @@ function napraviSobu() {
    mora postati bijela, inače se sve potamni drugi put. */
 function tekstureSobe(T, mat, osnova, ponavljanje, uSRGB) {
   const uzmi = (ime, boja) => {
-    const t = sobnaMapa(T, ime);
+    const t = pamti(sobnaMapa(T, ime));   /* oslobađa se na izlasku */
     t.wrapS = t.wrapT = T.RepeatWrapping;
     t.repeat.set(ponavljanje[0], ponavljanje[1]);
     if (boja) t.colorSpace = T.SRGBColorSpace;   /* samo albedo je boja */
@@ -1199,22 +1329,24 @@ function pumpaj() {
     try { p = Promise.resolve(z.posao()); } catch (e) { p = Promise.resolve(); }
     p.catch(function () {}).then(function () { S.redAktivno--; pumpaj(); });
   }
-  /* Prva sala je gotova: druga se tiho učita u pozadini, dok je
-     posjetilac još u prvoj. Inače bi se 12 slika i 12 reljefa
-     obrađivalo baš dok kamera klizi kroz prolaz — trzaj i treptaj
-     kad stane. */
+  /* Prva sala je gotova: druga se NE preuzima unaprijed (posjetilac
+     možda nikad ne uđe u nju) — kreće tek kad joj se kamera okrene ili
+     približi (paziNaDrugu) ili krene ka njoj. Ali se odmah „zagrije“
+     sa sićušnim slikama: shaderi i stanje drajvera su spremni, pa ni
+     kasni ulazak ne trza. */
   if (!S.redAktivno && !S.red.length && !S.drugaKrenula && S.teksture.length && !S.drugaZakazana) {
     S.drugaZakazana = true;
     const gen = S.gen;
-    const kreni = function () { if (S.gen === gen) { ucitajDrugu(); } };
+    const kreni = function () { if (S.gen === gen) { zagrijDrugu(); } };
     if (window.requestIdleCallback) { window.requestIdleCallback(kreni, { timeout: 2500 }); }
     else { window.setTimeout(kreni, 800); }
   }
-  /* Druga sala je učitana: jednom je „zagrij“ (vidi zagrijDrugu). */
+  /* Druga sala je učitana: jednom je „zagrij“ (vidi zagrijDrugu), sada
+     sa pravim teksturama. */
   if (!S.redAktivno && !S.red.length && S.drugaKrenula && !S.zagrijavanjeZakazano) {
     S.zagrijavanjeZakazano = true;
     const gen2 = S.gen;
-    const zagrij = function () { if (S.gen === gen2) { zagrijDrugu(); } };
+    const zagrij = function () { if (S.gen === gen2) { S.drugaZagrijana = false; zagrijDrugu(); } };
     if (window.requestIdleCallback) { window.requestIdleCallback(zagrij, { timeout: 2500 }); }
     else { window.setTimeout(zagrij, 800); }
   }
@@ -1227,8 +1359,9 @@ function pumpaj() {
    kamera prvi put vidi drugu salu — to je bio trzaj usred klizanja. */
 function zagrijDrugu() {
   if (!S.render || !S.tri || !S.scena || S.drugaZagrijana) { return; }
-  /* ne usred klizanja i ne dok teksture još idu na GPU */
-  if (S.anim || (S.kadrovi && S.kadrovi.length)) { window.setTimeout(zagrijDrugu, 400); return; }
+  /* ne usred klizanja, ne dok teksture još idu na GPU i ne prije nego
+     što platna druge sale dobiju sićušne slike (mapa mijenja shader) */
+  if (S.anim || (S.kadrovi && S.kadrovi.length) || !maleDrugeStigle()) { window.setTimeout(zagrijDrugu, 400); return; }
   S.drugaZagrijana = true;
   const T = S.tri;
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
@@ -1237,6 +1370,12 @@ function zagrijDrugu() {
   const kam = new T.PerspectiveCamera(100, 1, 0.1, 40);
   kam.position.set(0, 1.6, z0 + SD * 0.5);
   const stara = S.render.getRenderTarget();
+  /* Ovdje su upaljena SVA svjetla, kao pri prvom zagrijavanju: kad se
+     druga sala zagrije ponovo (prave teksture), gašenje svjetala van
+     kadra je već uključeno, pa bi ova sićušna slika tražila nove
+     varijante shadera (6/12 svjetala, bez tone mappinga) — 11 programa
+     prevedenih usred mirovanja u drugoj sali, samo za nju. */
+  S.svjetlaPrisilno = 'sva';
   try {
     [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].forEach(function (t) {
       kam.lookAt(t[0], VISINA_DJELA, t[1]);
@@ -1245,6 +1384,7 @@ function zagrijDrugu() {
       S.render.render(S.scena, kam);
     });
   } catch (e) { /* nije uspjelo — sala radi i bez toga */ }
+  S.svjetlaPrisilno = null;
   S.render.setRenderTarget(stara);
   meta.dispose();
   /* Crtež u render target ide BEZ tone mappinga i sRGB izlaza, pa su to
@@ -1252,6 +1392,7 @@ function zagrijDrugu() {
      sa ekranom kao metom: pripremi baš one programe koje kadar koristi
      (za sve objekte scene, bez obzira na to gdje kamera gleda). */
   try { S.render.compile(S.scena, kam); } catch (e) {}
+  prevediMalo(kam);
   /* Na računaru (ANGLE/Metal) grafički drajver i poslije toga sprema
      dio stanja tek pri PRVOM crtanju na sam ekran. Zato još jedan
      kadar: druga sala se iscrta na ekran i odmah preko nje obična
@@ -1259,21 +1400,152 @@ function zagrijDrugu() {
   if (!TELEFON) { S.zagrijEkran = 4; }
 }
 
+function maleDrugeStigle() {
+  return S.teksture.every(function (m) { return m.soba !== 2 || m.nivo >= 1 || m.malaPala; });
+}
+
 /* Jedan pravac po kadru (S.zagrijEkran broji 4 → 1), da nijedan kadar
    u prvoj sali ne nosi četiri dodatna crtanja odjednom. */
-function zagrijNaEkranu(korak) {
+function zagrijNaEkranu(korak, malo) {   /* malo: broj svjetala (SVJETLA_U_KADRU) */
   const T = S.tri;
   const SW = PROLAZ.sala2.sirina, SD = PROLAZ.sala2.dubina;
   const z0 = POLA_Z + PROLAZ.zid;
   const kam = new T.PerspectiveCamera(100, S.kamera.aspect, 0.1, 40);
+  let pravci = [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]];
   kam.position.set(0, 1.6, z0 + SD * 0.5);
+  /* Varijanta sa manje svjetala (vidi rasporediSvjetla): koraci 8 → 5
+     su iz sredine prve sale ka njena četiri zida, 4 → 1 isto kao gore. */
+  if (malo && korak > 4) {
+    pravci = [[0, -POLA_Z], [POLA_X, 0], [-POLA_X, 0], [0, POLA_Z]];
+    kam.position.set(0, 1.6, 0);
+    korak -= 4;
+  }
+  S.svjetlaPrisilno = malo || 'sva';   /* i posle nove oštrine: tačno ta varijanta */
   try {
-    [[0, z0 + SD], [SW, z0 + SD * 0.5], [-SW, z0 + SD * 0.5], [0, z0]].slice(korak - 1, korak).forEach(function (t) {
+    pravci.slice(korak - 1, korak).forEach(function (t) {
       kam.lookAt(t[0], VISINA_DJELA, t[1]);
       kam.updateMatrixWorld();
       S.render.render(S.scena, kam);
     });
   } catch (e) {}
+  S.svjetlaPrisilno = null;
+}
+
+/* SVJETLA VAN KADRA. Svaki reflektor se u shaderu računa za svaki
+   piksel, i kad ga ne dotiče. A reflektor čiji snop (kupa dužine
+   `distance`) ne siječe vidno polje kamere ne doprinosi NIJEDNOM pikselu
+   tog kadra: three.js mu van kupe i dalje od `distance` daje tačno nulu.
+   Takav se za taj kadar ugasi — slika je ista do posljednjeg bita.
+   Broj upaljenih mijenja shader, pa da se ništa ne prevodi usred hoda,
+   upaljeno je uvijek SVE ili tačno jedan od brojeva SVJETLA_U_KADRU
+   (dopunjeno reflektorima van kadra, koji ionako daju nulu): prva sala
+   treba do 5, druga do 9, pogled kroz vrata sva. Sve varijante se
+   prevedu i zagriju unaprijed (zagrijDrugu → prevediMalo); dok to nije
+   gotovo, sva svjetla su upaljena, kao i prije. Reflektor koji baca
+   sjenku je uvijek upaljen (i njegova sjenka mijenja shader). */
+const SVJETLA_U_KADRU = [6, 12];
+const DOMET = {};
+function dometSvjetla(l) {
+  const T = S.tri;
+  if (!DOMET.tacka) {
+    DOMET.tacka = new T.Vector3();
+    DOMET.osa = new T.Vector3();
+    DOMET.u = new T.Vector3();
+    DOMET.v = new T.Vector3();
+  }
+  /* Kutija zavisi samo od mjesta svjetla, mete, ugla i dometa, a oni se
+     mijenjaju tek uz bočno svjetlo — inače se ista kutija ne računa
+     iznova u svakom kadru. */
+  const P = l.position, Q = l.target.position, d = l.distance;
+  let z = l.userData.domet;
+  if (z && z.px === P.x && z.py === P.y && z.pz === P.z && z.qx === Q.x && z.qy === Q.y && z.qz === Q.z &&
+      z.ugao === l.angle && z.d === d) { return z.kutija; }
+  if (!z) { z = l.userData.domet = { kutija: new T.Box3() }; }
+  z.px = P.x; z.py = P.y; z.pz = P.z; z.qx = Q.x; z.qy = Q.y; z.qz = Q.z; z.ugao = l.angle; z.d = d;
+  const k = z.kutija, t = DOMET.tacka;
+  const osa = DOMET.osa.subVectors(Q, P).normalize();
+  const c = Math.cos(l.angle), s = Math.sin(l.angle);
+  DOMET.u.set(Math.abs(osa.y) < 0.9 ? 0 : 1, Math.abs(osa.y) < 0.9 ? 1 : 0, 0).cross(osa).normalize();
+  DOMET.v.crossVectors(osa, DOMET.u);
+  k.makeEmpty();
+  k.expandByPoint(P);
+  /* rub kupe na daljini d (16 tačaka) i, ako je u kupi, krajnja tačka
+     kape u pravcu svake ose — kutija obuhvata cijeli snop */
+  for (let i = 0; i < 16; i++) {
+    const f = i * Math.PI / 8;
+    t.copy(osa).multiplyScalar(c)
+      .addScaledVector(DOMET.u, s * Math.cos(f))
+      .addScaledVector(DOMET.v, s * Math.sin(f));
+    k.expandByPoint(t.multiplyScalar(d).add(P));
+  }
+  const ose = [osa.x, osa.y, osa.z];
+  for (let a = 0; a < 3; a++) {
+    for (let z = -1; z <= 1; z += 2) {
+      if (ose[a] * z >= c) {
+        t.set(0, 0, 0).setComponent(a, z * d);
+        k.expandByPoint(t.add(P));
+      }
+    }
+  }
+  /* 16 tačaka malo potcijene krug; plus 5 cm zalihe */
+  k.expandByScalar(d * s * (1 - Math.cos(Math.PI / 16)) + 0.05);
+  return k;
+}
+function rasporediSvjetla(kamera) {
+  const R = S.reflektori;
+  if (!R || !R.length || !S.tri) { return; }
+  const nacin = S.svjetlaPrisilno || (S.svjetlaMalo ? 'kadar' : 'sva');
+  let treba = 0;
+  if (nacin === 'kadar') {
+    if (!DOMET.kadar) { DOMET.kadar = new S.tri.Frustum(); DOMET.matrica = new S.tri.Matrix4(); }
+    DOMET.kadar.setFromProjectionMatrix(DOMET.matrica.multiplyMatrices(kamera.projectionMatrix, kamera.matrixWorldInverse));
+  }
+  for (const l of R) {
+    l.userData.uKadru = nacin === 'sva' || l.castShadow || !(l.distance > 0) ||
+      (nacin === 'kadar' && DOMET.kadar.intersectsBox(dometSvjetla(l)));
+    if (l.userData.uKadru) { treba++; }
+  }
+  S.svjetlaPotrebno = treba;
+  let K = typeof nacin === 'number' ? nacin : R.length;
+  if (nacin === 'kadar') {
+    for (const k of SVJETLA_U_KADRU) { if (treba <= k) { K = k; break; } }
+  }
+  let dopuna = Math.max(0, Math.min(K, R.length) - treba);
+  for (const l of R) {
+    if (l.userData.uKadru) { l.visible = true; }
+    else { l.visible = dopuna > 0; dopuna--; }
+  }
+}
+/* Varijante sa SVJETLA_U_KADRU svjetala: prevedu se za sve materijale
+   scene, sačeka se da ih grafika zaista spremi (bez blokiranja), pa se
+   još i iscrtaju na ekran (zagrijNaEkranu, 8 pravaca po varijanti, samo
+   dok kamera stoji). Tek tada se svjetla van kadra gase. */
+function prevediMalo(kam) {
+  const R = S.reflektori;
+  if (!R || R.length <= SVJETLA_U_KADRU[0]) { return; }
+  const programi = [];
+  for (const k of SVJETLA_U_KADRU) {
+    let mat = null;
+    S.svjetlaPrisilno = k;
+    rasporediSvjetla(kam);
+    try { mat = S.render.compile(S.scena, kam); } catch (e) { mat = null; }
+    S.svjetlaPrisilno = null;
+    if (!mat) { rasporediSvjetla(kam); return; }
+    mat.forEach(function (m) {
+      const p = S.render.properties.get(m).currentProgram;
+      if (p && programi.indexOf(p) < 0) { programi.push(p); }
+    });
+  }
+  rasporediSvjetla(kam);
+  const gen = S.gen, krug = S.svjetlaKrug = (S.svjetlaKrug || 0) + 1;
+  const cekaj = function () {
+    if (S.gen !== gen || S.svjetlaKrug !== krug || !S.render) { return; }
+    if (programi.some(function (p) { return p.isReady && !p.isReady(); })) { window.setTimeout(cekaj, 50); return; }
+    /* i na telefonu: novi shaderi se prvi put crtaju dok kamera stoji
+       (iOS/ANGLE-Metal spremaju stanje tek pri prvom crtanju) */
+    S.zagrijMalo = 8 * SVJETLA_U_KADRU.length;
+  };
+  cekaj();
 }
 
 /* Teksture idu na GPU jedna po kadar (renderer.initTexture), ne sve
@@ -1283,6 +1555,9 @@ function uKadar(posao) {
 }
 function jedanPosaoKadra() {
   if (!S.kadrovi || !S.kadrovi.length) { return; }
+  /* Hod iz sale u salu ide bez ijednog slanja na GPU — tekstura koja
+     zakasni stane na platno čim kamera stane (do tada sićušna slika). */
+  if (S.anim && S.anim.hod) { return; }
   osvjeziKadar();
   const posao = S.kadrovi.shift();
   try { posao(); } catch (e) { /* tekstura nije prošla — ostaje stara */ }
@@ -1321,17 +1596,19 @@ function staviBojuSada(m, c, nivo) {
 }
 function ucitajMalu(m) {
   const u = izvorMali(m.djelo);
+  if (!u) { m.malaPala = true; }
   if (!u || !aktuelno(m)) { return null; }
-  return rasterizuj(u, 256).then(function (c) { staviBoju(m, c, 1); }, function () {});
+  return rasterizuj(u, 256).then(function (c) { staviBoju(m, c, 1); }, function () { m.malaPala = true; });
 }
 function ucitajBoju(m) {
   if (!aktuelno(m)) { return null; }
   const maxStr = Math.min(MAX_TEKSTURA, S.render.capabilities.maxTextureSize || MAX_TEKSTURA);
-  const glavni = izvorDjela(m.djelo);
-  return rasterizuj(glavni, maxStr).catch(function (g) {
-    /* nema WebP-a za telefon / AVIF-a za računar — original JPG */
-    if (glavni === m.djelo.slika) { throw g; }
-    return rasterizuj(m.djelo.slika, maxStr);
+  return AVIF_PROVJERA.then(function () {
+    /* izvori po redu (AVIF → WebP / JPG): sljedeći tek kad prethodni padne */
+    const izvori = izvoriDjela(m.djelo);
+    let p = rasterizuj(izvori[0], maxStr);
+    izvori.slice(1).forEach(function (u) { p = p.catch(function () { return rasterizuj(u, maxStr); }); });
+    return p;
   }).then(function (c) { staviBoju(m, c, 2); }, function () { /* tišina — rezervna boja ostaje */ });
 }
 /* RELJEF PASTE: normal mapa iz img/reljef/<id>.webp.
@@ -1373,8 +1650,8 @@ function rasporediTeksture() {
     if (m.soba !== 2) { uRed(3, function () { return ucitajReljef(m); }); }
   });
 }
-/* Druga sala: čim posjetilac krene ka njoj (vrata, hod, tura, izbor
-   djela iz nje, mapa) ili se samo okrene ka prolazu. */
+/* Druga sala: čim posjetilac krene ka njoj (hod, tura, izbor djela iz
+   nje, mapa, dugme „Druga sala“ pod mišem) ili se okrene ka prolazu. */
 function ucitajDrugu() {
   if (S.drugaKrenula || !S.teksture.length) { return; }
   S.drugaKrenula = true;
@@ -1385,12 +1662,24 @@ function ucitajDrugu() {
     if (m.soba === 2) { uRed(2, function () { return ucitajReljef(m); }); }
   });
 }
+/* Kad se druga sala „najavi“ sama od sebe (svaki kadar): kamera je u
+   njoj, ili je bliže vratima od `blizu` m, ili su vrata unutar vidnog
+   polja uvećanog za `ugao` (rad.) — dok se pogled okreće ka prolazu,
+   teksture već idu, a dok su djela iza vrata daleko (iz pregleda prve
+   sale 8+ m), sićušna slika je oštra koliko i prava. Uz štednju podataka
+   ništa unaprijed: samo stvarni polazak (kreniKa, uSalu, tura). */
+const NAJAVA_DRUGE = { blizu: 2.0, ugao: 0.6 };
 function paziNaDrugu() {
   if (S.drugaKrenula || !S.poz || !S.cilj) { return; }
+  if (S.sala === 2 || salaTacke(S.poz.z) === 2) { ucitajDrugu(); return; }
+  if (stediPodatke()) { return; }
+  const vx = -S.poz.x, vz = POLA_Z - S.poz.z;
+  const daljina = Math.hypot(vx, vz) || 1e-6;
+  if (daljina < NAJAVA_DRUGE.blizu) { ucitajDrugu(); return; }
   const dx = S.cilj.x - S.poz.x, dz = S.cilj.z - S.poz.z;
   const d = Math.hypot(dx, dz) || 1;
-  /* pogled ka prednjem zidu (prolazu), blizu vrata, ili već u drugoj */
-  if (dz / d > 0.35 || S.poz.z > POLA_Z - 1.5 || S.sala === 2) { ucitajDrugu(); }
+  const polH = Math.atan(Math.tan(VIDNO_POLJE * Math.PI / 360) * (S.kamera ? S.kamera.aspect : 1.6));
+  if ((dx * vx + dz * vz) / (d * daljina) > Math.cos(Math.min(Math.PI, polH + NAJAVA_DRUGE.ugao))) { ucitajDrugu(); }
 }
 
 /* Reflektor na šini nad djelom (vidi postaviDjela) */
@@ -1449,6 +1738,7 @@ function napraviReflektor(mj, djelo, i) {
 
     S.scena.add(svjetlo.target);
     S.scena.add(svjetlo);
+    S.reflektori.push(svjetlo);
 
     /* --- SVJETILJKA: vidljivo tijelo reflektora na mjestu svjetla —
            adapter na šini, kratka cijev i kućište okrenuto ka djelu,
@@ -1474,6 +1764,8 @@ function postaviDjela(djela) {
   S.zagrijavanjeZakazano = false;
   S.drugaZagrijana = false; S.zagrijEkran = 0;
   S.svjetlaGrupa = {};
+  S.reflektori = [];
+  S.svjetlaMalo = false; S.svjetlaPrisilno = null; S.zagrijMalo = 0;
   S.kadrovi = [];
   /* Ravna normal mapa (1×1, 128/128/255): platno od početka ima
      normalMap, pa dolazak pravog reljefa ne mijenja shader. */
@@ -1678,6 +1970,8 @@ function postaviDjela(djela) {
      okrenuta nagore malo krem odsjaja zidova — kao u pravoj sali. */
   S.polulopta = new T.HemisphereLight(0xFFEEDA, 0x6B4226, 0.35);
   S.scena.add(S.polulopta);
+  /* Prije svakog crtanja (i zagrijavanja): svjetla van kadra se gase */
+  S.scena.onBeforeRender = function (r, scena, kamera) { rasporediSvjetla(kamera); };
 }
 
 /* ---------------------------------------------------------
@@ -1842,12 +2136,20 @@ function otvoriIzbliza() {
   o.querySelector('strong').textContent = djelo.naziv || '';
   o.querySelector('.galerija-izbliza__opis span').textContent =
     [djelo.godina, djelo.tehnika, djelo.dimenzije].filter(function (v) { return v != null && v !== ''; }).join(' · ');
-  /* Prvo manja fotografija (već je u kešu), pa velika kad stigne */
-  img.src = djelo.slika || djelo.slikaVelika;
+  /* Prvo manja fotografija — ista kao tekstura na zidu, pa je već u
+     kešu (JPG samo ako ona ne prođe) — pa velika kad stigne (AVIF, a
+     JPG ako AVIF ne prođe). */
+  const rezerva = djelo.slika || djelo.slikaVelika;
+  img.onerror = function () { img.onerror = null; if (img.getAttribute('src') !== rezerva) { img.src = rezerva; } };
+  img.src = izvorDjela(djelo) || rezerva;
   if (djelo.slikaVelika && djelo.slikaVelika !== djelo.slika) {
     const velika = new Image();
-    velika.onload = function () { if (S.izbliza && S.izbliza.el === o) { img.src = velika.src; } };
-    velika.src = djelo.slikaVelika;
+    velika.onload = function () { if (S.izbliza && S.izbliza.el === o) { img.onerror = null; img.src = velika.src; } };
+    velika.onerror = function () {
+      velika.onerror = null;
+      if (velika.getAttribute('src') !== djelo.slikaVelika) { velika.src = djelo.slikaVelika; }
+    };
+    velika.src = izvorVelike(djelo);
   }
 
   let puna = false, vuce = null;
@@ -1962,7 +2264,12 @@ function postaviLupu(ukljuci) {
     if (djelo && djelo.slika) {
       /* Fotografija u punoj veličini (slikaVelika) samo za lupu */
       const maxStr = Math.min(MAX_TEKSTURA * 2, 4096);
-      rasterizuj(djelo.slikaVelika || djelo.slika, maxStr).then(function (c) {
+      const jpg = djelo.slikaVelika || djelo.slika;
+      const prvi = izvorVelike(djelo);
+      rasterizuj(prvi, maxStr).catch(function (g) {
+        if (prvi === jpg) { throw g; }
+        return rasterizuj(jpg, maxStr);   /* AVIF nije prošao — JPG */
+      }).then(function (c) {
         if (L.za === i) { L.izvor = c; osvjeziLupu(); }
       }).catch(function () { /* bez izvora nema lupe */ });
     }
@@ -2087,8 +2394,8 @@ function postaviBocno(ukljuci) {
   osvjeziSjenke();   /* reflektor je promijenio mjesto */
 }
 
-/* Mapa sjenke se crta u sljedećem kadru. Na telefonu je to jedini
-   put do nove sjenke; na većim ekranima se ionako crta svaki kadar. */
+/* Mapa sjenke se crta u sljedećem kadru. To je jedini put do nove
+   sjenke (shadowMap.autoUpdate je ugašen, vidi pokreni). */
 function osvjeziSjenke() {
   if (S.render) { S.render.shadowMap.needsUpdate = true; }
   osvjeziKadar();
@@ -2119,16 +2426,22 @@ function mjeriBrzinu(t) {
       }
     }
   }
-  /* Nova oštrina tek kad kamera stane — promjena veličine slike usred
-     klizanja je sama po sebi jedan spori kadar. Poslije nje se druga sala
-     opet „zagrije“ na ekranu, za novu veličinu slike. */
-  if (S.novaOstrina && !kretanje) {
-    S.render.setPixelRatio(S.novaOstrina);   /* sam zadrži veličinu okna */
-    S.novaOstrina = 0;
-    if (S.drugaZagrijana) { S.zagrijEkran = 4; }
-    osvjeziKadar();
-  }
   S.prosliCrtan = kretanje ? t : 0;
+}
+/* Nova oštrina tek kad kamera stane — promjena veličine slike usred
+   klizanja je sama po sebi jedan spori kadar. Primjenjuje se u petlji
+   PRIJE crtanja tog kadra: promjena veličine briše bafer slike i čeka
+   da grafika završi sve poslato. Kadar nacrtan neposredno prije nje bio
+   bi obrisan neprikazan (platno bi taj kadar ostalo prazno), a čekanje
+   bi trajalo i za cio taj kadar. Poslije nje se druga sala opet
+   „zagrije“ na ekranu, za novu veličinu slike. */
+function primijeniOstrinu() {
+  if (!S.novaOstrina || S.anim || S.ka || S.inercija || S.vuce) { return; }
+  S.render.setPixelRatio(S.novaOstrina);   /* sam zadrži veličinu okna */
+  S.novaOstrina = 0;
+  if (S.drugaZagrijana) { S.zagrijEkran = 4; }
+  if (S.svjetlaMalo) { S.zagrijMalo = 8 * SVJETLA_U_KADRU.length; }
+  osvjeziKadar();
 }
 
 /* Pokretanje klizanja (ili skoka, uz smanjeno kretanje) */
@@ -2270,17 +2583,17 @@ function korakKlizanja(a, u) {
    djelo (računar, ne uz „štedi podatke“) — klik je onda otvara odmah,
    iz keša pregledača. */
 function predUcitajVeliku(djelo) {
-  const veza = navigator.connection;
-  if (TELEFON || !djelo || !djelo.slikaVelika || (veza && veza.saveData)) { return; }
+  if (TELEFON || !djelo || !djelo.slikaVelika || stediPodatke()) { return; }
+  const url = izvorVelike(djelo);
   S.velikeUcitane = S.velikeUcitane || {};
-  if (S.velikeUcitane[djelo.slikaVelika]) { return; }
+  if (S.velikeUcitane[url]) { return; }
   window.clearTimeout(S.velikaTajmer);
   S.velikaTajmer = window.setTimeout(function () {
-    if (!S.radi || S.velikeUcitane[djelo.slikaVelika]) { return; }
-    S.velikeUcitane[djelo.slikaVelika] = true;
+    if (!S.radi || S.velikeUcitane[url]) { return; }
+    S.velikeUcitane[url] = true;
     const img = new Image();
     img.decoding = 'async';
-    img.src = djelo.slikaVelika;
+    img.src = url;
   }, 1500);
 }
 
@@ -2300,16 +2613,20 @@ function izaberi(i) {
   otvoriPanel(S.mjesta[k].djelo);
   predUcitajVeliku(S.mjesta[k].djelo);
   savjetCisto();
-  najavi(S.mjesta[k].djelo);
+  najavi(S.mjesta[k].djelo, k, n);
   osvjeziKretanje();
 }
 
-/* Kratka najava za čitače ekrana: „naziv, godina“. Panel nije
-   aria-live — inače bi se na svakom izboru čitao cio opis. Prazni se
-   pa puni, da se i isto djelo izabrano ponovo najavi. */
-function najavi(djelo) {
+/* Kratka najava za čitače ekrana: „naziv, godina, tehnika, dimenzije.
+   k od n“ — isti podaci kao na kartici, bez opisa. Polja kojih nema
+   (crteži bez godine i dimenzija) se preskaču. Panel nije aria-live —
+   inače bi se na svakom izboru čitao cio opis. Prazni se pa puni, da
+   se i isto djelo izabrano ponovo najavi. */
+function najavi(djelo, k, n) {
   if (!el.najava || !djelo) { return; }
-  const tekst = [djelo.naziv, djelo.godina].filter(function (v) { return v != null && v !== ''; }).join(', ');
+  let tekst = [djelo.naziv, djelo.godina, djelo.tehnika, djelo.dimenzije]
+    .filter(function (v) { return v != null && String(v).trim() !== ''; }).join(', ');
+  if (k >= 0 && n > 0) { tekst += '. ' + TEKST.redni(k + 1, n); }
   el.najava.textContent = '';
   window.clearTimeout(S.najavaTajmer);
   S.najavaTajmer = window.setTimeout(function () { el.najava.textContent = tekst; }, 60);
@@ -2415,14 +2732,12 @@ function pokreni(djela) {
   /* Sjenke. PCFSoftShadowMap je UKLONJEN u r186 — koristi se PCFShadowMap. */
   S.render.shadowMap.enabled = true;
   S.render.shadowMap.type = T.PCFShadowMap;
-  /* Telefon: sala stoji, pa se mapa sjenke ne crta u svakom kadru,
-     nego samo kad se nešto u sceni promijeni (vidi osvjeziSjenke).
-     Sjenka izgleda isto, a grafika ima manje posla. */
-  if (TELEFON) {
-    S.render.shadowMap.autoUpdate = false;
-    S.render.shadowMap.needsUpdate = true;
-    S.sjenkeDjeca = -1;
-  }
+  /* Sala stoji, pa se mapa sjenke ne crta u svakom kadru, nego samo
+     kad se nešto u sceni promijeni (vidi osvjeziSjenke) — na telefonu
+     i na računaru. Sjenka izgleda isto, a grafika ima manje posla. */
+  S.render.shadowMap.autoUpdate = false;
+  S.render.shadowMap.needsUpdate = true;
+  S.sjenkeDjeca = -1;
 
   el.platno.appendChild(S.render.domElement);
   /* Kratko ime; uputstvo za tastaturu je u skrivenom elementu na koji
@@ -2497,7 +2812,12 @@ function mjeri() {
   const h = el.platno.clientHeight || 500;
   S.kamera.aspect = w / h;
   S.kamera.updateProjectionMatrix();
-  S.render.setSize(w, h, false);
+  /* Svaka dodjela canvas.width/height (i ista vrijednost) iznova pravi
+     i briše bafer slike, a to čeka grafiku. ResizeObserver i 'resize'
+     javljaju i kad se broj piksela ne promijeni (oba za istu promjenu
+     prozora, djelić piksela, traka za skrol) — tada setSize ne treba. */
+  const v = S.render.getSize(S.velicina || (S.velicina = new S.tri.Vector2()));
+  if (v.x !== w || v.y !== h) { S.render.setSize(w, h, false); }
   velicinaMeta();
   osvjeziKadar();
 
@@ -2545,14 +2865,14 @@ function osvjeziDugmeTure() {
   const tekst = el.tura.querySelector('.galerija-tura__tekst') || el.tura;
   if (!t) {
     tekst.textContent = TEKST.tura;
-    el.tura.setAttribute('aria-pressed', 'false');
     el.tura.style.setProperty('--napredak', '0');
     korijen.removeAttribute('data-tura');
     osvjeziMob();
     return;
   }
+  /* Natpis kaže šta će dugme uraditi („Pauza“ / „Nastavi“), pa dugme
+     NEMA aria-pressed — čitač bi inače čuo dva suprotna stanja. */
   tekst.textContent = (t.pauza ? TEKST.nastavi : TEKST.pauza) + ' · ' + Math.min(n, t.korak + 1) + '/' + n;
-  el.tura.setAttribute('aria-pressed', t.pauza ? 'false' : 'true');
   korijen.setAttribute('data-tura', t.pauza ? 'pauza' : 'radi');
   osvjeziMob();
 }
@@ -2861,7 +3181,25 @@ function korakUvoda(t) {
   const p = Math.min(1, (t - S.uvod) / 1700);
   const e = 1 - Math.pow(1 - p, 3);
   S.render.toneMappingExposure = 0.15 + (1.2 - 0.15) * e;
-  if (p >= 1) { S.uvod = 0; }
+  if (p >= 1) { S.uvod = 0; osvjeziKadar(); }
+}
+
+/* NEPOKRETNO: zidovi, pod, plafon, klupe, ramovi, platna, odrazi,
+   legende, svjetiljke i šine se posle gradnje više ne pomjeraju, a
+   three.js bi inače u svakom kadru iznova slagao matricu svakog objekta
+   (updateMatrix + množenje sa roditeljem). Zato se njihova matrica složi
+   jednom — iste vrijednosti, samo bez ponavljanja. Svjetla ostaju živa
+   (bočno svjetlo ih pomjera, vidi postaviBocno).
+   PAZI: objekat koji bi se posle gradnje pomjerao (position, rotation,
+   scale) mora zadržati matrixAutoUpdate — ili posle pomjeranja pozvati
+   updateMatrix(). */
+function zamrzniNepokretno() {
+  S.scena.matrixAutoUpdate = false;
+  S.scena.traverse(function (o) {
+    if (o === S.scena || o.isLight || !o.matrixAutoUpdate) { return; }
+    o.matrixAutoUpdate = false;
+    o.updateMatrix();
+  });
 }
 
 /* ---------------------------------------------------------
@@ -2919,7 +3257,8 @@ function petlja() {
   /* CRTANJE PO POTREBI: kad se ništa ne mijenja (kamera stoji, nema
      klizanja, prevlačenja ni novih tekstura), isti kadar se ne crta
      iznova — grafika se odmori, a kad krene pokret, nema zaostalog
-     posla. Za svaki slučaj kadar se ipak osvježi bar 4 puta u sekundi. */
+     posla. Sve što mijenja sliku bez pomjeranja kamere (tekstura,
+     legenda, svjetlo, veličina okna, oštrina) zove osvjeziKadar(). */
   const me = S.kamera.matrixWorld.elements;
   let promjena = !S.zadnjaMatrica;
   if (!promjena) {
@@ -2927,17 +3266,25 @@ function petlja() {
   }
   if (promjena) { S.zadnjaMatrica = me.slice(); }
   let crtaj = promjena || S.crtajJos > 0 || S.anim || S.ka || S.inercija || S.vuce || S.uvod ||
-    S.lupa.na || (S.kadrovi && S.kadrovi.length) || t - (S.zadnjiKadar || 0) > 250;
+    S.lupa.na || (S.kadrovi && S.kadrovi.length) || S.novaOstrina;
   if (S.crtajJos > 0) { S.crtajJos--; }
+  primijeniOstrinu();
 
-  /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova */
-  if (TELEFON && S.scena.children.length !== S.sjenkeDjeca) {
+  /* Nešto dodato u scenu (gradnja sale) — sjenka se crta iznova,
+     a matrice novih nepokretnih objekata se slože jednom */
+  if (S.scena.children.length !== S.sjenkeDjeca) {
     S.sjenkeDjeca = S.scena.children.length;
+    zamrzniNepokretno();
     osvjeziSjenke();
   }
   if (S.zagrijEkran && !S.anim && !S.ka && !S.vuce && !S.inercija) {
     zagrijNaEkranu(S.zagrijEkran);
     S.zagrijEkran--;
+    crtaj = true;
+  } else if (S.zagrijMalo && !S.anim && !S.ka && !S.vuce && !S.inercija) {
+    zagrijNaEkranu((S.zagrijMalo - 1) % 8 + 1, SVJETLA_U_KADRU[Math.floor((S.zagrijMalo - 1) / 8)]);
+    S.zagrijMalo--;
+    if (!S.zagrijMalo) { S.svjetlaMalo = true; }
     crtaj = true;
   }
   if (crtaj) {
@@ -3055,15 +3402,20 @@ function postaviKarticu(puna) {
     el.panelVise.lastChild.textContent = puna ? TEKST.karticaManje : TEKST.karticaVise;
   }
   if (!puna && el.panel) { el.panel.scrollTop = 0; }
+  /* Preko cijelog ekrana sklopljena kartica nestaje — fokus iz nje ide
+     na natpis u donjoj traci, koji je ponovo otvara. */
+  if (!puna && el.mob && uronjeno()) { fokusUTraku(el.panel, el.mob.natpis); }
 }
 
 function karticaPuna() {
   return korijen.getAttribute('data-kartica') === 'puna';
 }
 
-/* Da li je panel sada kartica odozdo — strelica postoji samo tada */
+/* Da li je panel sada kartica koja se sklapa: na telefonu preko cijelog
+   ekrana (strelica je tamo skrivena, pa se režim provjerava direktno)
+   ili kao kartica odozdo, kad se strelica vidi. */
 function karticaSeSklapa() {
-  return !!(el.panelVise && el.panelVise.getClientRects().length);
+  return uronjeno() || !!(el.panelVise && el.panelVise.getClientRects().length);
 }
 
 function pripremiKarticu() {
@@ -3120,6 +3472,7 @@ function pripremiKarticu() {
    na jednom mjestu.
    --------------------------------------------------------- */
 const UZAK_EKRAN = '(max-width: 720px), (max-height: 500px) and (pointer: coarse)';
+const UZAK = window.matchMedia ? window.matchMedia(UZAK_EKRAN) : null;   /* jedan upit; .matches prati promjenu */
 
 function uronjeno() {
   return document.documentElement.classList.contains('galerija-uronjena');
@@ -3128,7 +3481,7 @@ function uronjeno() {
 function osvjeziUronjeno() {
   const st = korijen.getAttribute('data-stanje');
   const da = (st === 'soba' || st === 'ucitavanje') &&
-    !!(window.matchMedia && window.matchMedia(UZAK_EKRAN).matches);
+    !!(UZAK && UZAK.matches);
   document.documentElement.classList.toggle('galerija-uronjena', da);
   if (!da) {
     postaviOpcije(false);
@@ -3145,12 +3498,37 @@ function fokusUTraku(iz, na) {
 }
 
 function postaviOpcije(otvori) {
-  if (otvori) { korijen.setAttribute('data-opcije', 'otvorene'); }
-  else {
+  if (otvori) {
+    korijen.setAttribute('data-opcije', 'otvorene');
+    /* Fokus ulazi u list (prvo vidljivo dugme, × u glavi); zatvaranje
+       ga vraća na dugme „Opcije“ (fokusUTraku ispod). */
+    const prvo = dugmadOpcija()[0];
+    /* List ulazi uz prelaz visibility, pa je do prvog kadra prelaza još
+       skriven i ne prima fokus — pokušava se iz kadra u kadar, najviše
+       2 s (spor uređaj), dok fokus ne uđe. */
+    const kraj = sada() + 2000;
+    const fokus = function () {
+      if (!prvo || !opcijeOtvorene() || el.alati.contains(document.activeElement)) { return; }
+      try { prvo.focus({ preventScroll: true }); } catch (e) { prvo.focus(); }
+      if (document.activeElement !== prvo && sada() < kraj) { window.requestAnimationFrame(fokus); }
+    };
+    fokus();
+  } else {
     korijen.removeAttribute('data-opcije');
     if (el.mob) { fokusUTraku(el.alati, el.mob.opcije); }
   }
   if (el.mob) { el.mob.opcije.setAttribute('aria-expanded', otvori ? 'true' : 'false'); }
+}
+
+function opcijeOtvorene() {
+  return korijen.getAttribute('data-opcije') === 'otvorene';
+}
+
+/* Vidljiva dugmad i tačke mape u listu „Opcije“, redom za Tab */
+function dugmadOpcija() {
+  if (!el.alati) { return []; }
+  return Array.prototype.slice.call(el.alati.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])'))
+    .filter(function (d) { return d.getClientRects().length && !d.disabled; });
 }
 
 function prebaciCisto() {
@@ -3262,11 +3640,10 @@ function pripremiMob() {
     if (b && !b.hasAttribute('data-mob')) { postaviOpcije(false); }
   });
 
-  if (window.matchMedia) {
-    const mq = window.matchMedia(UZAK_EKRAN);
+  if (UZAK) {
     const promjena = function () { osvjeziUronjeno(); };
-    if (mq.addEventListener) { mq.addEventListener('change', promjena); }
-    else if (mq.addListener) { mq.addListener(promjena); }
+    if (UZAK.addEventListener) { UZAK.addEventListener('change', promjena); }
+    else if (UZAK.addListener) { UZAK.addListener(promjena); }
   }
   osvjeziMob();
 }
@@ -3292,7 +3669,6 @@ function osvjeziMob() {
   }
   m.tura.hidden = !(S.tura && djelo);
   if (S.tura && djelo) { m.tura.textContent = tura; }
-  m.tura.setAttribute('aria-pressed', S.tura && !S.tura.pauza ? 'true' : 'false');
 }
 
 /* Raycaster: koje je djelo pod pokazivačem.
@@ -3351,6 +3727,28 @@ function tipkaDole(e) {
       }
     }
     return;   /* dok su savjeti otvoreni, tipke pripadaju njima (Tab, Enter) */
+  }
+  /* List „Opcije“ (telefon): Esc zatvara samo list, ne salu, i fokus se
+     vraća na dugme „Opcije“; Tab kruži unutar lista. */
+  if (opcijeOtvorene()) {
+    if (e.key === 'Escape') {
+      postaviOpcije(false);
+      if (el.mob && el.mob.opcije) {
+        try { el.mob.opcije.focus({ preventScroll: true }); } catch (g) { el.mob.opcije.focus(); }
+      }
+      e.preventDefault();
+      return;
+    }
+    if (e.key === 'Tab') {
+      const d = dugmadOpcija();
+      if (d.length) {
+        const i = d.indexOf(document.activeElement);
+        const j = i < 0 ? 0 : (i + (e.shiftKey ? -1 : 1) + d.length) % d.length;
+        d[j].focus();
+        e.preventDefault();
+      }
+      return;
+    }
   }
   /* Razmak (ili T) pokreće, pauzira i nastavlja obilazak */
   if ((e.key === ' ' || e.key.toLowerCase() === 't') && e.target === (S.render && S.render.domElement)) {
@@ -3685,12 +4083,59 @@ function vidljivost() {
   if (document.hidden) {
     /* Tab nije vidljiv — petlja staje da ne troši bateriju i GPU */
     if (S.petlja) { window.cancelAnimationFrame(S.petlja); S.petlja = 0; }
-  } else if (!S.petlja) {
+  } else if (!S.petlja && !S.kontekstIzgubljen) {
     S.sat = sada();
     S.fpsOd = S.sat;
     S.fpsBrojac = 0;
     /* Klizanje koje je zateklo pauzu bi inače "preskočilo" cijelu
        animaciju u jednom kadru — pomjeri se početak na sada. */
+    if (S.anim) { S.anim.pocetak = S.sat; }
+    osvjeziKadar();
+    petlja();
+  }
+}
+
+/* GUBITAK WebGL KONTEKSTA: grafički drajver se resetovao, pregledač
+   je oduzeo grafiku kartici u pozadini i sl. preventDefault() traži od
+   pregledača da kontekst vrati; do tada petlja stoji, a posjetilac dobija
+   kratku poruku u postojećem obavještenju sale. Kad se vrati, three.js
+   sam ponovo napravi svoje stanje (teksture i shaderi se ponovo šalju
+   pri crtanju); ovdje se još traži nova mapa sjenke i ponovo zagrijava
+   druga sala, a dok to traje gore su sva svjetla (vidi rasporediSvjetla). */
+const PORUKA_GRAFIKE = IT ? {
+  izgubljena: 'La grafica si è fermata per un momento: la sala tornerà da sola. Se non torna, ricaricate la pagina.',
+  vracena: 'La sala è di nuovo qui'
+} : EN ? {
+  izgubljena: 'The graphics paused for a moment: the gallery will come back by itself. If it doesn’t, please reload the page.',
+  vracena: 'The gallery is back'
+} : {
+  izgubljena: 'Grafika je na trenutak zastala: sala će se sama vratiti. Ako se ne vrati, osvježite stranicu.',
+  vracena: 'Sala je ponovo tu'
+};
+function kontekstIzgubljen(e) {
+  e.preventDefault();
+  if (!S.radi) { return; }
+  S.kontekstIzgubljen = true;
+  S.svjetlaKrug = (S.svjetlaKrug || 0) + 1;   /* stari shaderi više ne postoje */
+  if (S.petlja) { window.cancelAnimationFrame(S.petlja); S.petlja = 0; }
+  poruka(PORUKA_GRAFIKE.izgubljena, 24 * 3600 * 1000);   /* stoji dok se grafika ne vrati */
+}
+function kontekstVracen() {
+  if (!S.kontekstIzgubljen) { return; }
+  S.kontekstIzgubljen = false;
+  if (!S.radi || !S.render) { return; }
+  S.svjetlaMalo = false; S.zagrijMalo = 0; S.zagrijEkran = 0;
+  if (S.drugaZagrijana) {
+    S.drugaZagrijana = false;
+    const gen = S.gen;
+    window.setTimeout(function () { if (S.gen === gen) { zagrijDrugu(); } }, 800);
+  }
+  S.zadnjaMatrica = null;
+  osvjeziSjenke();
+  poruka(PORUKA_GRAFIKE.vracena, 2600);
+  if (!S.petlja && !document.hidden) {
+    S.sat = sada();
+    S.prosli = S.sat;
     if (S.anim) { S.anim.pocetak = S.sat; }
     petlja();
   }
@@ -3709,6 +4154,8 @@ function vezi() {
   }
   slusaj(window, 'blur', pokazivacVan);
   slusaj(document, 'visibilitychange', vidljivost);
+  slusaj(c, 'webglcontextlost', kontekstIzgubljen);
+  slusaj(c, 'webglcontextrestored', kontekstVracen);
   slusaj(c, 'pointerdown', pokazivacDole);
   slusaj(c, 'pointermove', pokazivacMice);
   slusaj(c, 'pointerup', pokazivacGore);
@@ -3761,6 +4208,10 @@ function vezi() {
   slusaj(document, 'visibilitychange', function () { if (document.hidden) { pauzirajTuru(); } });
   if (el.sala) {
     slusaj(el.sala, 'click', function () { uSalu(S.sala === 2 ? 1 : 2); });
+    /* Namjera prije klika: druga sala kreće dok je miš na dugmetu */
+    const najaviDrugu = function () { if (S.radi && S.sala !== 2 && !stediPodatke()) { ucitajDrugu(); } };
+    slusaj(el.sala, 'pointerenter', najaviDrugu);
+    slusaj(el.sala, 'focus', najaviDrugu);
   }
   if (el.prethodni) {
     slusaj(el.prethodni, 'click', function () {
@@ -3799,6 +4250,8 @@ function izadji() {
   S.mapaTacke = [];
   S.mapaSvg = null;
   S.uvod = 0;
+  if (S.kontekstIzgubljen && el.poruka) { el.poruka.classList.remove('je-vidljiva'); }
+  S.kontekstIzgubljen = false;
   if (!S.radi) { stanje('ulaz'); return; }
   S.radi = false;
 
@@ -3821,8 +4274,11 @@ function izadji() {
   S.mjesta.length = 0;
 
   if (S.scena) {
+    /* reflektor sa sjenkom drži i mapu sjenke na grafici */
+    S.scena.traverse(function (o) { if (o.isLight && o.dispose) { o.dispose(); } });
     while (S.scena.children.length) { S.scena.remove(S.scena.children[0]); }
   }
+  S.reflektori = [];
 
   if (S.render) {
     S.render.dispose();

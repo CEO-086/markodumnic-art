@@ -85,6 +85,20 @@
 /js/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
+# Galerija (samo galerija.html, ME/EN/IT): svaka adresa ka ova dva fajla
+# nosi ?v=<heš sadržaja> (alati/verzije.py), a HTML se uvijek provjerava —
+# izmijenjen fajl = nova adresa, pa smiju "immutable" na godinu, kao
+# fontovi. Pravilo gleda samo putanju, ne ?v=, zato važi SAMO dok svaka
+# veza ka njima ima ?v= (provjera: python3 alati/verzije.py --provjeri).
+# "!" skida sat vremena iz /js/* i /css/* (inače bi se spojili zapetom).
+/js/galerija.js
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/galerija.css
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
+
 /data/*
   Cache-Control: no-cache
 
