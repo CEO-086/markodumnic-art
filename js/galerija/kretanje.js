@@ -843,6 +843,10 @@ function pokazivacDole(e) {
      na šta cilja. Pogled poslije okretanja još malo klizi, pa bi na
      puštanju ispod miša moglo biti nešto drugo (ili goli zid). */
   S.naDole = pogodakBlizu(e.clientX, e.clientY, !!(e.pointerType && e.pointerType !== 'mouse'));
+  /* Pogled još klizi pa je djelo već izmaklo ispod miša: natpis (kućica
+     uz miš, osvježava se svaki kadar) pokazuje šta je posjetilac upravo
+     vidio pod mišem — klik ide na to djelo. */
+  if (S.naDole < 0 && S.natpis && !S.natpis.hidden && S.natpis.dataset.i) { S.naDole = Number(S.natpis.dataset.i); }
   S.vuce = true;
   S.brzina = 0;
   S.inercija = 0;
@@ -1090,6 +1094,17 @@ function vezi() {
   const c = S.render.domElement;
   slusaj(korijen, 'keydown', tipkaDole);
   slusaj(korijen, 'focusout', fokusIzasao);
+  /* Sala je overflow: hidden, ali se iz koda ipak može skrolovati: panel
+     van ekrana (translateX) joj daje širinu, pa fokus, scrollIntoView
+     ili alat koji „donese“ dugme u kadar pomjeri salu ulijevo — platno
+     ostane pomjereno, a desno crna traka do kraja posjete. Sala se nikad
+     ne skroluje: pomak se vraća u istom kadru, prije crtanja. */
+  const scena = korijen.querySelector('.galerija-scena');
+  if (scena) {
+    const naNulu = function () { if (scena.scrollLeft || scena.scrollTop) { scena.scrollLeft = 0; scena.scrollTop = 0; } };
+    naNulu();
+    slusaj(scena, 'scroll', naNulu);
+  }
   slusaj(window, 'resize', function () { izmjeriTraku(); mjeri(); });
   /* Okno mijenja veličinu i bez promjene prozora (CSS, rotacija
      telefona, adresna traka) — bez ovoga se crtež razvuče. */
