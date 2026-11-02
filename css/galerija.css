@@ -1987,18 +1987,18 @@ html.galerija-izbliza-otvoreno { overflow: hidden; }
   .galerija-alati .galerija-mapa { width: 6rem; }
 }
 
-/* Nizak prozor na računaru (npr. 13" u Chrome-u, 1236×712): da sala,
-   traka i razmak gore i dolje stanu na ekran, mapa u traci je manja
+/* Nizak prozor na računaru (npr. 13" u Chrome-u, 1236×656–712): da sala,
+   traka i razmak gore i dolje stanu na ekran i sala stoji u sredini, mapa u traci je manja
    (kao na položenom telefonu), a prozor „Dobro došli“ zbijeniji — pa
    sala smije biti niža (--sala-najmanje). Na višim ekranima ništa od
    ovoga ne važi. */
 @media (min-width: 721px) and (min-height: 501px) and (max-height: 780px) {
-  .galerija { --sala-najmanje: 29rem; }
+  .galerija { --sala-najmanje: 26rem; }
   .galerija-alati .galerija-mapa { width: 5.5rem; }
-  .galerija-savjeti { padding: var(--s-4); }
-  .galerija-savjeti__okvir { padding-block: var(--s-5); }
-  .galerija-savjeti__naslov { margin-bottom: var(--s-5); }
-  .galerija-savjeti__lista { margin-bottom: var(--s-5); }
+  .galerija-savjeti { padding: var(--s-3); }
+  .galerija-savjeti__okvir { padding-block: var(--s-4); }
+  .galerija-savjeti__naslov { margin-bottom: var(--s-4); }
+  .galerija-savjeti__lista { margin-bottom: var(--s-4); }
 }
 
 /* Traka: dugmad lijevo (kretanje gore, uglovi ispod), mapa desno kroz oba reda */
