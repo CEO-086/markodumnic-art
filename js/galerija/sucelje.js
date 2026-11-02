@@ -577,7 +577,14 @@ function napraviMapu() {
     g.appendChild(svgEl('circle', { cx: x, cy: z, r: 1.05, class: 'galerija-mapa__meta' }));
     g.appendChild(svgEl('circle', { cx: x, cy: z, r: 0.42, class: 'galerija-mapa__tacka' }));
     const idi = function () { G.pauzirajTuru(); G.izaberi(i); };   /* kamera, kretanje.js */
-    g.addEventListener('click', idi);
+    /* Mete (bar 24 px) susjednih tačaka se preklapaju — crteži su na
+       mapi ~6 px jedan od drugog — pa klik ide tački najbližoj mjestu
+       klika, a ne meti koja je slučajno nacrtana posljednja. */
+    g.addEventListener('click', function (e) {
+      const j = e.detail ? najblizaTacka(e.clientX, e.clientY, i) : i;
+      G.pauzirajTuru();
+      G.izaberi(j);
+    });
     g.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); idi(); return; }
       const n = S.mapaTacke.length;
@@ -626,6 +633,19 @@ function napraviMapu() {
     pisi(KLJUC_MAPE, otvorena ? 'da' : 'ne');
   });
   S.mapaZadnje = '';
+}
+
+/* Tačka mape čiji je centar najbliži tački na ekranu (x, y) */
+function najblizaTacka(x, y, inace) {
+  let naj = inace, min = Infinity;
+  S.mapaTacke.forEach(function (g, k) {
+    const c = g.querySelector('.galerija-mapa__tacka');
+    if (!c) { return; }
+    const r = c.getBoundingClientRect();
+    const d = Math.hypot(r.left + r.width / 2 - x, r.top + r.height / 2 - y);
+    if (d < min) { min = d; naj = k; }
+  });
+  return naj;
 }
 
 /* Jedina tačka mape u Tab redu; `fokus` je i pomjera tamo */
