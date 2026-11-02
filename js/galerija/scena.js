@@ -385,9 +385,13 @@ function napraviReflektor(mj, djelo, i) {
 function postaviBocno(ukljuci) {
   // eslint-disable-next-line no-unused-vars -- od ranije; ostaje, izmjene su samo premještanje
   const T = S.tri;
+  /* Crteži jedne grupe dijele isti reflektor: kad je izabran jedan od
+     njih, ostali iz grupe ga ne smiju vratiti na početno mjesto. */
+  const izabraniReflektor = ukljuci && S.izabrano >= 0 ? S.mjesta[S.izabrano].svjetlo : null;
   for (let i = 0; i < S.mjesta.length; i++) {
     const m = S.mjesta[i];
     const na = ukljuci && i === S.izabrano;
+    if (!na && m.svjetlo === izabraniReflektor) { continue; }
     if (na) {
       const tx = m.nz, tz = -m.nx;
       const L = DALJINA_SVJETLA * 0.6;
