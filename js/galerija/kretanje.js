@@ -183,9 +183,14 @@ function kreniKa(poz, cilj) {
        put išao preko njega i vraćao se — pogled je tu trznuo u stranu. */
     const prije = Math.min(0.9, Math.abs(S.poz.z - vrata.z) * 0.5);
     const poslije = Math.min(0.9, Math.abs(poz.z - vrata.z) * 0.5);
-    tacke.push(vrata.clone().setZ(vrata.z - smjer * prije));
+    /* Sa slike na slici kroz vrata: put kroz otvor malo bliže strani
+       odakle se dolazi i strani kuda se ide (otvor je širok 1.4 m), pa
+       kriva iza vrata ne zamahne prvo na suprotnu stranu. Iz pregleda
+       i u pregled (x = 0) put ide sredinom kao i prije. */
+    const uz = function (x) { return Math.max(-0.3, Math.min(0.3, x * 0.15)); };
+    tacke.push(vrata.clone().setZ(vrata.z - smjer * prije).setX(uz(S.poz.x)));
     ciljevi.push(new T.Vector3(0, 1.5, vrata.z + smjer * 3));
-    tacke.push(vrata.clone().setZ(vrata.z + smjer * poslije));
+    tacke.push(vrata.clone().setZ(vrata.z + smjer * poslije).setX(uz(poz.x)));
     ciljevi.push(new T.Vector3(0, 1.5, vrata.z + smjer * 4));
   }
   tacke.push(poz.clone());
@@ -203,6 +208,12 @@ function kreniKa(poz, cilj) {
        pogled ide naprijed kroz prolaz, a glava se blago njiše u koraku. */
     const put = new T.CatmullRomCurve3(tacke, false, 'centripetal');
     const duzinaPuta = put.getLength();
+    /* Okret na polasku traje prema uglu: 90° kao i do sada (HOD.okret),
+       a okret skoro unazad (sa slike na zidu ka vratima iza leđa) do
+       ~1.1 s — da glava ne zamahne brže nego čovjek kad se okrene. */
+    const t0 = put.getTangentAt(0.02);
+    let okret = Math.atan2(t0.x, t0.z) - Math.atan2(S.cilj.x - S.poz.x, S.cilj.z - S.poz.z);
+    okret = Math.abs(Math.atan2(Math.sin(okret), Math.cos(okret)));
     S.ka = null;
     S.inercija = 0;
     S.anim = {
@@ -212,6 +223,7 @@ function kreniKa(poz, cilj) {
       cilj0: ciljevi[0],
       cilj1: ciljevi[ciljevi.length - 1],
       trajanje: Math.max(2200, Math.min(4200, 600 + duzinaPuta / HOD.brzina * 1000)),
+      okret: Math.max(HOD.okret, Math.min(HOD.okret * 1.4, HOD.okret * okret / (Math.PI / 2))),
       pocetak: sada()
     };
     return;
@@ -263,7 +275,7 @@ function korakHoda(a, p) {
   const smjer = put.getTangentAt(Math.min(0.999, Math.max(0.001, u)));
   const naprijed = S.poz.clone().addScaledVector(smjer, 3);
   naprijed.y = 1.55;
-  const uPocetku = glatko(0, HOD.okret, p * a.trajanje), predKraj = glatko(0.68, 1, u);
+  const uPocetku = glatko(0, a.okret || HOD.okret, p * a.trajanje), predKraj = glatko(0.6, 1, u);
   /* Okret glave se računa po uglu, ne pravom linijom između ciljeva —
      inače bi pogled pri povratku "preskočio" kroz samu kameru. */
   const g0 = ugaoPogleda(S.poz, a.cilj0), gN = ugaoPogleda(S.poz, naprijed), g1 = ugaoPogleda(S.poz, a.cilj1);
@@ -359,14 +371,39 @@ function prvoUSali() {
   return 0;
 }
 
-/* STRELICE ◀ ▶: prvo djelo LIJEVO ili DESNO od posjetioca, u sali u
-   kojoj stoji — nikad prvo djelo sale ili galerije, i bez prelaska
-   kroz prolaz. Red mjesta u sali je red obilaska, a to je i red
-   „nadesno“ (zid po zid, u krug), pa:
+/* Obilazak obje sale kao jedan krug, zid po zid nadesno: red mjesta u
+   svakoj sali je već red „nadesno“, u krug. Krug sale se presiječe kod
+   vrata (par susjeda čija je sredina najbliža prolazu), pa se sale
+   nadovežu: posljednje djelo pred vratima → kroz vrata → prvo djelo do
+   vrata u drugoj sali, i tako u krug. Sa jednom salom to je njen krug. */
+function krugObilaska() {
+  /** @type {number[]} */
+  const red = [];
+  const vrataZ = POLA_Z + PROLAZ.zid / 2;
+  [POCETNA_SALA, POCETNA_SALA === 1 ? 2 : 1].forEach(function (sala) {
+    /** @type {number[]} */
+    const k = [];
+    for (let i = 0; i < S.mjesta.length; i++) { if ((S.mjesta[i].soba || 1) === sala) { k.push(i); } }
+    if (!k.length) { return; }
+    let rez = 0, najblize = Infinity;
+    for (let j = 0; j < k.length; j++) {
+      const a = S.mjesta[k[j]], b = S.mjesta[k[(j + 1) % k.length]];
+      const d = Math.hypot((a.x + b.x) / 2, (a.z + b.z) / 2 - vrataZ);
+      if (d < najblize) { najblize = d; rez = (j + 1) % k.length; }
+    }
+    for (let j = 0; j < k.length; j++) { red.push(k[(rez + j) % k.length]); }
+  });
+  return red;
+}
+
+/* STRELICE ◀ ▶: prvo djelo LIJEVO ili DESNO od posjetioca.
    - pred djelom (ili odmah poslije × / Pregled, dok se pogled nije
-     okretao): susjed tog djela u krugu sale;
-   - u pregledu: prvo djelo desno / lijevo od sredine pogleda; djelo
-     baš na sredini (±3°) je „ispred“, ne desno ni lijevo.
+     okretao): susjed tog djela u krugu obilaska — poslije posljednjeg
+     djela do vrata ide se kroz prolaz u drugu salu, pred prvo djelo
+     do vrata (hod kroz prolaz, kao sa mape);
+   - u pregledu: prvo djelo desno / lijevo od sredine pogleda, u sali
+     u kojoj posjetilac stoji; djelo baš na sredini (±3°) je „ispred“,
+     ne desno ni lijevo.
    Soba je konveksna, pa iz bilo koje tačke u njoj zidovi idu istim
    redom — ugao iz kamere i red obilaska se slažu.
    smjer: 1 = desno (▶), -1 = lijevo (◀). */
@@ -383,8 +420,9 @@ function susjed(smjer) {
   for (let i = 0; i < n; i++) { if ((S.mjesta[i].soba || 1) === uSali) { red.push(i); } }
   if (!red.length) { return prvoUSali(); }
   if (izvor >= 0) {
-    const p = red.indexOf(izvor);
-    return red[(p + smjer + red.length) % red.length];
+    const krug = krugObilaska();
+    const p = krug.indexOf(izvor);
+    return krug[(p + smjer + krug.length) % krug.length];
   }
   const pogled = Math.atan2(S.cilj.x - S.poz.x, S.cilj.z - S.poz.z);
   let najbolje = red[0], najmanje = Infinity;
