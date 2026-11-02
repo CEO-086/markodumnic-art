@@ -26,7 +26,7 @@ const {
 } = G;
 /* ui, sucelje.js */
 const {
-  stanje, izmjeriTraku, centrirajSalu, na2D, osvjeziKretanje, napraviMapu, osvjeziMapu, pokaziSavjete,
+  stanje, izmjeriTraku, centrirajSalu, centrirajSaluUnaprijed, na2D, osvjeziKretanje, napraviMapu, osvjeziMapu, pokaziSavjete,
   zatvoriSavjete, zatvoriPanel, natpis
 } = G;
 const { zatvoriIzbliza, postaviLupu, osvjeziLupu } = G;   /* izbliza, sucelje.js */
@@ -627,6 +627,9 @@ if (korijen) {
     if (/(^|[?&])ulaz(=|&|$)/.test(location.search.slice(1))) {
       try { history.replaceState(history.state, '', location.pathname + location.hash); } catch (e) { /* nebitno */ }
       ulaz();
+      /* Sala odmah u sredinu ekrana, još dok se učitava — ne prvo vrh
+         stranice pa skok kad se sala otvori. */
+      centrirajSaluUnaprijed();
     }
   }
 

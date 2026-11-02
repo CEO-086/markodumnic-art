@@ -39,6 +39,10 @@
     var sidro = window.location.hash && window.location.hash.length > 1
       ? document.getElementById(decodeURIComponent(window.location.hash.slice(1))) : null;
     if (sidro) { return; }
+    /* „Uđi u galeriju“ sa početne (galerija.html?ulaz): stranica sama
+       namjesti salu u sredinu ekrana (js/galerija/glavni.js) — vrh bi je
+       samo povukao nazad. */
+    if (/(^|[?&])ulaz(=|&|$)/.test(window.location.search.slice(1))) { return; }
     var ulaz = window.performance && performance.getEntriesByType
       ? performance.getEntriesByType('navigation')[0] : null;
     if (ulaz && ulaz.type === 'back_forward') { return; }

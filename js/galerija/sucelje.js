@@ -380,6 +380,22 @@ function centrirajSalu() {
   h.style.scrollBehavior = bilo;
 }
 
+/* „Uđi u galeriju“ sa početne: sala se namjesti još dok se učitava,
+   tačno tamo gdje će stajati kad se otvori, pa se poslije ne pomjeri.
+   Raspored otvorene sale (sala + traka sa mapom) se samo izmjeri: stanje
+   se vrati u istom potezu, prije iscrtavanja, pa se na ekranu ništa ne
+   promijeni. Mapa se ovdje crta prazna (iste je veličine kao puna);
+   pokreni je nacrta ponovo sa djelima. */
+function centrirajSaluUnaprijed() {
+  const bilo = korijen.getAttribute('data-stanje');
+  if (!bilo || bilo === 'soba') { centrirajSalu(); return; }
+  if (el.mapa && !el.mapa.firstChild) { napraviMapu(); }
+  korijen.setAttribute('data-stanje', 'soba');
+  izmjeriTraku();
+  centrirajSalu();
+  korijen.setAttribute('data-stanje', bilo);
+}
+
 /* Prelazak na 2D mrežu, sa razlogom koji CSS otkriva.
    Vrijednosti: webgl | fajl | cdn | podaci | json | prazno
    (smanjeno kretanje NIJE među njima — vidi `smanjenoKretanje` u osnova.js) */
@@ -776,7 +792,7 @@ function natpis(i, x, y) {
 }
 
 Object.assign(G, {
-  stanje, izmjeriTraku, centrirajSalu, na2D, najavi, osvjeziKretanje, napraviMapu, velicinaMeta,
+  stanje, izmjeriTraku, centrirajSalu, centrirajSaluUnaprijed, na2D, najavi, osvjeziKretanje, napraviMapu, velicinaMeta,
   osvjeziMapu, pokaziSavjete, zatvoriSavjete, savjetiOtvoreni, otvoriPanel, zatvoriPanel, panelOtvoren,
   natpis
 });
