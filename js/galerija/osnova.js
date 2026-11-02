@@ -157,6 +157,7 @@
  * @property {{ x: number, y: number }} pocetak
  * @property {number} put
  * @property {number} naDole
+ * @property {number} zadnje
  * @property {{ skretanje: number, nagib: number, daljina: number }} orbita
  * @property {Object<string, any>} lupa
  * @property {Map<number, { x: number, y: number }>} prsti
@@ -516,6 +517,7 @@ const S = {
   pocetak: { x: 0, y: 0 },
   put: 0,
   naDole: -1,           /* djelo pod mišem pri pritisku — klik ide na njega */
+  zadnje: -1,           /* posljednje izabrano djelo — od njega kreću ◀ ▶ dok se pogled ne okrene */
   orbita: null,         /* { skretanje, nagib, daljina } dok je djelo izabrano */
   /* Lupa: krug (div sa canvasom) iznad 3D platna */
   lupa: { na: false, okvir: null, platno: null, izvor: null, za: -1, x: null, y: null, prst: null, skala: 1, odmak: 0 },

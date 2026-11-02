@@ -297,6 +297,7 @@ function pokreni(djela) {
   S.poz = start.poz.clone();
   S.cilj = start.cilj.clone();
   S.izabrano = -1;
+  S.zadnje = -1;
   S.anim = null;
   S.mis.x = 0;
   S.mis.y = 0;
