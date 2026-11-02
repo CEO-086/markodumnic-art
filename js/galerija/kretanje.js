@@ -304,6 +304,7 @@ function izaberi(i) {
   const n = S.mjesta.length;
   const k = ((i % n) + n) % n;
   S.izabrano = k;
+  S.zadnje = k;
   S.sala = S.mjesta[k].soba || 1;
   S.orbita = pocetnaOrbita(k);
   const c = pozicijaOrbite(k, S.orbita);
@@ -340,6 +341,7 @@ function uSalu(sala) {
   S.sala = sala === 2 ? 2 : 1;
   if (jeDruga(S.sala)) { ucitajDrugu(); }
   S.pogled = 0;
+  S.zadnje = -1;
   S.inercija = 0;
   if (S.izabrano >= 0 || panelOtvoren()) { naPregled(false); }
   else {
@@ -355,6 +357,46 @@ function prvoUSali() {
     if ((S.mjesta[i].soba || POCETNA_SALA) === (S.sala || POCETNA_SALA)) { return i; }
   }
   return 0;
+}
+
+/* STRELICE ◀ ▶: prvo djelo LIJEVO ili DESNO od posjetioca, u sali u
+   kojoj stoji — nikad prvo djelo sale ili galerije, i bez prelaska
+   kroz prolaz. Red mjesta u sali je red obilaska, a to je i red
+   „nadesno“ (zid po zid, u krug), pa:
+   - pred djelom (ili odmah poslije × / Pregled, dok se pogled nije
+     okretao): susjed tog djela u krugu sale;
+   - u pregledu: prvo djelo desno / lijevo od sredine pogleda; djelo
+     baš na sredini (±3°) je „ispred“, ne desno ni lijevo.
+   Soba je konveksna, pa iz bilo koje tačke u njoj zidovi idu istim
+   redom — ugao iz kamere i red obilaska se slažu.
+   smjer: 1 = desno (▶), -1 = lijevo (◀). */
+const ISPRED = 0.05;   /* rad, oko 3° */
+function susjed(smjer) {
+  const n = S.mjesta.length;
+  if (!n) { return 0; }
+  const sala = S.sala || POCETNA_SALA;
+  let izvor = S.izabrano;
+  if (izvor < 0 && S.zadnje >= 0 && S.mjesta[S.zadnje] && (S.mjesta[S.zadnje].soba || 1) === sala) { izvor = S.zadnje; }
+  const uSali = izvor >= 0 ? (S.mjesta[izvor].soba || 1) : sala;
+  /** @type {number[]} */
+  const red = [];
+  for (let i = 0; i < n; i++) { if ((S.mjesta[i].soba || 1) === uSali) { red.push(i); } }
+  if (!red.length) { return prvoUSali(); }
+  if (izvor >= 0) {
+    const p = red.indexOf(izvor);
+    return red[(p + smjer + red.length) % red.length];
+  }
+  const pogled = Math.atan2(S.cilj.x - S.poz.x, S.cilj.z - S.poz.z);
+  let najbolje = red[0], najmanje = Infinity;
+  for (const i of red) {
+    const m = S.mjesta[i];
+    let d = Math.atan2(m.x - S.poz.x, m.z - S.poz.z) - pogled;
+    d = Math.atan2(Math.sin(d), Math.cos(d));   /* -π..π; desno je negativno (okret udesno smanjuje ugao) */
+    let okret = smjer > 0 ? -d : d;              /* koliko se treba okrenuti u tom smjeru */
+    if (okret <= ISPRED) { okret += 2 * Math.PI; }
+    if (okret < najmanje) { najmanje = okret; najbolje = i; }
+  }
+  return najbolje;
 }
 
 /* Gdje je klik pao u prostoru (zid, pod, klupa…), ne samo na djelo */
@@ -628,7 +670,7 @@ function pogodak(x, y) {
 
 Object.assign(G, {
   pozicijaPregleda, promijeniOrbitu, ugao, kreniKa, korakHoda, korakKlizanja, izaberi, naPregled, uSalu,
-  prvoUSali, tackaKlika, mjeri, osvjeziDugmeTure, kreniTuru, pauzirajTuru, zavrsiTuru, korakTure, uvod,
+  prvoUSali, susjed, tackaKlika, mjeri, osvjeziDugmeTure, kreniTuru, pauzirajTuru, zavrsiTuru, korakTure, uvod,
   korakUvoda, sParalaksom, pogodak, pogodakBlizu
 });
 G.dijelovi.push('kamera');
@@ -660,7 +702,7 @@ const { izmjeriTraku, pokaziSavjete, zatvoriSavjete, savjetiOtvoreni, panelOtvor
 const { postaviLupu, pomjeriLupu } = G;   /* izbliza, sucelje.js */
 /* kamera, kretanje.js */
 const {
-  pozicijaPregleda, promijeniOrbitu, ugao, kreniKa, izaberi, naPregled, uSalu, prvoUSali, tackaKlika,
+  pozicijaPregleda, promijeniOrbitu, ugao, kreniKa, izaberi, naPregled, uSalu, prvoUSali, susjed, tackaKlika,
   mjeri, kreniTuru, pauzirajTuru, pogodak, pogodakBlizu
 } = G;
 
@@ -773,14 +815,15 @@ function tipkaDole(e) {
     if (!hodaUSalu()) { uSalu(S.sala === 2 ? 1 : 2); }
     e.preventDefault();
   } else if (e.key === 'ArrowLeft') {
-    izaberi(S.izabrano < 0 ? prvoUSali() : S.izabrano - 1);
+    izaberi(susjed(-1));
     e.preventDefault();
   } else if (e.key === 'ArrowRight') {
-    izaberi(S.izabrano < 0 ? prvoUSali() : S.izabrano + 1);
+    izaberi(susjed(1));
     e.preventDefault();
   } else if (S.izabrano < 0 && (e.key.toLowerCase() === 'a' || e.key.toLowerCase() === 'd')) {
     /* Pregled sobe: A / D okreću pogled u krug, po 15° */
     S.pogled = svedi(S.pogled + (e.key.toLowerCase() === 'a' ? 1 : -1) * 15 * Math.PI / 180);
+    S.zadnje = -1;   /* posjetilac gleda drugdje — strelice kreću od pogleda */
     const c = pozicijaPregleda();
     kreniKa(c.poz, c.cilj);
     e.preventDefault();
@@ -898,6 +941,7 @@ function pokazivacMice(e) {
         S.anim = null;
         /* Pun krug, 360° — bez granica, ugao se samo svodi na ±π */
         S.pogled = svedi(S.pogled + dx * 0.004);
+        S.zadnje = -1;
         const sad = sada();
         const proslo = Math.max(8, sad - (S.zadnjiPomak || 0));
         S.zadnjiPomak = sad;
@@ -1018,6 +1062,7 @@ function tocak(e) {
     S.anim = null;
     S.inercija = 0;
     S.pogled = svedi(S.pogled - Math.max(-120, Math.min(120, dx)) * 0.0028);
+    S.zadnje = -1;
     S.ka = pozicijaPregleda();
     return;
   }
@@ -1175,12 +1220,12 @@ function vezi() {
   }
   if (el.prethodni) {
     slusaj(el.prethodni, 'click', function () {
-      izaberi(S.izabrano < 0 ? prvoUSali() : S.izabrano - 1);
+      izaberi(susjed(-1));
     });
   }
   if (el.sljedeci) {
     slusaj(el.sljedeci, 'click', function () {
-      izaberi(S.izabrano < 0 ? prvoUSali() : S.izabrano + 1);
+      izaberi(susjed(1));
     });
   }
 }
