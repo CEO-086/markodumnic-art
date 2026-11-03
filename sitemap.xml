@@ -381,6 +381,26 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-8"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-8"/>
   </url>
+  <url>
+    <loc>https://markodumnic.art/djelo/crtez-9</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-9"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/djelo/crtez-10</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-10"/>
+  </url>
 
   <!-- ===== English (/en/) ===== -->
   <url>
@@ -733,6 +753,26 @@
     <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-8"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-8"/>
   </url>
+  <url>
+    <loc>https://markodumnic.art/en/djelo/crtez-9</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-9"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/en/djelo/crtez-10</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-10"/>
+  </url>
   <!-- ===== Italiano (/it/) ===== -->
   <url>
     <loc>https://markodumnic.art/it</loc>
@@ -1083,5 +1123,25 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/crtez-8"/>
     <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-8"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-8"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/crtez-9</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-9"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-9"/>
+  </url>
+  <url>
+    <loc>https://markodumnic.art/it/djelo/crtez-10</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sr-ME" href="https://markodumnic.art/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://markodumnic.art/en/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://markodumnic.art/it/djelo/crtez-10"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://markodumnic.art/djelo/crtez-10"/>
   </url>
 </urlset>
