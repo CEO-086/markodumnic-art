@@ -839,7 +839,7 @@
     {
       "id": "crtez-1",
       "naziv": "Crtež 1",
-      "godina": null,
+      "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -878,7 +878,7 @@
     {
       "id": "crtez-2",
       "naziv": "Crtež 2",
-      "godina": null,
+      "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -917,7 +917,7 @@
     {
       "id": "crtez-3",
       "naziv": "Crtež 3",
-      "godina": null,
+      "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -956,7 +956,7 @@
     {
       "id": "crtez-4",
       "naziv": "Crtež 4",
-      "godina": null,
+      "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -995,7 +995,7 @@
     {
       "id": "crtez-5",
       "naziv": "Crtež 5",
-      "godina": null,
+      "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -1034,7 +1034,7 @@
     {
       "id": "crtez-6",
       "naziv": "Crtež 6",
-      "godina": null,
+      "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -1073,7 +1073,7 @@
     {
       "id": "crtez-7",
       "naziv": "Crtež 7",
-      "godina": null,
+      "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -1112,7 +1112,7 @@
     {
       "id": "crtez-8",
       "naziv": "Crtež 8",
-      "godina": null,
+      "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -1151,7 +1151,7 @@
     {
       "id": "crtez-9",
       "naziv": "Crtež 9",
-      "godina": null,
+      "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
@@ -1190,7 +1190,7 @@
     {
       "id": "crtez-10",
       "naziv": "Crtež 10",
-      "godina": null,
+      "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
       "kategorija": "crtezi",
