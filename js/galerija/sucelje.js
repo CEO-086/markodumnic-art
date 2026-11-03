@@ -764,7 +764,7 @@ function otvoriPanel(djelo) {
 }
 
 /* Crteži ciklusa u panelu: kad je izabran zid crteža (ili crtež iz
-   njega), ispod opisa stoji pet sličica sa nazivima; sličica vodi
+   njega), ispod opisa stoji pet sličica; sličica vodi
    kameru izbliza pred taj crtež. Za ostala djela lista je skrivena. */
 function clanoviUPanelu() {
   const m = S.mjesta[S.izabrano];
@@ -796,10 +796,10 @@ function clanoviUPanelu() {
       img.width = 60; img.height = 84;
       img.loading = 'lazy';
       img.decoding = 'async';
-      const s = document.createElement('span');
-      s.textContent = d.naziv || '';
+      /* Bez natpisa ispod sličice: pet crteža je jedan rad (zamisao
+         autora) — naziv crteža ostaje samo za čitač ekrana. */
+      b.setAttribute('aria-label', d.naziv || '');
       b.appendChild(img);
-      b.appendChild(s);
       b.addEventListener('click', function () { G.pauzirajTuru(); G.izaberi(i); });   /* kretanje.js */
       li.appendChild(b);
       lista.appendChild(li);
