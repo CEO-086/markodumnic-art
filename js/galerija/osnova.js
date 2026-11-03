@@ -682,6 +682,7 @@ const TEKST = IT ? {
   brojCrteza: function (n) { return n + (n === 1 ? ' disegno' : ' disegni'); },
   ciklus: function (n) { return 'Un ciclo di ' + (n === 5 ? 'cinque' : n) + ' disegni su un unico tema, concepito come un’unica opera.'; },
   clanovi: 'I disegni del ciclo',
+  zidovi: { istok: { naziv: 'Diario di Cettigne', godina: '2025' }, zapad: { naziv: 'Diario dello studio', godina: '2025–2026' } },
   karticaVise: 'Mostra i dati dell’opera', karticaManje: 'Nascondi i dati dell’opera',
   opcije: 'Opzioni', iliDodir: 'o toccate un dipinto', oDjelu: 'Sull’opera',
   cistoSavjet: 'Toccate il dipinto per nascondere i pulsanti', cistoNazad: 'Toccate di nuovo il dipinto per riavere i pulsanti'
@@ -712,6 +713,7 @@ const TEKST = IT ? {
   brojCrteza: function (n) { return n + (n === 1 ? ' drawing' : ' drawings'); },
   ciklus: function (n) { return 'A cycle of ' + (n === 5 ? 'five' : n) + ' drawings on one theme, conceived as a single work.'; },
   clanovi: 'Drawings in the cycle',
+  zidovi: { istok: { naziv: 'Cetinje Diary', godina: '2025' }, zapad: { naziv: 'Studio Diary', godina: '2025–2026' } },
   karticaVise: 'Show the details of the work', karticaManje: 'Hide the details of the work',
   opcije: 'Options', iliDodir: 'or tap a painting', oDjelu: 'About the work',
   cistoSavjet: 'Tap the painting to hide the buttons', cistoNazad: 'Tap the painting again for the buttons'
@@ -742,6 +744,9 @@ const TEKST = IT ? {
   brojCrteza: function (n) { return n + (n % 10 === 1 && n % 100 !== 11 ? ' crtež' : ' crteža'); },
   ciklus: function (n) { return 'Ciklus od ' + (n === 5 ? 'pet' : n) + ' crteža na jednu temu, zamišljen kao jedno djelo.'; },
   clanovi: 'Crteži u ciklusu',
+  /* Zidovi crteža (ciklusi) — nazivi i godine dao je autor. Gledano iz
+     velike sale ka maloj: lijevo (x > 0, istok) crteži 1–5, desno 6–10. */
+  zidovi: { istok: { naziv: 'Cetinjski dnevnik', godina: '2025' }, zapad: { naziv: 'Dnevnik iz ateljea', godina: '2025–2026' } },
   karticaVise: 'Prikaži podatke o djelu', karticaManje: 'Sakrij podatke o djelu',
   opcije: 'Opcije', iliDodir: 'ili dodirnite sliku', oDjelu: 'O djelu',
   cistoSavjet: 'Dodir na sliku sakriva dugmad', cistoNazad: 'Dodirnite sliku da vratite dugmad'

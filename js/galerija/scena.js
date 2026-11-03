@@ -1640,8 +1640,8 @@ function postaviDjela(djela) {
      zid dobija svoje mjesto u S.mjesta (iza svih djela, bez platna):
      sredina zida, širina svih pet crteža, isti reflektor. Strelice, tura
      i mapa idu na zid; crtež se bira tek unutar zida (kretanje.js).
-     „Crteži I“ uz desni zid sale (x > 0, crteži 1–5), „Crteži II“ uz
-     lijevi. Jedna legenda po zidu, desno od krajnjeg desnog crteža, kao
+     Nazivi i godine ciklusa su u TEKST.zidovi (osnova.js): x > 0 je
+     „Cetinjski dnevnik“ (crteži 1–5), x < 0 „Dnevnik iz ateljea“ (6–10). Jedna legenda po zidu, desno od krajnjeg desnog crteža, kao
      kod ulja — i ona bira zid. */
   ['istok', 'zapad'].forEach(function (k, r) {
     const g = grupeCrteza[k];
@@ -1663,7 +1663,8 @@ function postaviDjela(djela) {
     const prvi = S.mjesta[clanovi[0]];
     const indeks = S.mjesta.length;
     clanovi.forEach(function (i) { S.mjesta[i].zid = indeks; });
-    const naziv = TEKST.crtezi + ' ' + (r === 0 ? 'I' : 'II');
+    const zidT = (TEKST.zidovi && TEKST.zidovi[k]) || { naziv: TEKST.crtezi + ' ' + (r === 0 ? 'I' : 'II'), godina: null };
+    const naziv = zidT.naziv;
     S.mjesta.push({
       soba: prvi.soba,
       mesh: null,
@@ -1671,7 +1672,7 @@ function postaviDjela(djela) {
       nx: prvi.nx, nz: prvi.nz,
       sirina: x1 - x0, visina: visina,
       djelo: /** @type {any} */ ({
-        id: '', naziv: naziv, kategorija: 'crtezi', godina: null,
+        id: '', naziv: naziv, kategorija: 'crtezi', godina: zidT.godina,
         tehnika: g.djelo.tehnika || '', dimenzije: TEKST.brojCrteza(clanovi.length),
         opis: TEKST.ciklus(clanovi.length)
       }),
@@ -1684,7 +1685,7 @@ function postaviDjela(djela) {
     });
     const tekst = {
       naziv: naziv,
-      godina: null,
+      godina: zidT.godina,
       tehnika: g.djelo.tehnika || '',
       dimenzije: TEKST.brojCrteza(g.n)
     };
