@@ -714,7 +714,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 .galerija-panel__link { display: inline-block; }
 .galerija-panel__link[hidden] { display: none; }
 
-/* Zid crteža (ciklus kao jedno djelo): pet sličica sa nazivima;
+/* Zid crteža (ciklus kao jedno djelo): pet sličica, bez natpisa;
    sličica vodi izbliza pred taj crtež (js/galerija/sucelje.js) */
 .galerija-panel__clanovi {
   display: grid;
