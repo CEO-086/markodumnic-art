@@ -513,8 +513,13 @@ function idiNaTuri(i) {
   if (!t) { return; }
   t.i = ((i % S.mjesta.length) + S.mjesta.length) % S.mjesta.length;
   t.faza = 'ide';
+  /* Tura ide istim krugom kao strelice ◀ ▶ (krugObilaska), od prvog
+     do posljednjeg djela; korak je mjesto djela u tom krugu, pa i
+     nastavak od djela pred kojim se stoji broji i završava tačno. */
+  const krug = krugObilaska();
+  t.korak = Math.max(0, krug.indexOf(t.i));
   /* Tura stiže do druge sale: teksture se naručuju jedno djelo unaprijed */
-  const sljedece = S.mjesta[(t.i + 1) % S.mjesta.length];
+  const sljedece = S.mjesta[krug[t.korak + 1]];
   if (jeDruga(S.mjesta[t.i].soba) || (sljedece && jeDruga(sljedece.soba))) { ucitajDrugu(); }
   postaviLupu(false);
   izaberi(t.i);
@@ -534,7 +539,8 @@ function kreniTuru() {
     return;
   }
   zatvoriSavjete();
-  const start = S.izabrano >= 0 ? S.izabrano : prvoUSali();
+  /* Obilazak uvijek kreće od prvog djela kruga, gdje god posjetilac stoji */
+  const start = krugObilaska()[0];
   S.tura = { i: start, start: start, korak: 0, faza: 'ide', pauza: false, od: 0, do: 0, osnova: null };
   poruka(TEKST.pocetak(S.mjesta.length));
   idiNaTuri(start);
@@ -583,9 +589,9 @@ function korakTure(t) {
     S.cilj.copy(c.cilj);
   }
   if (p >= 1) {
-    tura.korak++;
-    if (tura.korak >= S.mjesta.length) { zavrsiTuru(false); return; }
-    idiNaTuri(tura.i + 1);
+    const krug = krugObilaska();
+    if (tura.korak + 1 >= krug.length) { zavrsiTuru(false); return; }
+    idiNaTuri(krug[tura.korak + 1]);
   }
 }
 
