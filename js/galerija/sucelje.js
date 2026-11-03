@@ -282,13 +282,14 @@ function pripremiMob() {
 function osvjeziMob() {
   const m = el.mob;
   if (!m) { return; }
-  const n = S.mjesta.length;
+  const krug = G.krugObilaska ? G.krugObilaska() : [];   /* kretanje.js */
+  const n = krug.length;
   const tura = el.tura && (el.tura.querySelector('.galerija-tura__tekst') || el.tura).textContent;
   m.gdje.textContent = jeDruga(S.sala) ? TEKST.sala2 : TEKST.sala1;
   const djelo = S.izabrano >= 0 && S.mjesta[S.izabrano] ? S.mjesta[S.izabrano].djelo : null;
   if (djelo) {
     m.naziv.textContent = djelo.naziv || '—';
-    m.meta.textContent = [djelo.godina, (S.izabrano + 1) + ' / ' + n]
+    m.meta.textContent = [djelo.godina, (krug.indexOf(G.stanica(S.izabrano)) + 1) + ' / ' + n]
       .filter(function (v) { return v != null && v !== ''; }).join(' · ');
     m.natpis.setAttribute('aria-label', (djelo.naziv || '') + ' — ' + TEKST.oDjelu);
     m.natpis.setAttribute('aria-controls', 'galerija-panel');
@@ -566,6 +567,8 @@ function napraviMapu() {
     /* Jedna Tab-stanica za cijelu mapu (roving tabindex): strelice
        idu od tačke do tačke, Enter / razmak vode do djela. */
     const g = svgEl('g', { class: 'galerija-mapa__djelo', tabindex: i === 0 ? '0' : '-1', role: 'button', 'data-mapa-djelo': String(i) });
+    /* Crteži iz zida nemaju svoju tačku: zid (ciklus) ima jednu, u sredini */
+    if (m.zid != null) { g.setAttribute('display', 'none'); g.setAttribute('aria-hidden', 'true'); }
     const naziv = (m.djelo && m.djelo.naziv) || TEKST.djeloBr(i + 1);
     g.setAttribute('aria-label', TEKST.idiDo + naziv);
     const x = m.x + m.nx * 0.35, z = m.z + m.nz * 0.35;
@@ -594,6 +597,9 @@ function napraviMapu() {
       else if (e.key === 'Home') { j = 0; }
       else if (e.key === 'End') { j = n - 1; }
       if (j < 0) { return; }
+      /* skrivene tačke (crteži iz zida) se preskaču */
+      const korak = (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'End') ? -1 : 1;
+      for (let s = 0; s < n && S.mjesta[j] && S.mjesta[j].zid != null; s++) { j = (j + korak + n) % n; }
       /* strelice ovdje ne smiju i da biraju djelo u sali (tipkaDole) */
       e.preventDefault();
       e.stopPropagation();
@@ -640,7 +646,7 @@ function najblizaTacka(x, y, inace) {
   let naj = inace, min = Infinity;
   S.mapaTacke.forEach(function (g, k) {
     const c = g.querySelector('.galerija-mapa__tacka');
-    if (!c) { return; }
+    if (!c || g.getAttribute('display') === 'none') { return; }
     const r = c.getBoundingClientRect();
     const d = Math.hypot(r.left + r.width / 2 - x, r.top + r.height / 2 - y);
     if (d < min) { min = d; naj = k; }
@@ -672,9 +678,10 @@ function osvjeziMapu() {
   if (tr !== S.mapaZadnje) { S.mapaJa.setAttribute('transform', tr); S.mapaZadnje = tr; }
   if (S.mapaIzabrano !== S.izabrano) {
     S.mapaIzabrano = S.izabrano;
-    S.mapaTacke.forEach(function (g, i) { g.classList.toggle('je-izabrano', i === S.izabrano); });
+    const tacka = S.izabrano >= 0 && G.stanica ? G.stanica(S.izabrano) : S.izabrano;   /* crtež → njegov zid */
+    S.mapaTacke.forEach(function (g, i) { g.classList.toggle('je-izabrano', i === tacka); });
     /* Tab ulazi u mapu na izabranom djelu — osim dok je fokus već u mapi */
-    if (S.izabrano >= 0 && !(el.mapa && el.mapa.contains(document.activeElement))) { tackaUFokus(S.izabrano, false); }
+    if (tacka >= 0 && !(el.mapa && el.mapa.contains(document.activeElement))) { tackaUFokus(tacka, false); }
   }
 }
 
@@ -748,9 +755,62 @@ function otvoriPanel(djelo) {
   el.pDimenzije.textContent = djelo.dimenzije || '—';
   el.pOpis.textContent = djelo.opis || '';
   el.pLink.setAttribute('href', 'djelo/' + encodeURIComponent(djelo.id || '') + '.html');
+  /* Zid crteža (ciklus) nema svoju stranicu — samo crteži u njemu */
+  el.pLink.hidden = !djelo.id;
+  clanoviUPanelu();
   postaviKarticu(false);
   korijen.setAttribute('data-panel', 'otvoren');
   /* Petlja se namjerno NE pauzira dok je panel otvoren — sala ostaje živa iza njega. */
+}
+
+/* Crteži ciklusa u panelu: kad je izabran zid crteža (ili crtež iz
+   njega), ispod opisa stoji pet sličica sa nazivima; sličica vodi
+   kameru izbliza pred taj crtež. Za ostala djela lista je skrivena. */
+function clanoviUPanelu() {
+  const m = S.mjesta[S.izabrano];
+  const zid = m ? (m.clanovi ? S.izabrano : (m.zid != null ? m.zid : -1)) : -1;
+  let lista = S.panelClanovi;
+  if (zid < 0) {
+    if (lista) { lista.hidden = true; }
+    return;
+  }
+  if (!lista) {
+    lista = document.createElement('ul');
+    lista.className = 'galerija-panel__clanovi';
+    lista.setAttribute('aria-label', TEKST.clanovi);
+    el.pOpis.insertAdjacentElement('afterend', lista);
+    S.panelClanovi = lista;
+  }
+  if (lista.dataset.zid !== String(zid)) {
+    lista.textContent = '';
+    (S.mjesta[zid].clanovi || []).forEach(function (i) {
+      const d = S.mjesta[i].djelo;
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'galerija-panel__clan';
+      b.dataset.mjesto = String(i);
+      const img = document.createElement('img');
+      img.src = izKorijena('img/sala/' + d.id + '-160.webp');
+      img.alt = '';
+      img.width = 60; img.height = 84;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      const s = document.createElement('span');
+      s.textContent = d.naziv || '';
+      b.appendChild(img);
+      b.appendChild(s);
+      b.addEventListener('click', function () { G.pauzirajTuru(); G.izaberi(i); });   /* kretanje.js */
+      li.appendChild(b);
+      lista.appendChild(li);
+    });
+    lista.dataset.zid = String(zid);
+  }
+  lista.querySelectorAll('.galerija-panel__clan').forEach(function (b) {
+    if (b.getAttribute('data-mjesto') === String(S.izabrano)) { b.setAttribute('aria-current', 'true'); }
+    else { b.removeAttribute('aria-current'); }
+  });
+  lista.hidden = false;
 }
 
 /* Zatvaranje panela vraća fokus na platno. Bez ovoga fokus pada na <body>
@@ -793,6 +853,11 @@ function natpis(i, x, y) {
     S.natpis = n;
   }
   const n = S.natpis;
+  /* Crtež iz zida pokazuje naziv zida (ciklusa) — osim kad je taj zid
+     već izabran, tada se bira crtež u njemu pa natpis kaže koji */
+  const izab = S.mjesta[S.izabrano];
+  const mi = S.mjesta[i];
+  if (mi.zid != null && S.izabrano !== mi.zid && !(izab && izab.zid === mi.zid)) { i = mi.zid; }
   if (n.dataset.i !== String(i)) {
     const d = S.mjesta[i].djelo;
     const redovi = n.querySelectorAll('.galerija-natpis__red');
@@ -840,7 +905,7 @@ const { panelOtvoren } = G;   /* ui, sucelje.js */
        rezoluciji (slikaVelika). Odvojeno od lupe — lupa je krug koji
        uvećava dio slike u sali, a ovo je sama slika, bez sale. --- */
 function otvoriIzbliza() {
-  if (S.izabrano < 0 || S.izbliza) { return; }
+  if (S.izabrano < 0 || S.izbliza || !S.mjesta[S.izabrano].mesh) { return; }
   const djelo = S.mjesta[S.izabrano].djelo;
   postaviLupu(false);
   const o = document.createElement('div');
@@ -971,7 +1036,8 @@ function zatvoriIzbliza() {
 /* --- LUPA --- */
 function postaviLupu(ukljuci) {
   const L = S.lupa;
-  L.na = !!ukljuci && S.izabrano >= 0;
+  /* Lupa i Izbliza rade nad jednim platnom — za cijeli zid crteža ne */
+  L.na = !!ukljuci && S.izabrano >= 0 && !!S.mjesta[S.izabrano].mesh;
   if (el.lupa) { el.lupa.setAttribute('aria-pressed', L.na ? 'true' : 'false'); }
   if (!L.na) {
     if (L.okvir) { L.okvir.hidden = true; }

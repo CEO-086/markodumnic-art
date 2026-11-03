@@ -32,7 +32,7 @@ const {
 const { zatvoriIzbliza, postaviLupu, osvjeziLupu } = G;   /* izbliza, sucelje.js */
 /* kamera, kretanje.js */
 const {
-  pozicijaPregleda, korakHoda, korakKlizanja, naPregled, mjeri, osvjeziDugmeTure, zavrsiTuru, korakTure,
+  pozicijaPregleda, korakHoda, korakKlizanja, mjeri, osvjeziDugmeTure, zavrsiTuru, korakTure,
   uvod, korakUvoda, sParalaksom, pogodak
 } = G;
 const { vezi, odvezi } = G;   /* unos, kretanje.js */
@@ -644,7 +644,7 @@ if (korijen) {
         postaviKarticu(false);
         return;
       }
-      naPregled(true);
+      G.nazad(true);   /* kretanje.js: iz crteža prvo na cijeli zid */
     });
   }
   pripremiKarticu();

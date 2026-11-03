@@ -125,6 +125,9 @@
  * @property {any} svjetloPoz     njegov početni položaj (bočno svjetlo ga pomjera)
  * @property {number} svjetloJacina
  * @property {number} svjetloUgao   početni ugao snopa (vraća se kad se bočno svjetlo ugasi)
+ * @property {string|null} [grupa]  crteži: polovina zida ('istok' | 'zapad')
+ * @property {number} [zid]         crtež: indeks mjesta „zida“ (ciklusa) kom pripada
+ * @property {number[]} [clanovi]   zid crteža: indeksi njegovih crteža, redom „nadesno“
  */
 /**
  * Zajedničko stanje sale (const S, niže u omotaču). Polja bez [zagrada]
@@ -234,6 +237,7 @@
  * @property {number} [najavaTajmer]
  * @property {number} [porukaTajmer]
  * @property {HTMLElement} [natpis]
+ * @property {HTMLElement} [panelClanovi]  lista crteža zida u panelu (sucelje.js)
  * @property {SVGSVGElement} [mapaSvg]
  * @property {SVGElement} [mapaJa]
  * @property {SVGElement[]} [mapaTacke]
@@ -676,6 +680,8 @@ const TEKST = IT ? {
   sakrijMapu: 'Nascondi la pianta', prikaziMapu: 'Mostra la pianta',
   crtez: 'Disegno', ulje: 'Dipinto a olio', crtezi: 'Disegni',
   brojCrteza: function (n) { return n + (n === 1 ? ' disegno' : ' disegni'); },
+  ciklus: function (n) { return 'Un ciclo di ' + (n === 5 ? 'cinque' : n) + ' disegni su un unico tema, concepito come un’unica opera.'; },
+  clanovi: 'I disegni del ciclo',
   karticaVise: 'Mostra i dati dell’opera', karticaManje: 'Nascondi i dati dell’opera',
   opcije: 'Opzioni', iliDodir: 'o toccate un dipinto', oDjelu: 'Sull’opera',
   cistoSavjet: 'Toccate il dipinto per nascondere i pulsanti', cistoNazad: 'Toccate di nuovo il dipinto per riavere i pulsanti'
@@ -704,6 +710,8 @@ const TEKST = IT ? {
   sakrijMapu: 'Hide the floor plan', prikaziMapu: 'Show the floor plan',
   crtez: 'Drawing', ulje: 'Oil painting', crtezi: 'Drawings',
   brojCrteza: function (n) { return n + (n === 1 ? ' drawing' : ' drawings'); },
+  ciklus: function (n) { return 'A cycle of ' + (n === 5 ? 'five' : n) + ' drawings on one theme, conceived as a single work.'; },
+  clanovi: 'Drawings in the cycle',
   karticaVise: 'Show the details of the work', karticaManje: 'Hide the details of the work',
   opcije: 'Options', iliDodir: 'or tap a painting', oDjelu: 'About the work',
   cistoSavjet: 'Tap the painting to hide the buttons', cistoNazad: 'Tap the painting again for the buttons'
@@ -732,6 +740,8 @@ const TEKST = IT ? {
   sakrijMapu: 'Sakrij mapu sale', prikaziMapu: 'Prikaži mapu sale',
   crtez: 'Crtež', ulje: 'Ulje', crtezi: 'Crteži',
   brojCrteza: function (n) { return n + (n % 10 === 1 && n % 100 !== 11 ? ' crtež' : ' crteža'); },
+  ciklus: function (n) { return 'Ciklus od ' + (n === 5 ? 'pet' : n) + ' crteža na jednu temu, zamišljen kao jedno djelo.'; },
+  clanovi: 'Crteži u ciklusu',
   karticaVise: 'Prikaži podatke o djelu', karticaManje: 'Sakrij podatke o djelu',
   opcije: 'Opcije', iliDodir: 'ili dodirnite sliku', oDjelu: 'O djelu',
   cistoSavjet: 'Dodir na sliku sakriva dugmad', cistoNazad: 'Dodirnite sliku da vratite dugmad'

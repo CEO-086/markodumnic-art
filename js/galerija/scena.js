@@ -394,14 +394,16 @@ function postaviBocno(ukljuci) {
     if (!na && m.svjetlo === izabraniReflektor) { continue; }
     if (na) {
       const tx = m.nz, tz = -m.nx;
-      const L = DALJINA_SVJETLA * 0.6;
+      /* Zid crteža (ciklus) se osvjetljava cio, sa kraja zida: reflektor
+         ide dalje u stranu i zadržava širok snop grupe. */
+      const L = DALJINA_SVJETLA * 0.6 + (m.clanovi ? m.sirina * 0.5 : 0);
       m.svjetlo.position.set(
         m.x - tx * L * Math.sin(UGAO_BOCNO) + m.nx * L * Math.cos(UGAO_BOCNO),
         m.y + 0.15,
         m.z - tz * L * Math.sin(UGAO_BOCNO) + m.nz * L * Math.cos(UGAO_BOCNO)
       );
-      m.svjetlo.angle = 0.75;
-      m.svjetlo.intensity = m.svjetloJacina * 0.9;
+      m.svjetlo.angle = m.clanovi ? Math.min(1.2, m.svjetloUgao + 0.3) : 0.75;
+      m.svjetlo.intensity = m.svjetloJacina * (m.clanovi ? 1.6 : 0.9);
     } else {
       m.svjetlo.position.copy(m.svjetloPoz);
       m.svjetlo.angle = m.svjetloUgao;   /* početni snop, ne UGAO_SNOPA: crteži su širi */
@@ -1628,24 +1630,65 @@ function postaviDjela(djela) {
       svjetlo: svjetlo,
       svjetloPoz: svjetlo.position.clone(),
       svjetloJacina: svjetlo.intensity,
-      svjetloUgao: svjetlo.angle    /* crteži imaju širi zajednički snop */
+      svjetloUgao: svjetlo.angle,   /* crteži imaju širi zajednički snop */
+      grupa: mj.grupa || null
     });
   });
 
-  /* Jedna legenda za svaku polovinu zida sa crtežima: pet crteža je
-     jedna postavka. „Crteži I“ uz desni zid sale (x > 0, crteži 1–5),
-     „Crteži II“ uz lijevi; legenda stoji desno od krajnjeg desnog crteža,
-     kao kod ulja. */
+  /* ZID CRTEŽA KAO JEDNO DJELO: pet crteža na polovini zida je ciklus na
+     jednu temu, zamišljen kao jedan rad (zamisao Marka Dumnića). Svaki
+     zid dobija svoje mjesto u S.mjesta (iza svih djela, bez platna):
+     sredina zida, širina svih pet crteža, isti reflektor. Strelice, tura
+     i mapa idu na zid; crtež se bira tek unutar zida (kretanje.js).
+     „Crteži I“ uz desni zid sale (x > 0, crteži 1–5), „Crteži II“ uz
+     lijevi. Jedna legenda po zidu, desno od krajnjeg desnog crteža, kao
+     kod ulja — i ona bira zid. */
   ['istok', 'zapad'].forEach(function (k, r) {
     const g = grupeCrteza[k];
     if (!g) { return; }
+    /** @type {number[]} */
+    const clanovi = [];
+    S.mjesta.forEach(function (m, i) { if (m.grupa === k) { clanovi.push(i); } });
+    let x0 = Infinity, x1 = -Infinity, visina = 0;
+    clanovi.forEach(function (i) {
+      const m = S.mjesta[i];
+      x0 = Math.min(x0, m.x - m.sirina / 2);
+      x1 = Math.max(x1, m.x + m.sirina / 2);
+      visina = Math.max(visina, m.visina);
+    });
+    /* i legenda zida ulazi u kadar */
+    const tl = g.mj.nz, rub = g.d.sirina / 2 + PREPUST_RAMA + LEGENDA.razmak + LEGENDA.sirina;
+    x0 = Math.min(x0, g.mj.x + tl * rub);
+    x1 = Math.max(x1, g.mj.x + tl * rub);
+    const prvi = S.mjesta[clanovi[0]];
+    const indeks = S.mjesta.length;
+    clanovi.forEach(function (i) { S.mjesta[i].zid = indeks; });
+    const naziv = TEKST.crtezi + ' ' + (r === 0 ? 'I' : 'II');
+    S.mjesta.push({
+      soba: prvi.soba,
+      mesh: null,
+      x: (x0 + x1) / 2, y: prvi.y, z: prvi.z,
+      nx: prvi.nx, nz: prvi.nz,
+      sirina: x1 - x0, visina: visina,
+      djelo: /** @type {any} */ ({
+        id: '', naziv: naziv, kategorija: 'crtezi', godina: null,
+        tehnika: g.djelo.tehnika || '', dimenzije: TEKST.brojCrteza(clanovi.length),
+        opis: TEKST.ciklus(clanovi.length)
+      }),
+      svjetlo: prvi.svjetlo,
+      svjetloPoz: prvi.svjetloPoz.clone(),
+      svjetloJacina: prvi.svjetloJacina,
+      svjetloUgao: prvi.svjetloUgao,
+      grupa: k,
+      clanovi: clanovi
+    });
     const tekst = {
-      naziv: TEKST.crtezi + ' ' + (r === 0 ? 'I' : 'II'),
+      naziv: naziv,
       godina: null,
       tehnika: g.djelo.tehnika || '',
       dimenzije: TEKST.brojCrteza(g.n)
     };
-    postaviLegendu(napraviLegendu(tekst), function () { return napraviLegendu(tekst); }, g.mj, g.d, -1);
+    postaviLegendu(napraviLegendu(tekst), function () { return napraviLegendu(tekst); }, g.mj, g.d, indeks);
   });
 
   postaviSine();

@@ -712,6 +712,50 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 }
 
 .galerija-panel__link { display: inline-block; }
+.galerija-panel__link[hidden] { display: none; }
+
+/* Zid crteža (ciklus kao jedno djelo): pet sličica sa nazivima;
+   sličica vodi izbliza pred taj crtež (js/galerija/sucelje.js) */
+.galerija-panel__clanovi {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--s-2);
+  margin: 0 0 var(--s-5);
+  padding: 0;
+  list-style: none;
+}
+.galerija-panel__clanovi[hidden] { display: none; }
+.galerija-panel__clan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: var(--t-xs);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.galerija-panel__clan img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 7;
+  object-fit: cover;
+  border: 1px solid var(--rule-strong);
+}
+.galerija-panel__clan:hover,
+.galerija-panel__clan[aria-current="true"] { color: var(--ink); }
+.galerija-panel__clan[aria-current="true"] img { outline: 2px solid var(--accent, currentColor); outline-offset: 1px; }
+
+/* Cijeli zid crteža: Lupa i Izbliza rade nad jednim crtežom, ne nad zidom */
+.galerija[data-zid="cijeli"] [data-ugao="izbliza"],
+.galerija[data-zid="cijeli"] #galerija-lupa { display: none; }
 
 .galerija-panel__napomena {
   margin: var(--s-6) 0 0;
@@ -1147,6 +1191,7 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   .galerija[data-kartica="sklopljena"] .galerija-panel__meta,
   .galerija[data-kartica="sklopljena"] .galerija-panel__opis,
   .galerija[data-kartica="sklopljena"] .galerija-panel__link,
+  .galerija[data-kartica="sklopljena"] .galerija-panel__clanovi,
   .galerija[data-kartica="sklopljena"] .galerija-panel__napomena {
     visibility: hidden;
   }
