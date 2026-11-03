@@ -91,10 +91,22 @@ function pozicijaPredDjelom(i) {
   /* vidljiva visina na daljini d = 2 * d * tan(polV)
      vidljiva širina = vidljiva visina * aspekt
      tražimo d tako da i visina i širina rada uđu u PUNJENJE_KADRA */
-  const dVisina = m.visina / (2 * PUNJENJE_KADRA * tanV);
-  const dSirina = m.sirina / (2 * PUNJENJE_KADRA * tanV * aspekt);
+  /* Zid crteža (ciklus) staje cio u kadar: svih pet crteža, uz malo
+     zida oko njih — zato i dalje od MAX_DALJINA (do zida sobe paze
+     granice sale u pozicijaOrbite). */
+  const puni = m.clanovi ? 0.86 : PUNJENJE_KADRA;
+  /* Panel sa strane pokriva desni dio okna (platno se pomjeri ulijevo
+     za pola panela, vidi .galerija-platno u css) — zid mora stati u
+     ostatak. Panel odozdo (uspravan telefon) je preko cijele širine. */
+  let vidljivo = aspekt;
+  if (m.clanovi && el.panel && el.platno && el.platno.clientWidth) {
+    const w = el.platno.clientWidth, pw = el.panel.offsetWidth;
+    if (pw > 0 && pw < w * 0.9) { vidljivo = aspekt * (w - pw) / w; }
+  }
+  const dVisina = m.visina / (2 * puni * tanV);
+  const dSirina = m.sirina / (2 * puni * tanV * vidljivo);
   let d = Math.max(dVisina, dSirina);
-  d = Math.max(MIN_DALJINA, Math.min(MAX_DALJINA, d));
+  d = Math.max(MIN_DALJINA, Math.min(m.clanovi ? 7 : MAX_DALJINA, d));
   return d;
 }
 
@@ -134,7 +146,9 @@ function pozicijaOrbite(i, o) {
 function ogranicOrbitu(o) {
   o.skretanje = Math.max(-ORBITA.maxSkretanje, Math.min(ORBITA.maxSkretanje, o.skretanje));
   o.nagib = Math.max(ORBITA.minNagib, Math.min(ORBITA.maxNagib, o.nagib));
-  o.daljina = Math.max(ORBITA.minDaljina, Math.min(MAX_DALJINA + 0.6, o.daljina));
+  const m = S.mjesta[S.izabrano];
+  const max = m && m.clanovi ? pozicijaPredDjelom(S.izabrano) * 1.3 : MAX_DALJINA + 0.6;
+  o.daljina = Math.max(ORBITA.minDaljina, Math.min(max, o.daljina));
 }
 
 /* Orbita se mijenja: prevlačenje i točkić idu odmah (bez klizanja,
@@ -156,7 +170,7 @@ function ugao(vrsta) {
   const o = pocetnaOrbita(S.izabrano);
   if (vrsta === 'lijevo') { o.skretanje = -UGAO_PRESETA; }
   else if (vrsta === 'desno') { o.skretanje = UGAO_PRESETA; }
-  else if (vrsta === 'izbliza') { otvoriIzbliza(); return; }
+  else if (vrsta === 'izbliza') { if (!S.mjesta[S.izabrano].clanovi) { otvoriIzbliza(); } return; }
   promijeniOrbitu(o, true);
 }
 
@@ -324,11 +338,39 @@ function izaberi(i) {
   postaviBocno(false);
   postaviLupu(false);
   korijen.setAttribute('data-izabrano', 'da');
+  /* Zid crteža: „cijeli“ (ciklus kao jedno djelo) ili „dio“ (jedan crtež
+     iz njega, izbliza) — CSS skriva Lupu i Izbliza za cijeli zid. */
+  if (S.mjesta[k].clanovi) { korijen.setAttribute('data-zid', 'cijeli'); }
+  else if (S.mjesta[k].zid != null) { korijen.setAttribute('data-zid', 'dio'); }
+  else { korijen.removeAttribute('data-zid'); }
   otvoriPanel(S.mjesta[k].djelo);
   predUcitajVeliku(S.mjesta[k].djelo);
   savjetCisto();
-  najavi(S.mjesta[k].djelo, k, n);
+  const krug = krugObilaska();
+  najavi(S.mjesta[k].djelo, krug.indexOf(stanica(k)), krug.length);
   osvjeziKretanje();
+}
+
+/* Stanica obilaska za mjesto: crtež iz zida → njegov zid (ciklus) */
+function stanica(i) {
+  const m = S.mjesta[i];
+  return m && m.zid != null ? m.zid : i;
+}
+
+/* Šta bira klik (ili dodir) na mjesto i: crtež bira svoj zid kao jedno
+   djelo; tek kad je taj zid (ili crtež iz njega) izabran, klik na crtež
+   ide izbliza pred taj crtež. */
+function zaKlik(i) {
+  const m = S.mjesta[i];
+  if (!m || m.zid == null) { return i; }
+  return stanica(S.izabrano) === m.zid ? i : m.zid;
+}
+
+/* × / Pregled / Esc: iz crteža se prvo vraća na cijeli zid, pa van */
+function nazad(vratiFokus) {
+  const m = S.mjesta[S.izabrano];
+  if (m && m.zid != null) { izaberi(m.zid); return; }
+  naPregled(vratiFokus);
 }
 
 /* Nazad na pregled sobe, panel se zatvara */
@@ -339,6 +381,7 @@ function naPregled(vratiFokus) {
   postaviBocno(false);
   postaviLupu(false);
   korijen.removeAttribute('data-izabrano');
+  korijen.removeAttribute('data-zid');
   korijen.removeAttribute('data-cisto');
   const c = pozicijaPregleda();
   kreniKa(c.poz, c.cilj);
@@ -383,7 +426,8 @@ function krugObilaska() {
   [POCETNA_SALA, POCETNA_SALA === 1 ? 2 : 1].forEach(function (sala) {
     /** @type {number[]} */
     const k = [];
-    for (let i = 0; i < S.mjesta.length; i++) { if ((S.mjesta[i].soba || 1) === sala) { k.push(i); } }
+    /* crteži su u krugu kao zid (ciklus), ne pojedinačno */
+    for (let i = 0; i < S.mjesta.length; i++) { if ((S.mjesta[i].soba || 1) === sala && S.mjesta[i].zid == null) { k.push(i); } }
     if (!k.length) { return; }
     let rez = 0, najblize = Infinity;
     for (let j = 0; j < k.length; j++) {
@@ -413,11 +457,19 @@ function susjed(smjer) {
   if (!n) { return 0; }
   const sala = S.sala || POCETNA_SALA;
   let izvor = S.izabrano;
-  if (izvor < 0 && S.zadnje >= 0 && S.mjesta[S.zadnje] && (S.mjesta[S.zadnje].soba || 1) === sala) { izvor = S.zadnje; }
+  if (izvor < 0 && S.zadnje >= 0 && S.mjesta[S.zadnje] && (S.mjesta[S.zadnje].soba || 1) === sala) { izvor = stanica(S.zadnje); }
+  /* Izbliza pred crtežom iz zida: ◀ ▶ idu na susjedni crtež tog zida, a
+     poslije krajnjeg na sljedeću stanicu obilaska */
+  if (izvor >= 0 && izvor === S.izabrano && S.mjesta[izvor].zid != null) {
+    const c = S.mjesta[S.mjesta[izvor].zid].clanovi || [];
+    const p = c.indexOf(izvor) + smjer;
+    if (p >= 0 && p < c.length) { return c[p]; }
+    izvor = S.mjesta[izvor].zid;
+  }
   const uSali = izvor >= 0 ? (S.mjesta[izvor].soba || 1) : sala;
   /** @type {number[]} */
   const red = [];
-  for (let i = 0; i < n; i++) { if ((S.mjesta[i].soba || 1) === uSali) { red.push(i); } }
+  for (let i = 0; i < n; i++) { if ((S.mjesta[i].soba || 1) === uSali && S.mjesta[i].zid == null) { red.push(i); } }
   if (!red.length) { return prvoUSali(); }
   if (izvor >= 0) {
     const krug = krugObilaska();
@@ -487,7 +539,7 @@ const TURA = { zadrziMin: 7000, zadrziMax: 13000, poRijeci: 120, kruzenje: 6 * M
 function osvjeziDugmeTure() {
   if (!el.tura) { return; }
   const t = S.tura;
-  const n = S.mjesta.length || 1;
+  const n = krugObilaska().length || 1;
   const tekst = el.tura.querySelector('.galerija-tura__tekst') || el.tura;
   if (!t) {
     tekst.textContent = TEKST.tura;
@@ -503,9 +555,11 @@ function osvjeziDugmeTure() {
   osvjeziMob();
 }
 
-function trajanjeZadrzavanja(djelo) {
+function trajanjeZadrzavanja(djelo, zid) {
   const rijeci = String((djelo && djelo.opis) || '').split(/\s+/).filter(Boolean).length;
-  return Math.max(TURA.zadrziMin, Math.min(TURA.zadrziMax, TURA.zadrziMin + rijeci * TURA.poRijeci));
+  const t = Math.max(TURA.zadrziMin, Math.min(TURA.zadrziMax, TURA.zadrziMin + rijeci * TURA.poRijeci));
+  /* Pred zidom crteža (pet radova kao jedno djelo) tura zastane duže */
+  return zid ? t + 5000 : t;
 }
 
 function idiNaTuri(i) {
@@ -524,7 +578,7 @@ function idiNaTuri(i) {
   postaviLupu(false);
   izaberi(t.i);
   /* Kartica u panelu kaže gdje smo u obilasku */
-  if (el.pKat) { el.pKat.textContent = TEKST.obilazak(t.korak + 1, S.mjesta.length) + ' · ' + el.pKat.textContent; }
+  if (el.pKat) { el.pKat.textContent = TEKST.obilazak(t.korak + 1, krug.length) + ' · ' + el.pKat.textContent; }
   osvjeziDugmeTure();
 }
 
@@ -535,14 +589,14 @@ function kreniTuru() {
     /* Nastavak: od djela pred kojim se stoji, inače od zapamćenog */
     S.tura.pauza = false;
     poruka(TEKST.nastavlja);
-    idiNaTuri(S.izabrano >= 0 ? S.izabrano : S.tura.i);
+    idiNaTuri(S.izabrano >= 0 ? stanica(S.izabrano) : S.tura.i);
     return;
   }
   zatvoriSavjete();
   /* Obilazak uvijek kreće od prvog djela kruga, gdje god posjetilac stoji */
   const start = krugObilaska()[0];
   S.tura = { i: start, start: start, korak: 0, faza: 'ide', pauza: false, od: 0, do: 0, osnova: null };
-  poruka(TEKST.pocetak(S.mjesta.length));
+  poruka(TEKST.pocetak(krugObilaska().length));
   idiNaTuri(start);
 }
 
@@ -572,7 +626,7 @@ function korakTure(t) {
     if (S.anim || S.ka) { return; }
     tura.faza = 'stoji';
     tura.od = t;
-    tura.do = t + trajanjeZadrzavanja(S.mjesta[tura.i] && S.mjesta[tura.i].djelo);
+    tura.do = t + trajanjeZadrzavanja(S.mjesta[tura.i] && S.mjesta[tura.i].djelo, !!(S.mjesta[tura.i] && S.mjesta[tura.i].clanovi));
     tura.osnova = S.orbita ? Object.assign({}, S.orbita) : null;
     return;
   }
@@ -714,7 +768,7 @@ function pogodak(x, y) {
 
 Object.assign(G, {
   pozicijaPregleda, promijeniOrbitu, ugao, kreniKa, korakHoda, korakKlizanja, izaberi, naPregled, uSalu,
-  prvoUSali, susjed, tackaKlika, mjeri, osvjeziDugmeTure, kreniTuru, pauzirajTuru, zavrsiTuru, korakTure, uvod,
+  prvoUSali, susjed, krugObilaska, stanica, zaKlik, nazad, tackaKlika, mjeri, osvjeziDugmeTure, kreniTuru, pauzirajTuru, zavrsiTuru, korakTure, uvod,
   korakUvoda, sParalaksom, pogodak, pogodakBlizu
 });
 G.dijelovi.push('kamera');
@@ -747,7 +801,7 @@ const { postaviLupu, pomjeriLupu } = G;   /* izbliza, sucelje.js */
 /* kamera, kretanje.js */
 const {
   pozicijaPregleda, promijeniOrbitu, ugao, kreniKa, izaberi, naPregled, uSalu, prvoUSali, susjed, tackaKlika,
-  mjeri, kreniTuru, pauzirajTuru, pogodak, pogodakBlizu
+  mjeri, kreniTuru, pauzirajTuru, pogodak, pogodakBlizu, zaKlik, nazad
 } = G;
 
 /* ---------------------------------------------------------
@@ -834,7 +888,7 @@ function tipkaDole(e) {
   if (S.tura && e.key === 'Escape') { pauzirajTuru(); }
 
   if (e.key === 'Escape') {
-    if (S.izabrano >= 0 || panelOtvoren()) { naPregled(true); }
+    if (S.izabrano >= 0 || panelOtvoren()) { nazad(true); }
     else if (jeDruga(S.sala)) { uSalu(POCETNA_SALA); }
     else { G.izadji(); }   /* glavni.js */
     e.preventDefault();
@@ -1033,7 +1087,7 @@ function pokazivacGore(e) {
     return;
   }
   if (i >= 0) {
-    izaberi(i);
+    izaberi(zaKlik(i));
     return;
   }
   /* Klik kroz vrata (na bilo šta u drugoj sali) vodi u nju, a iz
@@ -1045,7 +1099,7 @@ function pokazivacGore(e) {
   } else if (t && tu === 2 && t.z < POLA_Z + PROLAZ.zid + 0.05) {
     uSalu(1);   /* sam zid sa vratima, gledan iz druge sale */
   } else if (S.izabrano >= 0 || panelOtvoren()) {
-    naPregled(true);
+    nazad(true);
   }
 }
 
@@ -1096,7 +1150,7 @@ function tocak(e) {
         S.pincPregled = -1e6;   /* ostatak ovog pokreta se ignoriše */
         const r = S.render.domElement.getBoundingClientRect();
         const i = pogodak(r.left + r.width / 2, r.top + r.height / 2);
-        izaberi(i >= 0 ? i : prvoUSali());
+        izaberi(i >= 0 ? zaKlik(i) : prvoUSali());
       }
       return;
     }
@@ -1235,7 +1289,7 @@ function vezi() {
   }
 
   if (el.pregled) {
-    slusaj(el.pregled, 'click', function () { naPregled(true); });
+    slusaj(el.pregled, 'click', function () { nazad(true); });
   }
   if (el.tura) { slusaj(el.tura, 'click', kreniTuru); }
   if (el.pomoc) { slusaj(el.pomoc, 'click', function () { pauzirajTuru(); pokaziSavjete(); }); }
