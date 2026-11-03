@@ -122,7 +122,8 @@ function tvrdi(uslov, poruka) { if (!uslov) { throw new Error(poruka); } }
       await page.waitForTimeout(1500);
       const s = await page.evaluate(function () {
         const S = window.__S;
-        return { mjesta: S.mjesta.length, platna: S.platna.length, petlja: !!S.petlja || S.petlja === 0, sala: S.sala };
+        /* zid crteža (ciklus) je dodatno mjesto bez platna — broje se samo djela */
+        return { mjesta: S.mjesta.filter(function (m) { return !m.clanovi; }).length, platna: S.platna.length, petlja: !!S.petlja || S.petlja === 0, sala: S.sala };
       });
       await k.close();
       tvrdi(!greske.length, greske.join(' | '));
