@@ -1436,8 +1436,9 @@ function postaviDjela(djela) {
 
   /* Muzejska legenda: kartica od 12 mm desno od rama (za posmatrača).
      indeks < 0: legenda nije meta za klik (legenda grupe crteža). */
-  const postaviLegendu = function (platnoLeg, ponovo, mj, d, indeks) {
-    const tx = mj.nz, tz = -mj.nx;   /* tangenta zida, desno za posmatrača */
+  const postaviLegendu = function (platnoLeg, ponovo, mj, d, indeks, strana) {
+    const s = strana || 1;            /* 1 = desno od rama, -1 = lijevo */
+    const tx = mj.nz * s, tz = -mj.nx * s;   /* tangenta zida, desno za posmatrača */
     const odCentra = d.sirina / 2 + PREPUST_RAMA + LEGENDA.razmak + LEGENDA.sirina / 2;
     const texLeg = pamti(new T.CanvasTexture(platnoLeg));
     /* Fontovi sajta (EB Garamond, Inter) možda još nisu stigli —
@@ -1595,8 +1596,8 @@ function postaviDjela(djela) {
     if (mj.grupa) {
       const g = grupeCrteza[mj.grupa] || (grupeCrteza[mj.grupa] = { mj: mj, d: d, djelo: djelo, n: 0 });
       g.n++;
-      /* desno za posmatrača je -x na ovom zidu: legenda ide uz krajnji desni crtež */
-      if (mj.nz * (mj.x - g.mj.x) > 0) { g.mj = mj; g.d = d; g.djelo = djelo; }
+      /* legenda ide uz crtež najbliži vratima, sa strane vrata */
+      if (Math.abs(mj.x) < Math.abs(g.mj.x)) { g.mj = mj; g.d = d; g.djelo = djelo; }
     } else {
       postaviLegendu(napraviLegendu(djelo), function () { return napraviLegendu(djelo); }, mj, d, i);
     }
@@ -1641,8 +1642,9 @@ function postaviDjela(djela) {
      sredina zida, širina svih pet crteža, isti reflektor. Strelice, tura
      i mapa idu na zid; crtež se bira tek unutar zida (kretanje.js).
      Nazivi i godine ciklusa su u TEKST.zidovi (osnova.js): x > 0 je
-     „Cetinjski dnevnik“ (crteži 1–5), x < 0 „Dnevnik iz ateljea“ (6–10). Jedna legenda po zidu, desno od krajnjeg desnog crteža, kao
-     kod ulja — i ona bira zid. */
+     „Cetinjski dnevnik“ (crteži 1–5), x < 0 „Dnevnik iz ateljea“ (6–10).
+     Jedna legenda po zidu, uz crtež najbliži vratima, sa strane vrata
+     (obje legende su par oko prolaza) — i ona bira zid. */
   ['istok', 'zapad'].forEach(function (k, r) {
     const g = grupeCrteza[k];
     if (!g) { return; }
@@ -1656,8 +1658,10 @@ function postaviDjela(djela) {
       x1 = Math.max(x1, m.x + m.sirina / 2);
       visina = Math.max(visina, m.visina);
     });
-    /* i legenda zida ulazi u kadar */
-    const tl = g.mj.nz, rub = g.d.sirina / 2 + PREPUST_RAMA + LEGENDA.razmak + LEGENDA.sirina;
+    /* Legenda stoji uz vrata (kao par oko prolaza): desno od rama na
+       zidu gdje su vrata desno, lijevo gdje su lijevo. I ona ulazi u kadar. */
+    const strana = -Math.sign(g.mj.x) * Math.sign(g.mj.nz) || 1;
+    const tl = g.mj.nz * strana, rub = g.d.sirina / 2 + PREPUST_RAMA + LEGENDA.razmak + LEGENDA.sirina;
     x0 = Math.min(x0, g.mj.x + tl * rub);
     x1 = Math.max(x1, g.mj.x + tl * rub);
     const prvi = S.mjesta[clanovi[0]];
@@ -1689,7 +1693,7 @@ function postaviDjela(djela) {
       tehnika: g.djelo.tehnika || '',
       dimenzije: TEKST.brojCrteza(g.n)
     };
-    postaviLegendu(napraviLegendu(tekst), function () { return napraviLegendu(tekst); }, g.mj, g.d, indeks);
+    postaviLegendu(napraviLegendu(tekst), function () { return napraviLegendu(tekst); }, g.mj, g.d, indeks, strana);
   });
 
   postaviSine();
