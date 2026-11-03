@@ -1000,7 +1000,7 @@
       "dimenzije": "",
       "kategorija": "crtezi",
       "istaknuto": false,
-      "zid": "lijevo",
+      "zid": "desno",
       "opis": "Debelo stablo u parku, sa granama koje se račvaju iznad staze.",
       "paleta": [
         "#C0BEB6",
@@ -1147,6 +1147,84 @@
         1600
       ],
       "izvor": "IMG_1115"
+    },
+    {
+      "id": "crtez-9",
+      "naziv": "Crtež 9",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "lijevo",
+      "opis": "Vaza sa dvije uvele grane i zdjela na polici; iza njih zgrada sa lučnim prozorima.",
+      "paleta": [
+        "#1E2023",
+        "#545657",
+        "#D5D0BC",
+        "#ADAB9F",
+        "#DEDCCD"
+      ],
+      "slika": "img/radovi/crtez-9.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-9.jpg",
+      "sirinaPx": 944,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 9",
+        "opis": "A vase with two withered branches and a bowl on a shelf; behind them, a building with arched windows.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 9",
+        "opis": "Un vaso con due rami appassiti e una ciotola su una mensola; dietro, un edificio con finestre ad arco.",
+        "tehnika": "Disegno su carta"
+      },
+      "izvor": "IMG_0988",
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
+    },
+    {
+      "id": "crtez-10",
+      "naziv": "Crtež 10",
+      "godina": null,
+      "tehnika": "Crtež na papiru",
+      "dimenzije": "",
+      "kategorija": "crtezi",
+      "istaknuto": false,
+      "zid": "lijevo",
+      "opis": "Uramljena slika naslonjena na zid, vaza i posuda na stolu pod draperijom.",
+      "paleta": [
+        "#E7D6CB",
+        "#2B2421",
+        "#453F3B",
+        "#5B524E",
+        "#998D86"
+      ],
+      "slika": "img/radovi/crtez-10.jpg",
+      "slikaVelika": "img/radovi/velike/crtez-10.jpg",
+      "sirinaPx": 1031,
+      "visinaPx": 1400,
+      "en": {
+        "naziv": "Drawing 10",
+        "opis": "A framed picture leaning against the wall, a vase and a jar on a table under a drapery.",
+        "tehnika": "Drawing on paper"
+      },
+      "it": {
+        "naziv": "Disegno 10",
+        "opis": "Un quadro incorniciato appoggiato al muro, un vaso e un barattolo su un tavolo sotto un drappeggio.",
+        "tehnika": "Disegno su carta"
+      },
+      "izvor": "IMG_1127",
+      "varijante": [
+        480,
+        800,
+        1200,
+        1600
+      ]
     }
   ]
 }
