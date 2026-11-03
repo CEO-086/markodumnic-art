@@ -893,7 +893,7 @@ const G = /** @type {any} */ (window).__galerija;
 const {
   izKorijena, BOJA, SVJETLO_TOPLO, SVJETLO_AMBIJENT, TON_ZIDA, NEUTRALNO, SOBA, POLA_X, POLA_Z,
   VISINA_DJELA, MARGINA_ZIDA, DEBLJINA_PLATNA, DEBLJINA_RAMA, PREPUST_RAMA, PROLAZ, LEGENDA,
-  ODRAZ_PROZIRNOST, POD_PROZIRNOST, S, pamti, osvjeziKadar
+  ODRAZ_PROZIRNOST, POD_PROZIRNOST, S, pamti, osvjeziKadar, TEKST
 } = G;
 const { SVJ, materijaliSvjetiljke, postaviSine, rasporediSvjetla, napraviReflektor } = G;   /* svjetla, scena.js */
 const { rasporediTeksture } = G;   /* teksture, scena.js */
@@ -1432,6 +1432,52 @@ function postaviDjela(djela) {
     color: BOJA.okvir, roughness: 0.8, metalness: 0.0
   }));
 
+  /* Muzejska legenda: kartica od 12 mm desno od rama (za posmatrača).
+     indeks < 0: legenda nije meta za klik (legenda grupe crteža). */
+  const postaviLegendu = function (platnoLeg, ponovo, mj, d, indeks) {
+    const tx = mj.nz, tz = -mj.nx;   /* tangenta zida, desno za posmatrača */
+    const odCentra = d.sirina / 2 + PREPUST_RAMA + LEGENDA.razmak + LEGENDA.sirina / 2;
+    const texLeg = pamti(new T.CanvasTexture(platnoLeg));
+    /* Fontovi sajta (EB Garamond, Inter) možda još nisu stigli —
+       legenda se precrta kad stignu, da ne ostane u rezervnom fontu. */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        if (!S.radi) { return; }
+        const novo = ponovo();
+        platnoLeg.getContext('2d').drawImage(novo, 0, 0);
+        texLeg.needsUpdate = true;
+        osvjeziKadar();
+      });
+    }
+    texLeg.colorSpace = T.SRGBColorSpace;
+    texLeg.anisotropy = S.anizotropija;
+    /* Kartica je ploča od 12 mm (kao muzejski forex), odmaknuta od
+       zida — pod uglom joj se vidi ivica i baca sjenku. Blaga emisija
+       iz same teksture drži tekst čitljivim i kad se gleda postrance,
+       gdje reflektor slabije pada. */
+    const matLeg = pamti(new T.MeshStandardMaterial({
+      map: texLeg, roughness: 0.8, metalness: 0.0,
+      emissive: NEUTRALNO, emissiveMap: texLeg, emissiveIntensity: 0.35
+    }));
+    const matIvicaLeg = pamti(new T.MeshStandardMaterial({ color: BOJA.letva, roughness: 0.7, metalness: 0.0 }));
+    const geoLeg = pamti(new T.BoxGeometry(LEGENDA.sirina, LEGENDA.visina, LEGENDA.debljina));
+    const legenda = new T.Mesh(geoLeg, [matIvicaLeg, matIvicaLeg, matIvicaLeg, matIvicaLeg, matLeg, matIvicaLeg]);
+    legenda.castShadow = true;
+    legenda.position.set(
+      mj.x + tx * odCentra + mj.nx * (LEGENDA.odZida + LEGENDA.debljina / 2),
+      LEGENDA.centar,
+      mj.z + tz * odCentra + mj.nz * (LEGENDA.odZida + LEGENDA.debljina / 2)
+    );
+    legenda.rotation.y = mj.rot;
+    S.scena.add(legenda);
+    if (indeks >= 0) {
+      legenda.userData.indeks = indeks;
+      S.platna.push(legenda);    /* klik na legendu bira djelo */
+    }
+  };
+  /** @type {Object<string, {mj: MjestoZida, d: {sirina: number, visina: number}, djelo: Object, n: number}>} */
+  const grupeCrteza = {};
+
   djela.forEach(function (djelo, i) {
     const mj = mjesta[i];
     if (!mj) { return; }
@@ -1541,45 +1587,17 @@ function postaviDjela(djela) {
       });
     }
 
-    /* --- MUZEJSKA LEGENDA desno od rama --- */
-    const tx = mj.nz, tz = -mj.nx;   /* tangenta zida, desno za posmatrača */
-    const odCentra = d.sirina / 2 + PREPUST_RAMA + LEGENDA.razmak + LEGENDA.sirina / 2;
-    const platnoLeg = napraviLegendu(djelo);
-    const texLeg = pamti(new T.CanvasTexture(platnoLeg));
-    /* Fontovi sajta (EB Garamond, Inter) možda još nisu stigli —
-       legenda se precrta kad stignu, da ne ostane u rezervnom fontu. */
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function () {
-        if (!S.radi) { return; }
-        const novo = napraviLegendu(djelo);
-        platnoLeg.getContext('2d').drawImage(novo, 0, 0);
-        texLeg.needsUpdate = true;
-        osvjeziKadar();
-      });
+    /* --- MUZEJSKA LEGENDA desno od rama. Crteži nemaju svaki svoju:
+           pet crteža na jednoj polovini zida je jedna postavka, kao jedno
+           djelo, pa ima jednu legendu (postavlja se poslije petlje). --- */
+    if (mj.grupa) {
+      const g = grupeCrteza[mj.grupa] || (grupeCrteza[mj.grupa] = { mj: mj, d: d, djelo: djelo, n: 0 });
+      g.n++;
+      /* desno za posmatrača je -x na ovom zidu: legenda ide uz krajnji desni crtež */
+      if (mj.nz * (mj.x - g.mj.x) > 0) { g.mj = mj; g.d = d; g.djelo = djelo; }
+    } else {
+      postaviLegendu(napraviLegendu(djelo), function () { return napraviLegendu(djelo); }, mj, d, i);
     }
-    texLeg.colorSpace = T.SRGBColorSpace;
-    texLeg.anisotropy = S.anizotropija;
-    /* Kartica je ploča od 12 mm (kao muzejski forex), odmaknuta od
-       zida — pod uglom joj se vidi ivica i baca sjenku. Blaga emisija
-       iz same teksture drži tekst čitljivim i kad se gleda postrance,
-       gdje reflektor slabije pada. */
-    const matLeg = pamti(new T.MeshStandardMaterial({
-      map: texLeg, roughness: 0.8, metalness: 0.0,
-      emissive: NEUTRALNO, emissiveMap: texLeg, emissiveIntensity: 0.35
-    }));
-    const matIvicaLeg = pamti(new T.MeshStandardMaterial({ color: BOJA.letva, roughness: 0.7, metalness: 0.0 }));
-    const geoLeg = pamti(new T.BoxGeometry(LEGENDA.sirina, LEGENDA.visina, LEGENDA.debljina));
-    const legenda = new T.Mesh(geoLeg, [matIvicaLeg, matIvicaLeg, matIvicaLeg, matIvicaLeg, matLeg, matIvicaLeg]);
-    legenda.castShadow = true;
-    legenda.position.set(
-      mj.x + tx * odCentra + mj.nx * (LEGENDA.odZida + LEGENDA.debljina / 2),
-      LEGENDA.centar,
-      mj.z + tz * odCentra + mj.nz * (LEGENDA.odZida + LEGENDA.debljina / 2)
-    );
-    legenda.rotation.y = mj.rot;
-    legenda.userData.indeks = i;
-    S.scena.add(legenda);
-    S.platna.push(legenda);    /* klik na legendu bira djelo */
 
     /* --- REFLEKTOR na šini: uski SpotLight odozgo, 30° od vertikale.
            Pozicija se RAČUNA iz pozicije rada:
@@ -1612,6 +1630,22 @@ function postaviDjela(djela) {
       svjetloJacina: svjetlo.intensity,
       svjetloUgao: svjetlo.angle    /* crteži imaju širi zajednički snop */
     });
+  });
+
+  /* Jedna legenda za svaku polovinu zida sa crtežima: pet crteža je
+     jedna postavka. „Crteži I“ uz desni zid sale (x > 0, crteži 1–5),
+     „Crteži II“ uz lijevi; legenda stoji desno od krajnjeg desnog crteža,
+     kao kod ulja. */
+  ['istok', 'zapad'].forEach(function (k, r) {
+    const g = grupeCrteza[k];
+    if (!g) { return; }
+    const tekst = {
+      naziv: TEKST.crtezi + ' ' + (r === 0 ? 'I' : 'II'),
+      godina: null,
+      tehnika: g.djelo.tehnika || '',
+      dimenzije: TEKST.brojCrteza(g.n)
+    };
+    postaviLegendu(napraviLegendu(tekst), function () { return napraviLegendu(tekst); }, g.mj, g.d, -1);
   });
 
   postaviSine();

@@ -674,7 +674,8 @@ const TEKST = IT ? {
   djeloBr: function (i) { return 'Opera ' + i; },
   idiDo: 'Vai all’opera: ',
   sakrijMapu: 'Nascondi la pianta', prikaziMapu: 'Mostra la pianta',
-  crtez: 'Disegno', ulje: 'Dipinto a olio',
+  crtez: 'Disegno', ulje: 'Dipinto a olio', crtezi: 'Disegni',
+  brojCrteza: function (n) { return n + (n === 1 ? ' disegno' : ' disegni'); },
   karticaVise: 'Mostra i dati dell’opera', karticaManje: 'Nascondi i dati dell’opera',
   opcije: 'Opzioni', iliDodir: 'o toccate un dipinto', oDjelu: 'Sull’opera',
   cistoSavjet: 'Toccate il dipinto per nascondere i pulsanti', cistoNazad: 'Toccate di nuovo il dipinto per riavere i pulsanti'
@@ -701,7 +702,8 @@ const TEKST = IT ? {
   djeloBr: function (i) { return 'Work ' + i; },
   idiDo: 'Go to the work: ',
   sakrijMapu: 'Hide the floor plan', prikaziMapu: 'Show the floor plan',
-  crtez: 'Drawing', ulje: 'Oil painting',
+  crtez: 'Drawing', ulje: 'Oil painting', crtezi: 'Drawings',
+  brojCrteza: function (n) { return n + (n === 1 ? ' drawing' : ' drawings'); },
   karticaVise: 'Show the details of the work', karticaManje: 'Hide the details of the work',
   opcije: 'Options', iliDodir: 'or tap a painting', oDjelu: 'About the work',
   cistoSavjet: 'Tap the painting to hide the buttons', cistoNazad: 'Tap the painting again for the buttons'
@@ -728,7 +730,8 @@ const TEKST = IT ? {
   djeloBr: function (i) { return 'Djelo ' + i; },
   idiDo: 'Idi do djela: ',
   sakrijMapu: 'Sakrij mapu sale', prikaziMapu: 'Prikaži mapu sale',
-  crtez: 'Crtež', ulje: 'Ulje',
+  crtez: 'Crtež', ulje: 'Ulje', crtezi: 'Crteži',
+  brojCrteza: function (n) { return n + (n % 10 === 1 && n % 100 !== 11 ? ' crtež' : ' crteža'); },
   karticaVise: 'Prikaži podatke o djelu', karticaManje: 'Sakrij podatke o djelu',
   opcije: 'Opcije', iliDodir: 'ili dodirnite sliku', oDjelu: 'O djelu',
   cistoSavjet: 'Dodir na sliku sakriva dugmad', cistoNazad: 'Dodirnite sliku da vratite dugmad'
