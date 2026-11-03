@@ -1669,6 +1669,14 @@ function postaviDjela(djela) {
     clanovi.forEach(function (i) { S.mjesta[i].zid = indeks; });
     const zidT = (TEKST.zidovi && TEKST.zidovi[k]) || { naziv: TEKST.crtezi + ' ' + (r === 0 ? 'I' : 'II'), godina: null };
     const naziv = zidT.naziv;
+    /* U sali crteži nemaju svoja imena: svaki nosi naziv svog zida (rada),
+       u natpisu, panelu, Izbliza i najavi. Ime crteža ostaje samo za
+       čitač ekrana (nazivCrteza) i na njegovoj stranici djela. */
+    clanovi.forEach(function (i) {
+      const dj = S.mjesta[i].djelo;
+      if (dj.nazivCrteza === undefined) { dj.nazivCrteza = dj.naziv; }
+      dj.naziv = naziv;
+    });
     S.mjesta.push({
       soba: prvi.soba,
       mesh: null,

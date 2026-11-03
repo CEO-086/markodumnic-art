@@ -798,7 +798,7 @@ function clanoviUPanelu() {
       img.decoding = 'async';
       /* Bez natpisa ispod sličice: pet crteža je jedan rad (zamisao
          autora) — naziv crteža ostaje samo za čitač ekrana. */
-      b.setAttribute('aria-label', d.naziv || '');
+      b.setAttribute('aria-label', d.nazivCrteza || d.naziv || '');
       b.appendChild(img);
       b.addEventListener('click', function () { G.pauzirajTuru(); G.izaberi(i); });   /* kretanje.js */
       li.appendChild(b);
