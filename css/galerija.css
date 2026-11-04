@@ -304,8 +304,8 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
 }
 
 /* Markov potpis — isti crtež kao u podnožju, u svijetloj boji teksta
-   tamne ploče. Širok kao dugme: ne utiče na širinu kolone (width: 0),
-   nego je samo popunjava (min-width: 100%). Centriran u donjem redu;
+   tamne ploče. Širok kao crnogorsko dugme na svim jezicima, lijevo kao
+   i dugme. Centriran u donjem redu po visini;
    gornja margina je za razmak reda (--s-4) manja od donje, pa mu je
    sredina tačno na pola puta od dna dugmeta do dna ploče. Čisti ukras. */
 .galerija-ulaz__potpis {
@@ -313,8 +313,10 @@ html[data-js] .galerija:not([data-stanje]) .galerija-scena { display: block; }
   grid-column: 1;
   align-self: center;
   display: block;
-  width: 0;
-  min-width: 100%;
+  /* Iste veličine na sva tri jezika: širina crnogorskog dugmeta „Uđi u
+     salu“ (≈143px). Duža dugmad na EN/IT ga ne povećavaju. */
+  width: 8.96rem;
+  max-width: 100%;
   height: auto;
   margin-block: calc(var(--ulaz-potpis) - var(--s-4)) var(--ulaz-potpis);
   pointer-events: none;

@@ -45,6 +45,12 @@
     }
   }
 
+  /* Duži naslov (EN/IT) ostaje u jednom redu kao na crnogorskom:
+     na računaru smije zauzeti i unutrašnji razmak rama. */
+  @media (min-width: 820px) {
+    .prazan-ram .naslov-1 { margin-inline: calc(-1 * var(--s-7)); }
+  }
+
   /* Red sa izlazima iz ćorsokaka. */
   .izlazi {
     display: flex;
