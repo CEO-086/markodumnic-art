@@ -2610,3 +2610,7 @@ html.galerija-uronjena .galerija-mob__vrh { padding-top: max(var(--s-3), env(saf
     transform: scale(var(--opcije-skala, 0.45));
   }
 }
+
+/* Dodir na salu na mapi vodi u nju */
+.galerija-mapa__pod[data-mapa-sala],
+.galerija-mapa__sala[data-mapa-sala] { cursor: pointer; }

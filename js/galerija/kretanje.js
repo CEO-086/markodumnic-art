@@ -1310,7 +1310,7 @@ function vezi() {
      treba salu, pa ta dva ne pomjeraju stranu. */
   if (el.alati) {
     slusaj(el.alati, 'click', function (e) {
-      const d = e.target.closest && e.target.closest('button, [data-mapa-djelo]');
+      const d = e.target.closest && e.target.closest('button, [data-mapa-djelo], [data-mapa-sala]');
       if (!d || d.getAttribute('data-ugao') === 'izbliza' || d.closest('.galerija-mapa__prekidac')) { return; }
       if (d === el.lupa && !S.lupa.na) { return; }
       setTimeout(pokaziSalu, 0);

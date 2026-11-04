@@ -451,7 +451,7 @@ function pripremiMob() {
   /* Izbor u listu ga zatvara — posjetilac odmah vidi šta je uradio */
   el.alati.addEventListener('click', /** @param {MouseEvent & { target: any }} e */ function (e) {
     if (!uronjeno() || !e.target.closest) { return; }
-    const b = e.target.closest('button, [data-mapa-djelo]');
+    const b = e.target.closest('button, [data-mapa-djelo], [data-mapa-sala]');
     if (b && !b.hasAttribute('data-mob')) { postaviOpcije(false); }
   });
 
@@ -731,8 +731,9 @@ function napraviMapu() {
     viewBox: (-POLA_X - 0.6) + ' ' + (-POLA_Z - 0.6) + ' ' + (SOBA.sirina + 1.2) + ' ' + (SOBA.dubina + PROLAZ.zid + SD + 1.2),
     class: 'galerija-mapa__crtez', role: 'group', 'aria-label': TEKST.tlocrt
   });
-  svg.appendChild(svgEl('rect', { x: -POLA_X, y: -POLA_Z, width: SOBA.sirina, height: SOBA.dubina, class: 'galerija-mapa__pod' }));
-  svg.appendChild(svgEl('rect', { x: -SW / 2, y: z0, width: SW, height: SD, class: 'galerija-mapa__pod' }));
+  /* Pod sale je i dugme: dodir/klik bilo gdje na sali vodi u nju (ne mora tačka) */
+  svg.appendChild(svgEl('rect', { x: -POLA_X, y: -POLA_Z, width: SOBA.sirina, height: SOBA.dubina, class: 'galerija-mapa__pod', 'data-mapa-sala': '1' }));
+  svg.appendChild(svgEl('rect', { x: -SW / 2, y: z0, width: SW, height: SD, class: 'galerija-mapa__pod', 'data-mapa-sala': '2' }));
   svg.appendChild(svgEl('rect', { x: -v, y: POLA_Z, width: 2 * v, height: PROLAZ.zid, class: 'galerija-mapa__pod' }));
   svg.appendChild(svgEl('path', {
     class: 'galerija-mapa__zid',
@@ -741,7 +742,7 @@ function napraviMapu() {
        ' M ' + (-v) + ' ' + POLA_Z + ' V ' + z0 + ' M ' + v + ' ' + POLA_Z + ' V ' + z0
   }));
   const natpisSale = function (tekst, z) {
-    const t = svgEl('text', { x: 0, y: z, class: 'galerija-mapa__sala', 'text-anchor': 'middle' });
+    const t = svgEl('text', { x: 0, y: z, class: 'galerija-mapa__sala', 'text-anchor': 'middle', 'data-mapa-sala': z > POLA_Z ? '2' : '1' });
     t.textContent = tekst;
     svg.appendChild(t);
   };
@@ -808,6 +809,14 @@ function napraviMapu() {
   ja.appendChild(svgEl('circle', { cx: 0, cy: 0, r: 0.5, class: 'galerija-mapa__oko' }));
   svg.appendChild(ja);
   S.mapaJa = ja;
+
+  svg.addEventListener('click', function (e) {
+    const t = /** @type {any} */ (e.target);
+    const p = t && t.closest ? t.closest('[data-mapa-sala]') : null;
+    if (!p) { return; }
+    G.pauzirajTuru();
+    G.uSalu(Number(p.getAttribute('data-mapa-sala')));
+  });
 
   el.mapa.appendChild(svg);
   S.mapaSvg = svg;
