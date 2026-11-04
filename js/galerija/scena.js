@@ -1669,13 +1669,13 @@ function postaviDjela(djela) {
     clanovi.forEach(function (i) { S.mjesta[i].zid = indeks; });
     const zidT = (TEKST.zidovi && TEKST.zidovi[k]) || { naziv: TEKST.crtezi + ' ' + (r === 0 ? 'I' : 'II'), godina: null };
     const naziv = zidT.naziv;
-    /* U sali crteži nemaju svoja imena: svaki nosi naziv svog zida (rada),
-       u natpisu, panelu, Izbliza i najavi. Ime crteža ostaje samo za
-       čitač ekrana (nazivCrteza) i na njegovoj stranici djela. */
-    clanovi.forEach(function (i) {
+    /* Crteži nose naziv svog zida (rada) sa rednim brojem, isto kao na
+       stranicama djela: „Dnevnik iz ateljea, 1/5“ (radovi.json). Ako bi
+       podatak ipak imao staro ime, gradi se iz naziva zida i reda. */
+    clanovi.forEach(function (i, j) {
       const dj = S.mjesta[i].djelo;
       if (dj.nazivCrteza === undefined) { dj.nazivCrteza = dj.naziv; }
-      dj.naziv = naziv;
+      if (String(dj.naziv || '').indexOf(naziv) !== 0) { dj.naziv = naziv + ', ' + (j + 1) + '/' + clanovi.length; }
     });
     S.mjesta.push({
       soba: prvi.soba,
