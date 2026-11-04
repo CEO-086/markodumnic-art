@@ -470,6 +470,7 @@ function izadji() {
   zatvoriSavjete(false);
   postaviOpcije(false);
   korijen.removeAttribute('data-cisto');
+  if (G.skiniIstoriju) { G.skiniIstoriju(); }
   if (el.mapa) { el.mapa.textContent = ''; }
   S.mapaJa = null;
   S.mapaTacke = [];

@@ -168,18 +168,35 @@ function prebaciCisto() {
     korijen.setAttribute('data-cisto', 'da');
     postaviOpcije(false);
     postaviKarticu(false);
-    poruka(TEKST.cistoNazad, 2200);
+    if (!vecRecen('cisto-nazad')) { poruka(TEKST.cistoNazad, 2200); }
   } else {
     korijen.removeAttribute('data-cisto');
+    cistoVracen = sada();
   }
 }
+/* Dodir koji vrati dugmad ne smije odmah i pritisnuti dugme koje se
+   upravo pojavilo pod prstom (click stiže poslije pointerup). */
+let cistoVracen = 0;
 
-/* Prvi izbor djela na telefonu, jednom po posjeti: kratko „dodir na
+/* Savjet koji se na ovom uređaju kaže samo jednom (localStorage); bez
+   njega (privatni prozor) — jednom po posjeti. Vraća true ako je već rečen. */
+const RECENO = {};
+function vecRecen(kljuc) {
+  if (RECENO[kljuc]) { return true; }
+  RECENO[kljuc] = true;
+  try {
+    if (window.localStorage.getItem('galerija-savjet-' + kljuc)) { return true; }
+    window.localStorage.setItem('galerija-savjet-' + kljuc, '1');
+  } catch (e) { /* bez memorije: jednom po posjeti */ }
+  return false;
+}
+
+/* Prvi izbor djela na telefonu, jednom na uređaju: kratko „dodir na
    sliku sakriva dugmad“ — inače se taj pokret ne bi ni otkrio. */
 function savjetCisto() {
   if (!uronjeno() || S.cistoRecen || S.tura) { return; }
   S.cistoRecen = true;
-  poruka(TEKST.cistoSavjet, 2600);
+  if (!vecRecen('cisto')) { poruka(TEKST.cistoSavjet, 2600); }
 }
 
 const IKONA = {
@@ -221,6 +238,9 @@ function pripremiMob() {
     '</div>' +
     '<button class="galerija-mob__zastor" type="button" data-mob="zastor" tabindex="-1" aria-hidden="true"></button>';
   scena.appendChild(m);
+  m.addEventListener('click', function (e) {
+    if (sada() - cistoVracen < 500) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
 
   const d = function (ime) { return m.querySelector('[data-mob="' + ime + '"]'); };
   el.mob = {
@@ -240,7 +260,13 @@ function pripremiMob() {
 
   /* Nova dugmad okidaju postojeća — ista logika, isto pauziranje ture */
   const okini = function (b) { return function () { if (b) { b.click(); } }; };
-  d('izadji').addEventListener('click', okini(el.izadji));
+  /* × gore lijevo: dok je djelo izabrano vraća korak nazad (crtež → zid
+     → pregled sale); tek iz pregleda izlazi iz galerije. */
+  /** @type {any} */ (m).izadjiTekst = d('izadji').lastChild.textContent;
+  d('izadji').addEventListener('click', function () {
+    if (S.izabrano >= 0 && G.nazad) { G.nazad(true); }
+    else if (el.izadji) { el.izadji.click(); }
+  });
   d('pomoc').addEventListener('click', okini(el.pomoc));
   d('prethodni').addEventListener('click', okini(el.prethodni));
   d('sljedeci').addEventListener('click', okini(el.sljedeci));
@@ -300,6 +326,8 @@ function osvjeziMob() {
     m.natpis.removeAttribute('aria-controls');
   }
   m.tura.hidden = !(S.tura && djelo);
+  const x = m.korijen.querySelector('[data-mob="izadji"]');
+  if (x && x.lastChild) { x.lastChild.textContent = djelo ? TEKST.nazadNaSalu : m.korijen.izadjiTekst; }
   if (S.tura && djelo) { m.tura.textContent = tura; }
 }
 

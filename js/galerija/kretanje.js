@@ -324,11 +324,32 @@ function korakKlizanja(a, u) {
   S.cilj.lerpVectors(a.ciljevi[i - 1], a.ciljevi[i], k);
 }
 
+/* Telefon: dugme „nazad“ (pregledača ili sistema) zatvara izabrano
+   djelo umjesto da napusti galeriju. Izbor iz pregleda upiše jedan
+   korak u istoriju; zatvaranje na drugi način ga potroši. */
+let uIstoriji = false;
+function upisiIstoriju() {
+  if (uIstoriji || !G.uronjeno() || !window.history || !window.history.pushState) { return; }
+  try { window.history.pushState({ galerijaDjelo: true }, ''); uIstoriji = true; } catch (e) { /* nebitno */ }
+}
+function skiniIstoriju() {
+  if (!uIstoriji) { return; }
+  uIstoriji = false;
+  try { if (window.history.state && window.history.state.galerijaDjelo) { window.history.back(); } } catch (e) { /* nebitno */ }
+}
+window.addEventListener('popstate', function () {
+  if (!uIstoriji) { return; }
+  uIstoriji = false;
+  if (S.radi && S.izabrano >= 0) { naPregled(false); }
+});
+
 /* Izbor djela: kamera ide pred njega, panel se otvara */
 function izaberi(i) {
   if (!S.radi || !S.mjesta.length) { return; }
   const n = S.mjesta.length;
   const k = ((i % n) + n) % n;
+  /* Novo djelo (strelica, obilazak, zid ↔ crtež) uvijek sa dugmadi */
+  if (k !== S.izabrano) { korijen.removeAttribute('data-cisto'); }
   S.izabrano = k;
   S.zadnje = k;
   S.sala = S.mjesta[k].soba || 1;
@@ -338,6 +359,7 @@ function izaberi(i) {
   postaviBocno(false);
   postaviLupu(false);
   korijen.setAttribute('data-izabrano', 'da');
+  upisiIstoriju();
   /* Zid crteža: „cijeli“ (ciklus kao jedno djelo) ili „dio“ (jedan crtež
      iz njega, izbliza) — CSS skriva Lupu i Izbliza za cijeli zid. */
   if (S.mjesta[k].clanovi) { korijen.setAttribute('data-zid', 'cijeli'); }
@@ -383,6 +405,7 @@ function naPregled(vratiFokus) {
   korijen.removeAttribute('data-izabrano');
   korijen.removeAttribute('data-zid');
   korijen.removeAttribute('data-cisto');
+  skiniIstoriju();
   const c = pozicijaPregleda();
   kreniKa(c.poz, c.cilj);
   zatvoriPanel(vratiFokus);
@@ -768,7 +791,7 @@ function pogodak(x, y) {
 
 Object.assign(G, {
   pozicijaPregleda, promijeniOrbitu, ugao, kreniKa, korakHoda, korakKlizanja, izaberi, naPregled, uSalu,
-  prvoUSali, susjed, krugObilaska, stanica, zaKlik, nazad, tackaKlika, mjeri, osvjeziDugmeTure, kreniTuru, pauzirajTuru, zavrsiTuru, korakTure, uvod,
+  prvoUSali, susjed, krugObilaska, stanica, zaKlik, nazad, skiniIstoriju, tackaKlika, mjeri, osvjeziDugmeTure, kreniTuru, pauzirajTuru, zavrsiTuru, korakTure, uvod,
   korakUvoda, sParalaksom, pogodak, pogodakBlizu
 });
 G.dijelovi.push('kamera');
@@ -1081,6 +1104,12 @@ function pokazivacGore(e) {
   }   /* prevlačenje, ne klik */
   const dole = S.naDole;
   S.naDole = -1;
+  /* Bez dugmadi (data-cisto) svaki dodir prvo vrati dugmad, gdje god
+     pao — inače se iz te slike nema kud izaći. */
+  if (uronjeno() && korijen.getAttribute('data-cisto') === 'da') {
+    prebaciCisto();
+    return;
+  }
   const i = dole >= 0 ? dole : pogodak(e.clientX, e.clientY);
   if (i >= 0 && i === S.izabrano && uronjeno()) {
     prebaciCisto();
