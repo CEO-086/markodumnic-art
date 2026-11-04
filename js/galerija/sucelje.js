@@ -159,6 +159,7 @@ function izadjiIzPunog() {
    kad je traka pregledača dolje (Safari, Chrome) ili gore, donja polja
    uvijek ostaju iznad nje, a ne ispod. Bez visualViewport ostaje 100dvh. */
 function prilagodiVidljivo() {
+  osvjeziTraku();
   const vv = window.visualViewport;
   if (!vv || !uronjeno()) {
     korijen.style.removeProperty('--vidljivo-v');
@@ -198,6 +199,7 @@ function pripremiPunEkran() {
       if (POLOZEN.matches) {
         if (polozeno()) { zapamtiOkretao(); }
         traziPunEkran();
+        window.setTimeout(savjetTraka, 600);
       } else {
         izadjiIzPunog();
       }
@@ -218,7 +220,8 @@ function pripremiPunEkran() {
    crtežu tri puta okrene na bok, pa znak nestane. Čim se telefon
    položi, znak odmah nestaje. */
 let okreniCeka = false;   /* znak samo na ulazu u salu, ne usred posjete */
-function okreniNaUlazu() { okreniCeka = true; }
+let safariCeka = false;   /* uputstvo za Safarijevu traku: jednom po ulasku */
+function okreniNaUlazu() { okreniCeka = true; safariCeka = true; }
 /* Povratak sa druge stranice (keš pregledača vrati salu kakva je bila) */
 window.addEventListener('pageshow', function (e) {
   if (!e.persisted || korijen.getAttribute('data-stanje') !== 'soba') { return; }
@@ -229,7 +232,49 @@ function zapamtiOkretao() {
   const z = korijen.querySelector('.galerija-okreni:not(.galerija-okreni--safari)');
   if (z) { z.classList.remove('je-vidljiv'); }
 }
+/* iPhone, položen telefon: nijedan pretraživač na iPhoneu ne pušta
+   stranicu da sama sakrije svoju traku (Apple). Posjetilac je ipak može
+   skloniti — Safari: „Sakrij traku s alatima“ u meniju lijevo od adrese;
+   Chrome, Firefox, Edge i ostali: prevlačenjem stranice nagore. Dok se
+   traka vidi, stranica se zato smije pomaknuti ispod sale (klasa
+   galerija-traka), a uputstvo se pokaže jednom po ulasku. */
+function iPhone() { return /iPhone|iPod/.test(navigator.userAgent || ''); }
+function safariIPhone() {
+  return iPhone() && !/CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|GSA\/|DuckDuckGo|Brave|YaBrowser|Mercury/.test(navigator.userAgent || '');
+}
+function trakaSeVidi() {
+  const kratka = Math.min(window.screen.width || 0, window.screen.height || 0);
+  const vv = window.visualViewport;
+  const visina = vv ? vv.height : window.innerHeight;
+  return !!kratka && visina < kratka - 24;
+}
+/** @type {number|null} */
+let trakaY = null;   /* gdje je stranica bila prije prevlačenja — vraća se na izlazu */
+function osvjeziTraku() {
+  const da = iPhone() && polozeno() && trakaSeVidi();
+  if (da && trakaY === null) { trakaY = window.scrollY || 0; }
+  document.documentElement.classList.toggle('galerija-traka', da);
+}
+function savjetTraka() {
+  if (!safariCeka || !polozeno() || !iPhone()) { return; }
+  if (G.savjetiOtvoreni && G.savjetiOtvoreni()) { return; }
+  if (!trakaSeVidi()) { return; }   /* traka je već skrivena */
+  safariCeka = false;
+  const scena = korijen.querySelector('.galerija-scena');
+  if (!scena) { return; }
+  const z = document.createElement('div');
+  z.className = 'galerija-okreni galerija-okreni--safari';
+  z.setAttribute('role', 'status');
+  z.textContent = safariIPhone() ? TEKST.safariTraka : TEKST.prevuciTraka;
+  scena.appendChild(z);
+  window.requestAnimationFrame(function () { z.classList.add('je-vidljiv'); });
+  window.setTimeout(function () {
+    z.classList.remove('je-vidljiv');
+    window.setTimeout(function () { if (z.parentNode) { z.parentNode.removeChild(z); } }, 600);
+  }, 4500);
+}
 function savjetOkreni() {
+  window.setTimeout(savjetTraka, 400);
   if (!okreniCeka || (G.savjetiOtvoreni && G.savjetiOtvoreni())) { return; }
   okreniCeka = false;
   if (!uronjeno() || polozeno() || S.tura || korijen.getAttribute('data-stanje') !== 'soba') { return; }
@@ -278,6 +323,8 @@ function osvjeziUronjeno() {
   if (!da) {
     postaviOpcije(false);
     korijen.removeAttribute('data-cisto');
+    document.documentElement.classList.remove('galerija-traka');
+    if (trakaY !== null) { window.scrollTo(0, trakaY); trakaY = null; }
   }
   if (st !== 'soba' && st !== 'ucitavanje') { izadjiIzPunog(); }
   if (st === 'soba') {

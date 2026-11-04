@@ -2563,12 +2563,13 @@ html.galerija-uronjena .galerija[style*="--vidljivo-v"] {
   --visina-sale: var(--vidljivo-v);
 }
 
-/* iPhone Safari, položeno: jednokratno uputstvo za skrivanje trake */
+/* iPhone Safari, položeno: uputstvo za skrivanje trake, gore uz traku,
+   jednom po ulasku i samo dok se traka vidi (sucelje.js, savjetSafari) */
 @media (orientation: landscape) and (max-height: 500px) {
   html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-okreni--safari {
     display: block;
-    top: auto;
-    bottom: calc(44px + 2 * var(--s-3) + var(--s-2));
+    top: max(var(--s-3), env(safe-area-inset-top, 0px));
+    bottom: auto;
     transform: translateX(-50%);
     max-width: min(30rem, calc(100% - 2 * var(--s-5)));
     padding: var(--s-3) var(--s-4);
@@ -2616,3 +2617,14 @@ html.galerija-uronjena .galerija-mob__vrh { padding-top: max(var(--s-3), env(saf
 /* Dodir na salu na mapi vodi u nju */
 .galerija-mapa__pod[data-mapa-sala],
 .galerija-mapa__sala[data-mapa-sala] { cursor: pointer; }
+
+/* iPhone, položen telefon, traka pretraživača se vidi (sucelje.js,
+   osvjeziTraku): stranica se smije pomaknuti ispod sale, pa prevlačenje
+   prstom nagore skloni traku u Chromeu, Firefoxu, Edgeu i Safariju.
+   Čim traka nestane, klasa se skida i sve je kao prije. */
+html.galerija-uronjena.galerija-traka,
+html.galerija-uronjena.galerija-traka body { overflow: visible; }
+/* Prostor ispod: sala zna biti na samom dnu stranice, pa prst ne bi
+   imao kuda da je pomjeri (dodatak se ne vidi — sala je preko svega) */
+html.galerija-uronjena.galerija-traka body { padding-bottom: 100vh; }
+html.galerija-uronjena.galerija-traka .galerija[data-izabrano] .galerija-platno canvas { touch-action: pan-y; }
