@@ -838,7 +838,7 @@
     },
     {
       "id": "crtez-1",
-      "naziv": "Crtež 1",
+      "naziv": "Cetinjski dnevnik, 1/5",
       "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -858,14 +858,16 @@
       "sirinaPx": 918,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 1",
+        "naziv": "Cetinje Diary, 1/5",
         "opis": "A stone gateway with an arch at the end of a paved path, under dark treetops.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Cetinje Diary"
       },
       "it": {
-        "naziv": "Disegno 1",
+        "naziv": "Diario di Cettigne, 1/5",
         "opis": "Un portale di pietra ad arco in fondo a un sentiero lastricato, sotto chiome scure.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario di Cettigne"
       },
       "varijante": [
         480,
@@ -873,11 +875,12 @@
         1200,
         1574
       ],
-      "izvor": "DSC_4274"
+      "izvor": "DSC_4274",
+      "serija": "Cetinjski dnevnik"
     },
     {
       "id": "crtez-2",
-      "naziv": "Crtež 2",
+      "naziv": "Cetinjski dnevnik, 2/5",
       "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -897,14 +900,16 @@
       "sirinaPx": 958,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 2",
+        "naziv": "Cetinje Diary, 2/5",
         "opis": "A bare tree in front of a house with a barred window; a passer-by and dogs in the street.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Cetinje Diary"
       },
       "it": {
-        "naziv": "Disegno 2",
+        "naziv": "Diario di Cettigne, 2/5",
         "opis": "Un albero spoglio davanti a una casa con la finestra a grata; un passante e dei cani per strada.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario di Cettigne"
       },
       "varijante": [
         480,
@@ -912,11 +917,12 @@
         1200,
         1600
       ],
-      "izvor": "DSC_4277"
+      "izvor": "DSC_4277",
+      "serija": "Cetinjski dnevnik"
     },
     {
       "id": "crtez-3",
-      "naziv": "Crtež 3",
+      "naziv": "Cetinjski dnevnik, 3/5",
       "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -936,14 +942,16 @@
       "sirinaPx": 962,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 3",
+        "naziv": "Cetinje Diary, 3/5",
         "opis": "A house roof behind bushes and a stone wall, under a sky of drawn-out clouds.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Cetinje Diary"
       },
       "it": {
-        "naziv": "Disegno 3",
+        "naziv": "Diario di Cettigne, 3/5",
         "opis": "Il tetto di una casa dietro i cespugli e un muro di pietra, sotto un cielo di nuvole allungate.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario di Cettigne"
       },
       "varijante": [
         480,
@@ -951,11 +959,12 @@
         1200,
         1600
       ],
-      "izvor": "DSC_4281"
+      "izvor": "DSC_4281",
+      "serija": "Cetinjski dnevnik"
     },
     {
       "id": "crtez-4",
-      "naziv": "Crtež 4",
+      "naziv": "Cetinjski dnevnik, 4/5",
       "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -975,14 +984,16 @@
       "sirinaPx": 995,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 4",
+        "naziv": "Cetinje Diary, 4/5",
         "opis": "Two tall trees in a valley between hills.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Cetinje Diary"
       },
       "it": {
-        "naziv": "Disegno 4",
+        "naziv": "Diario di Cettigne, 4/5",
         "opis": "Due alberi alti in una valle tra le colline.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario di Cettigne"
       },
       "varijante": [
         480,
@@ -990,11 +1001,12 @@
         1200,
         1600
       ],
-      "izvor": "DSC_4283"
+      "izvor": "DSC_4283",
+      "serija": "Cetinjski dnevnik"
     },
     {
       "id": "crtez-5",
-      "naziv": "Crtež 5",
+      "naziv": "Cetinjski dnevnik, 5/5",
       "godina": 2025,
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -1014,14 +1026,16 @@
       "sirinaPx": 944,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 5",
+        "naziv": "Cetinje Diary, 5/5",
         "opis": "A thick tree trunk in a park, its branches forking above the path.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Cetinje Diary"
       },
       "it": {
-        "naziv": "Disegno 5",
+        "naziv": "Diario di Cettigne, 5/5",
         "opis": "Un grosso tronco in un parco, con i rami che si biforcano sopra il sentiero.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario di Cettigne"
       },
       "varijante": [
         480,
@@ -1029,11 +1043,12 @@
         1200,
         1600
       ],
-      "izvor": "DSC_4285"
+      "izvor": "DSC_4285",
+      "serija": "Cetinjski dnevnik"
     },
     {
       "id": "crtez-6",
-      "naziv": "Crtež 6",
+      "naziv": "Dnevnik iz ateljea, 1/5",
       "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -1053,14 +1068,16 @@
       "sirinaPx": 1002,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 6",
+        "naziv": "Studio Diary, 1/5",
         "opis": "A vase with a wilted flower and jars on a shelf.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Studio Diary"
       },
       "it": {
-        "naziv": "Disegno 6",
+        "naziv": "Diario dello studio, 1/5",
         "opis": "Un vaso con un fiore appassito e dei barattoli su una mensola.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario dello studio"
       },
       "varijante": [
         480,
@@ -1068,11 +1085,12 @@
         1200,
         1600
       ],
-      "izvor": "IMG_1100"
+      "izvor": "IMG_1100",
+      "serija": "Dnevnik iz ateljea"
     },
     {
       "id": "crtez-7",
-      "naziv": "Crtež 7",
+      "naziv": "Dnevnik iz ateljea, 2/5",
       "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -1092,14 +1110,16 @@
       "sirinaPx": 1050,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 7",
+        "naziv": "Studio Diary, 2/5",
         "opis": "A potted plant and bowls on a table, in front of a patterned wall.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Studio Diary"
       },
       "it": {
-        "naziv": "Disegno 7",
+        "naziv": "Diario dello studio, 2/5",
         "opis": "Una pianta in vaso e delle ciotole su un tavolo, davanti a una parete decorata.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario dello studio"
       },
       "varijante": [
         480,
@@ -1107,11 +1127,12 @@
         1200,
         1600
       ],
-      "izvor": "IMG_1104"
+      "izvor": "IMG_1104",
+      "serija": "Dnevnik iz ateljea"
     },
     {
       "id": "crtez-8",
-      "naziv": "Crtež 8",
+      "naziv": "Dnevnik iz ateljea, 3/5",
       "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -1131,14 +1152,16 @@
       "sirinaPx": 997,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 8",
+        "naziv": "Studio Diary, 3/5",
         "opis": "A plant with drooping leaves in a tall pot and a bowl on a table.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Studio Diary"
       },
       "it": {
-        "naziv": "Disegno 8",
+        "naziv": "Diario dello studio, 3/5",
         "opis": "Una pianta dalle foglie cadenti in un vaso alto e una ciotola su un tavolo.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario dello studio"
       },
       "varijante": [
         480,
@@ -1146,11 +1169,12 @@
         1200,
         1600
       ],
-      "izvor": "IMG_1115"
+      "izvor": "IMG_1115",
+      "serija": "Dnevnik iz ateljea"
     },
     {
       "id": "crtez-9",
-      "naziv": "Crtež 9",
+      "naziv": "Dnevnik iz ateljea, 4/5",
       "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -1170,14 +1194,16 @@
       "sirinaPx": 944,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 9",
+        "naziv": "Studio Diary, 4/5",
         "opis": "A vase with two withered branches and a bowl on a shelf; behind them, a building with arched windows.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Studio Diary"
       },
       "it": {
-        "naziv": "Disegno 9",
+        "naziv": "Diario dello studio, 4/5",
         "opis": "Un vaso con due rami appassiti e una ciotola su una mensola; dietro, un edificio con finestre ad arco.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario dello studio"
       },
       "izvor": "IMG_0988",
       "varijante": [
@@ -1185,11 +1211,12 @@
         800,
         1200,
         1600
-      ]
+      ],
+      "serija": "Dnevnik iz ateljea"
     },
     {
       "id": "crtez-10",
-      "naziv": "Crtež 10",
+      "naziv": "Dnevnik iz ateljea, 5/5",
       "godina": "2025–2026",
       "tehnika": "Crtež na papiru",
       "dimenzije": "",
@@ -1209,14 +1236,16 @@
       "sirinaPx": 1031,
       "visinaPx": 1400,
       "en": {
-        "naziv": "Drawing 10",
+        "naziv": "Studio Diary, 5/5",
         "opis": "A framed picture leaning against the wall, a vase and a jar on a table under a drapery.",
-        "tehnika": "Drawing on paper"
+        "tehnika": "Drawing on paper",
+        "serija": "Studio Diary"
       },
       "it": {
-        "naziv": "Disegno 10",
+        "naziv": "Diario dello studio, 5/5",
         "opis": "Un quadro incorniciato appoggiato al muro, un vaso e un barattolo su un tavolo sotto un drappeggio.",
-        "tehnika": "Disegno su carta"
+        "tehnika": "Disegno su carta",
+        "serija": "Diario dello studio"
       },
       "izvor": "IMG_1127",
       "varijante": [
@@ -1224,7 +1253,8 @@
         800,
         1200,
         1600
-      ]
+      ],
+      "serija": "Dnevnik iz ateljea"
     }
   ]
 }

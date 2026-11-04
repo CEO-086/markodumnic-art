@@ -163,6 +163,7 @@
     kopija.naziv = en.naziv || djelo.naziv;
     kopija.opis = en.opis || djelo.opis;
     kopija.tehnika = en.tehnika || djelo.tehnika;
+    kopija.serija = en.serija || djelo.serija;
     return kopija;
   }
 
@@ -472,7 +473,7 @@
       /* Serija — veza na filtrirani spisak radova. */
       var serija = nadji('#djelo-serija');
       if (serija) {
-        serija.textContent = nazivSerije || NAZIVI_SERIJA[djelo.kategorija] || '';
+        serija.textContent = djelo.serija || nazivSerije || NAZIVI_SERIJA[djelo.kategorija] || '';
         serija.setAttribute('href', 'radovi.html#' + encodeURIComponent(djelo.kategorija || ''));
       }
 
@@ -481,6 +482,9 @@
       upisi('#djelo-godina', djelo.godina != null ? String(djelo.godina) : '—');
       upisi('#djelo-tehnika', djelo.tehnika);
       upisi('#djelo-dimenzije', djelo.dimenzije || '—');
+      /* Crteži nemaju dimenzije — red se ne prikazuje (kao na statičnim stranicama). */
+      var dimEl = nadji('#djelo-dimenzije');
+      if (dimEl && dimEl.parentNode) { dimEl.parentNode.hidden = !djelo.dimenzije; }
       upisi('#djelo-opis', djelo.opis);
 
       /* Upit za djelo — kontakt forma dobija id djela. */
