@@ -296,6 +296,12 @@ function fokusUTraku(iz, na) {
 
 function postaviOpcije(otvori) {
   if (otvori) {
+    /* Položen telefon: list zauzme desni dio, pa se kadar smanji da cijela
+       slika stane u slobodni lijevi dio (CSS --opcije-skala). */
+    if (el.alati && window.innerWidth > window.innerHeight) {
+      const slobodno = window.innerWidth - el.alati.offsetWidth;
+      korijen.style.setProperty('--opcije-skala', String(Math.max(0.3, Math.min(1, slobodno / window.innerWidth)).toFixed(3)));
+    }
     korijen.setAttribute('data-opcije', 'otvorene');
     /* Fokus ulazi u list (prvo vidljivo dugme, × u glavi); zatvaranje
        ga vraća na dugme „Opcije“ (fokusUTraku ispod). */
