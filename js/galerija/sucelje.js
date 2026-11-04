@@ -463,7 +463,7 @@ function popuni2D() {
       const ime = n('span', 'galerija-2d__naziv');
       ime.textContent = naziv;
       const meta = n('span', 'galerija-2d__meta');
-      meta.textContent = [r.godina, tehnika, r.dimenzije]
+      meta.textContent = [r.godina, tehnika, r.kategorija === 'crtezi' ? '' : r.dimenzije]
         .filter(function (v) { return v != null && String(v).trim() !== ''; }).join(' · ');
       cap.appendChild(ime);
       cap.appendChild(meta);
@@ -484,7 +484,7 @@ function popuni2D() {
    se i isto djelo izabrano ponovo najavi. */
 function najavi(djelo, k, n) {
   if (!el.najava || !djelo) { return; }
-  let tekst = [djelo.naziv, djelo.godina, djelo.tehnika, djelo.dimenzije]
+  let tekst = [djelo.naziv, djelo.godina, djelo.tehnika, djelo.kategorija === 'crtezi' ? '' : djelo.dimenzije]
     .filter(function (v) { return v != null && String(v).trim() !== ''; }).join(', ');
   if (k >= 0 && n > 0) { tekst += '. ' + TEKST.redni(k + 1, n); }
   el.najava.textContent = '';
@@ -752,7 +752,13 @@ function otvoriPanel(djelo) {
   el.pKat.textContent = (S.serije && S.serije[djelo.kategorija]) || (djelo.kategorija === 'crtezi' ? TEKST.crtez : TEKST.ulje);
   el.pGodina.textContent = djelo.godina != null ? String(djelo.godina) : '—';
   el.pTehnika.textContent = djelo.tehnika || '—';
-  el.pDimenzije.textContent = djelo.dimenzije || '—';
+  /* Crteži (zid i pojedinačni crtež) u sali ne pokazuju dimenzije — želja
+     autora; ulja ih zadržavaju. */
+  const bezDim = djelo.kategorija === 'crtezi';
+  el.pDimenzije.textContent = bezDim ? '' : (djelo.dimenzije || '—');
+  el.pDimenzije.hidden = bezDim;
+  const dimNaslov = /** @type {HTMLElement|null} */ (el.pDimenzije.previousElementSibling);
+  if (dimNaslov) { dimNaslov.hidden = bezDim; }
   el.pOpis.textContent = djelo.opis || '';
   el.pLink.setAttribute('href', 'djelo/' + encodeURIComponent(djelo.id || '') + '.html');
   /* Zid crteža (ciklus) nema svoju stranicu — samo crteži u njemu */
@@ -863,7 +869,7 @@ function natpis(i, x, y) {
     const redovi = n.querySelectorAll('.galerija-natpis__red');
     n.querySelector('.galerija-natpis__naziv').textContent = d.naziv || '';
     redovi[0].textContent = [d.godina, d.tehnika].filter(function (v) { return v != null && v !== ''; }).join(' · ');
-    redovi[1].textContent = d.dimenzije || '';
+    redovi[1].textContent = d.kategorija === 'crtezi' ? '' : (d.dimenzije || '');
     n.querySelector('.galerija-natpis__serija').textContent = (S.serije && S.serije[d.kategorija]) || '';
     n.dataset.i = String(i);
   }

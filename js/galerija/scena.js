@@ -1685,7 +1685,7 @@ function postaviDjela(djela) {
       sirina: x1 - x0, visina: visina,
       djelo: /** @type {any} */ ({
         id: '', naziv: naziv, kategorija: 'crtezi', godina: zidT.godina,
-        tehnika: g.djelo.tehnika || '', dimenzije: TEKST.brojCrteza(clanovi.length),
+        tehnika: g.djelo.tehnika || '', dimenzije: '',
         opis: TEKST.ciklus(clanovi.length)
       }),
       svjetlo: prvi.svjetlo,
@@ -1699,7 +1699,7 @@ function postaviDjela(djela) {
       naziv: naziv,
       godina: zidT.godina,
       tehnika: g.djelo.tehnika || '',
-      dimenzije: TEKST.brojCrteza(g.n)
+      dimenzije: ''   /* crteži bez dimenzija na pločici */
     };
     postaviLegendu(napraviLegendu(tekst), function () { return napraviLegendu(tekst); }, g.mj, g.d, indeks, strana);
   });
