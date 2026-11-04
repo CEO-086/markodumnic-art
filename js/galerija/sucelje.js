@@ -219,9 +219,8 @@ function pripremiPunEkran() {
    stranice dugmetom nazad): znak „okrenite telefon“ — telefon se u
    crtežu tri puta okrene na bok, pa znak nestane. Čim se telefon
    položi, znak odmah nestaje. */
-let okreniCeka = false;   /* znak samo na ulazu u salu, ne usred posjete */
 let safariCeka = false;   /* uputstvo za Safarijevu traku: jednom po ulasku */
-function okreniNaUlazu() { okreniCeka = true; safariCeka = true; }
+function okreniNaUlazu() { safariCeka = true; }
 /* Povratak sa druge stranice (keš pregledača vrati salu kakva je bila) */
 window.addEventListener('pageshow', function (e) {
   if (!e.persisted || korijen.getAttribute('data-stanje') !== 'soba') { return; }
@@ -273,33 +272,11 @@ function savjetTraka() {
     window.setTimeout(function () { if (z.parentNode) { z.parentNode.removeChild(z); } }, 600);
   }, 4500);
 }
+/* Na ulazu u salu više nema znaka „okrenite telefon“ (vlasnik: ležeći
+   prikaz ne daje bolji pogled). Ostaje samo uputstvo za traku ako je
+   telefon već položen na iPhoneu. */
 function savjetOkreni() {
   window.setTimeout(savjetTraka, 400);
-  if (!okreniCeka || (G.savjetiOtvoreni && G.savjetiOtvoreni())) { return; }
-  okreniCeka = false;
-  if (!uronjeno() || polozeno() || S.tura || korijen.getAttribute('data-stanje') !== 'soba') { return; }
-  if (!window.matchMedia || !window.matchMedia('(orientation: portrait) and (pointer: coarse)').matches) { return; }
-  /* Samo telefon: položen mora biti niži od 500 px (kao POLOZEN), inače
-     okretanje ne daje čist prikaz (mali tablet, rasklopljen telefon) */
-  if (Math.min(window.screen.width || 0, window.screen.height || 0) > 500) { return; }
-  const scena = korijen.querySelector('.galerija-scena');
-  if (!scena) { return; }
-  const dd = /** @type {any} */ (document.documentElement);
-  /* iPhone nikad nema pun ekran za stranicu, čak i kad pregledač javi funkciju */
-  const moze = !/iPhone|iPod/.test(navigator.userAgent || '') && !!(dd.requestFullscreen || dd.webkitRequestFullscreen);
-  let z = /** @type {HTMLElement|null} */ (scena.querySelector('.galerija-okreni:not(.galerija-okreni--safari)'));
-  if (!z) {
-    z = document.createElement('div');
-    z.className = 'galerija-okreni';
-    z.setAttribute('aria-hidden', 'true');
-    z.innerHTML = '<svg viewBox="0 0 48 48"><rect x="15" y="5" width="18" height="38" rx="3.5" /><path d="M21.5 38.5h5" /></svg><span></span>';
-    scena.appendChild(z);
-  }
-  /* Bez punog ekrana (iPhone) okretanje i dalje daje veći, čist prikaz */
-  /** @type {Element} */ (z.lastChild).textContent = moze ? TEKST.okreni : TEKST.okreniVece;
-  const zz = z;
-  window.requestAnimationFrame(function () { zz.classList.add('je-vidljiv'); });
-  window.setTimeout(function () { zz.classList.remove('je-vidljiv'); }, 5200);
 }
 
 /* Galerija preko ekrana na iPhoneu u položaju: bez viewport-fit=cover
