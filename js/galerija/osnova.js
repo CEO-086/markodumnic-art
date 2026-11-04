@@ -183,6 +183,8 @@
  * @property {number} [inercija]   zamah poslije prevlačenja
  * @property {number} [brzina]
  * @property {number} [zadnjiPomak]
+ * @property {number} [fovCilj]  vidno polje kamere kojem se teži (zid crteža na uspravnom telefonu)
+ * @property {number} [aspektKadra]  odnos stranica pri posljednjem mjerenju
  * @property {{ x: number, y: number }} [misKlijent]
  * @property {number} [pincPregled]
  * @property {number} [pincTajmer]

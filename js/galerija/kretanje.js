@@ -110,6 +110,20 @@ function pozicijaPredDjelom(i) {
   return d;
 }
 
+/* Vidno polje za djelo: zid crteža (pet crteža) na uskom, uspravnom
+   ekranu ne staje u kadar ni sa najveće daljine u sali — tada se
+   kamera „raširi“ (šire vidno polje) da svih pet crteža bude vidljivo
+   i dodirljivo. Inače uvijek VIDNO_POLJE. */
+function vidnoPoljeZa(i) {
+  const m = i >= 0 ? S.mjesta[i] : null;
+  const aspekt = S.kamera ? S.kamera.aspect : 1.6;
+  if (!m || !m.clanovi || aspekt >= 1) { return VIDNO_POLJE; }
+  const d = pozicijaPredDjelom(i);
+  const tanV = (m.sirina / (2 * 0.78 * d)) / aspekt;
+  const fov = 2 * Math.atan(tanV) * 180 / Math.PI;
+  return Math.max(VIDNO_POLJE, Math.min(95, fov));
+}
+
 /* Početna orbita pred djelom: sprijeda, sa visine oka. Oko je na
    160 cm a centar djela na 145, pa se gleda blago naniže — kao u sali. */
 function pocetnaOrbita(i) {
@@ -340,7 +354,16 @@ function skiniIstoriju() {
 window.addEventListener('popstate', function () {
   if (!uIstoriji) { return; }
   uIstoriji = false;
-  if (S.radi && S.izabrano >= 0) { naPregled(false); }
+  if (!S.radi || S.izabrano < 0) { return; }
+  /* Izbliza preko cijelog ekrana: nazad zatvara samo nju, djelo ostaje
+     izabrano (i opet ima svoj korak u istoriji). */
+  if (S.izbliza && G.zatvoriIzbliza) {
+    G.zatvoriIzbliza();
+    upisiIstoriju();
+    return;
+  }
+  if (G.postaviOpcije) { G.postaviOpcije(false); }
+  naPregled(false);
 });
 
 /* Izbor djela: kamera ide pred njega, panel se otvara */
@@ -354,6 +377,7 @@ function izaberi(i) {
   S.zadnje = k;
   S.sala = S.mjesta[k].soba || 1;
   S.orbita = pocetnaOrbita(k);
+  S.fovCilj = vidnoPoljeZa(k);
   const c = pozicijaOrbite(k, S.orbita);
   kreniKa(c.poz, c.cilj);
   postaviBocno(false);
@@ -406,6 +430,7 @@ function naPregled(vratiFokus) {
   korijen.removeAttribute('data-zid');
   korijen.removeAttribute('data-cisto');
   skiniIstoriju();
+  S.fovCilj = VIDNO_POLJE;
   const c = pozicijaPregleda();
   kreniKa(c.poz, c.cilj);
   zatvoriPanel(vratiFokus);
@@ -540,6 +565,25 @@ function mjeri() {
   if (v.x !== w || v.y !== h) { S.render.setSize(w, h, false); }
   velicinaMeta();
   osvjeziKadar();
+
+  /* Okrenut telefon (ili bitno promijenjen prozor) dok je djelo izabrano:
+     daljina i vidno polje se računaju iznova za novi kadar, da djelo
+     ne ispadne iz ekrana (u uspravno) ni ne ostane sitno (u položeno).
+     Lupa se gasi — njen krug je vezan za stari raspored. */
+  const okrenut = S.aspektKadra && Math.abs(S.aspektKadra - S.kamera.aspect) > 0.15;
+  S.aspektKadra = S.kamera.aspect;
+  if (okrenut && S.lupa && S.lupa.na) { postaviLupu(false); }
+  if (okrenut && S.izabrano >= 0 && S.orbita) {
+    S.orbita = Object.assign({}, S.orbita, { daljina: pozicijaPredDjelom(S.izabrano) });
+    S.fovCilj = vidnoPoljeZa(S.izabrano);
+    if (S.anim || S.tura) {
+      const n = pozicijaOrbite(S.izabrano, S.orbita);
+      kreniKa(n.poz, n.cilj);
+      return;
+    }
+  } else if (okrenut && S.izabrano < 0) {
+    S.fovCilj = VIDNO_POLJE;
+  }
 
   if (S.anim) { return; }   /* usred klizanja ne preskačemo kameru */
   const c = S.izabrano < 0 ? pozicijaPregleda() : pozicijaOrbite(S.izabrano, S.orbita);

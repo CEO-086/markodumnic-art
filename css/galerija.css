@@ -2602,8 +2602,10 @@ html.galerija-uronjena .galerija-mob__vrh { padding-top: max(var(--s-3), env(saf
 }
 
 /* Položen telefon, otvorene Opcije: kadar se smanji u slobodni lijevi
-   dio, slika ostaje cijela i u sredini; zatvaranjem se vraća */
-@media (orientation: landscape) and (max-height: 500px) {
+   dio, slika ostaje cijela i u sredini; zatvaranjem se vraća (sidro
+   lijevo je stalno, pa se ne pomjera dok se kadar vraća) */
+@media (orientation: landscape) and (max-height: 500px) and (pointer: coarse) {
+  html.galerija-uronjena .galerija-platno { transform-origin: 0 50%; }
   html.galerija-uronjena .galerija[data-stanje][data-izabrano][data-opcije] .galerija-platno,
   html.galerija-uronjena .galerija[data-stanje][data-opcije] .galerija-platno {
     transform-origin: 0 50%;

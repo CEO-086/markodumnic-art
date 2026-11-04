@@ -343,6 +343,14 @@ function petlja() {
   const dt = Math.min(0.1, Math.max(0, (t - (S.prosli || t)) / 1000));
   S.prosli = t;
 
+  /* Vidno polje klizi ka cilju (zid crteža na uspravnom telefonu) */
+  if (S.fovCilj && S.kamera && Math.abs(S.kamera.fov - S.fovCilj) > 0.05) {
+    const f = S.kamera.fov + (S.fovCilj - S.kamera.fov) * Math.min(1, dt * 5);
+    S.kamera.fov = Math.abs(f - S.fovCilj) <= 0.05 ? S.fovCilj : f;
+    S.kamera.updateProjectionMatrix();
+    osvjeziKadar();
+  }
+
   /* Kretanje na početku kadra (vidi jedanPosaoKadra i zagrijavanje u
      scena.js) */
   const stajala = !kameraIde();

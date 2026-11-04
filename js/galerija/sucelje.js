@@ -298,7 +298,7 @@ function postaviOpcije(otvori) {
   if (otvori) {
     /* Položen telefon: list zauzme desni dio, pa se kadar smanji da cijela
        slika stane u slobodni lijevi dio (CSS --opcije-skala). */
-    if (el.alati && window.innerWidth > window.innerHeight) {
+    if (el.alati && POLOZEN && POLOZEN.matches) {
       const slobodno = window.innerWidth - el.alati.offsetWidth;
       korijen.style.setProperty('--opcije-skala', String(Math.max(0.3, Math.min(1, slobodno / window.innerWidth)).toFixed(3)));
     }
@@ -340,6 +340,8 @@ function prebaciCisto() {
     korijen.setAttribute('data-cisto', 'da');
     postaviOpcije(false);
     postaviKarticu(false);
+    /* Bez dugmadi nema ni poruka preko slike (npr. „obilazak pauziran“) */
+    if (el.poruka) { el.poruka.classList.remove('je-vidljiva'); }
   } else {
     korijen.removeAttribute('data-cisto');
     cistoVracen = sada();
@@ -421,8 +423,12 @@ function pripremiMob() {
   /* × gore lijevo: dok je djelo izabrano vraća korak nazad (crtež → zid
      → pregled sale); tek iz pregleda izlazi iz galerije. */
   /** @type {any} */ (m).izadjiTekst = d('izadji').lastChild.textContent;
+  /* Dvostruki dodir na „Nazad“ ne smije izbaciti iz galerije: drugi
+     dodir unutar 0.7 s poslije koraka nazad se ne računa kao „Izađi“. */
+  let zadnjiNazad = 0;
   d('izadji').addEventListener('click', function () {
-    if (S.izabrano >= 0 && G.nazad) { G.nazad(true); }
+    if (S.izabrano >= 0 && G.nazad) { zadnjiNazad = sada(); G.nazad(true); }
+    else if (sada() - zadnjiNazad < 700) { return; }
     else if (el.izadji) { el.izadji.click(); }
   });
   d('pomoc').addEventListener('click', okini(el.pomoc));
@@ -430,10 +436,11 @@ function pripremiMob() {
   d('sljedeci').addEventListener('click', okini(el.sljedeci));
   el.mob.tura.addEventListener('click', okini(el.tura));
   el.mob.natpis.addEventListener('click', function () {
-    if (S.izabrano >= 0) { postaviKarticu(!karticaPuna()); }
+    if (S.izabrano >= 0) { if (G.pauzirajTuru) { G.pauzirajTuru(); } postaviKarticu(!karticaPuna()); }
     else if (el.tura) { el.tura.click(); }
   });
   el.mob.opcije.addEventListener('click', function () {
+    if (G.pauzirajTuru && korijen.getAttribute('data-opcije') !== 'otvorene') { G.pauzirajTuru(); }
     postaviKarticu(false);
     postaviOpcije(korijen.getAttribute('data-opcije') !== 'otvorene');
   });
