@@ -214,17 +214,21 @@ function pripremiPunEkran() {
   }
 }
 
-/* Uspravan telefon na ulasku: znak „okrenite telefon“ — telefon se u
-   crtežu tri puta okrene na bok, pa znak nestane. Kad posjetilac
-   jednom okrene telefon u galeriji, znak se na tom uređaju više ne
-   pokazuje. */
+/* Uspravan telefon na svakom ulasku u salu (i kad se vrati sa druge
+   stranice dugmetom nazad): znak „okrenite telefon“ — telefon se u
+   crtežu tri puta okrene na bok, pa znak nestane. Čim se telefon
+   položi, znak odmah nestaje. */
 let okreniCeka = false;   /* znak samo na ulazu u salu, ne usred posjete */
-function okreniNaUlazu() { okreniCeka = true; }
-function vecOkretao() {
-  try { return !!window.localStorage.getItem('galerija-okretao'); } catch (e) { return false; }
-}
+let safariCeka = false;
+function okreniNaUlazu() { okreniCeka = true; safariCeka = true; }
+/* Povratak sa druge stranice (keš pregledača vrati salu kakva je bila) */
+window.addEventListener('pageshow', function (e) {
+  if (!e.persisted || korijen.getAttribute('data-stanje') !== 'soba') { return; }
+  okreniNaUlazu();
+  window.setTimeout(savjetOkreni, 500);
+  window.setTimeout(savjetSafari, 400);
+});
 function zapamtiOkretao() {
-  try { window.localStorage.setItem('galerija-okretao', '1'); } catch (e) { /* nebitno */ }
   const z = korijen.querySelector('.galerija-okreni:not(.galerija-okreni--safari)');
   if (z) { z.classList.remove('je-vidljiv'); }
 }
@@ -235,7 +239,7 @@ function savjetOkreni() {
   if (!window.matchMedia || !window.matchMedia('(orientation: portrait) and (pointer: coarse)').matches) { return; }
   /* Samo telefon: položen mora biti niži od 500 px (kao POLOZEN), inače
      okretanje ne daje čist prikaz (mali tablet, rasklopljen telefon) */
-  if (Math.min(window.screen.width || 0, window.screen.height || 0) > 500 || vecOkretao()) { return; }
+  if (Math.min(window.screen.width || 0, window.screen.height || 0) > 500) { return; }
   const scena = korijen.querySelector('.galerija-scena');
   if (!scena) { return; }
   const dd = /** @type {any} */ (document.documentElement);
@@ -257,19 +261,15 @@ function savjetOkreni() {
 }
 
 /* iPhone (Safari): stranica ne može sakriti trake pregledača (Apple ne
-   daje Fullscreen API na iPhoneu). Prvi put kad se telefon položi u
-   sali — jednom na uređaju, 6 s — kratko uputstvo kako ih sakriti
-   ručno. Chrome/Firefox/Edge na iPhoneu taj meni nemaju, pa ništa. */
+   daje Fullscreen API na iPhoneu). Kad se telefon položi u sali —
+   jednom po ulasku, 6 s — kratko uputstvo kako ih sakriti ručno. Chrome/Firefox/Edge na iPhoneu taj meni nemaju, pa ništa. */
 function safariIPhone() {
   const ua = navigator.userAgent || '';
   return /iPhone|iPod/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(ua);
 }
 function savjetSafari() {
-  if (!polozeno() || !safariIPhone()) { return; }
-  try {
-    if (window.localStorage.getItem('galerija-safari-savjet')) { return; }
-    window.localStorage.setItem('galerija-safari-savjet', '1');
-  } catch (e) { return; }
+  if (!safariCeka || !polozeno() || !safariIPhone()) { return; }
+  safariCeka = false;   /* jednom po ulasku u salu */
   const scena = korijen.querySelector('.galerija-scena');
   if (!scena) { return; }
   const z = document.createElement('div');
@@ -284,11 +284,24 @@ function savjetSafari() {
   }, 6000);
 }
 
+/* Galerija preko ekrana na iPhoneu u položaju: bez viewport-fit=cover
+   Safari i Chrome ostavljaju crne pruge lijevo i desno (izrez kamere).
+   Samo dok je galerija preko ekrana meta dobija „cover“ — ostatak sajta
+   ostaje netaknut; dugmad se odmiču od izreza preko env(safe-area-*). */
+const META_VP = /** @type {HTMLMetaElement|null} */ (document.querySelector('meta[name="viewport"]'));
+const VP_IZVORNO = META_VP ? META_VP.getAttribute('content') || '' : '';
+function ivicaDoIvice(da) {
+  if (!META_VP) { return; }
+  const novo = da && VP_IZVORNO.indexOf('viewport-fit') < 0 ? VP_IZVORNO + ', viewport-fit=cover' : VP_IZVORNO;
+  if (META_VP.getAttribute('content') !== novo) { META_VP.setAttribute('content', novo); }
+}
+
 function osvjeziUronjeno() {
   const st = korijen.getAttribute('data-stanje');
   const da = (st === 'soba' || st === 'ucitavanje') &&
     !!(UZAK && UZAK.matches);
   document.documentElement.classList.toggle('galerija-uronjena', da);
+  ivicaDoIvice(da);
   if (!da) {
     postaviOpcije(false);
     korijen.removeAttribute('data-cisto');
