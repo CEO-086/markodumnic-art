@@ -686,7 +686,8 @@ const TEKST = IT ? {
   karticaVise: 'Mostra i dati dell’opera', karticaManje: 'Nascondi i dati dell’opera',
   opcije: 'Opzioni', iliDodir: 'o toccate un dipinto', oDjelu: 'Sull’opera',
   cistoSavjet: 'Toccate il dipinto per nascondere i pulsanti', cistoNazad: 'Toccate lo schermo per riavere i pulsanti',
-  nazadNaSalu: 'Indietro'
+  nazadNaSalu: 'Indietro', okreni: 'Ruotate il telefono per lo schermo intero', okreniVece: 'Ruotate il telefono per una vista più ampia',
+  safariTraka: 'Per lo schermo intero: toccate l’icona a sinistra dell’indirizzo e nascondete la barra degli strumenti'
 } : EN ? {
   izbliza: 'Close-up: ', djelo: 'artwork', zatvori: 'Close',
   savjetPuna: 'Drag or use the arrow keys to move around the painting · click or Enter shows the whole work',
@@ -718,7 +719,8 @@ const TEKST = IT ? {
   karticaVise: 'Show the details of the work', karticaManje: 'Hide the details of the work',
   opcije: 'Options', iliDodir: 'or tap a painting', oDjelu: 'About the work',
   cistoSavjet: 'Tap the painting to hide the buttons', cistoNazad: 'Tap the screen to bring the buttons back',
-  nazadNaSalu: 'Back'
+  nazadNaSalu: 'Back', okreni: 'Turn your phone sideways for full screen', okreniVece: 'Turn your phone sideways for a bigger view',
+  safariTraka: 'For full screen: tap the icon left of the address, then “Hide Toolbar”'
 } : {
   izbliza: 'Izbliza: ', djelo: 'djelo', zatvori: 'Zatvori',
   savjetPuna: 'Prevucite ili koristite strelice za kretanje po slici · klik ili Enter vraća cijelu sliku',
@@ -752,7 +754,8 @@ const TEKST = IT ? {
   karticaVise: 'Prikaži podatke o djelu', karticaManje: 'Sakrij podatke o djelu',
   opcije: 'Opcije', iliDodir: 'ili dodirnite sliku', oDjelu: 'O djelu',
   cistoSavjet: 'Dodir na sliku sakriva dugmad', cistoNazad: 'Dodirnite ekran da vratite dugmad',
-  nazadNaSalu: 'Nazad'
+  nazadNaSalu: 'Nazad', okreni: 'Okrenite telefon za cijeli ekran', okreniVece: 'Okrenite telefon za veći prikaz',
+  safariTraka: 'Za cijeli ekran: dodirnite ikonu lijevo od adrese i sakrijte traku s alatima'
 };
 
 /* Poruke kad se izgubi i vrati WebGL kontekst (vidi kontekstIzgubljen

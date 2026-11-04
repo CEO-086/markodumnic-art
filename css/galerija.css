@@ -2484,3 +2484,94 @@ html.galerija-uronjena .galerija-savjeti { z-index: 9; }
   html.galerija-uronjena .galerija-alati,
   html.galerija-uronjena .galerija-panel { transition: none !important; }
 }
+
+/* --- Položen telefon: čista galerija — gore samo × u uglu (bez
+       natpisa sale, „?“ i zatamnjenja), dolje polja kao i do sada --- */
+@media (orientation: landscape) and (max-height: 500px) and (pointer: coarse) {
+  html.galerija-uronjena .galerija-mob__vrh { background: none; }
+  html.galerija-uronjena .galerija-mob__gdje,
+  html.galerija-uronjena .galerija-mob__vrh [data-mob="pomoc"] { visibility: hidden; }
+  html.galerija-uronjena .galerija-mob__izadji { width: 44px; padding: 0; }
+  html.galerija-uronjena .galerija-mob__izadji span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* --- Uspravan telefon: znak „okrenite telefon“ (sucelje.js) --- */
+.galerija-okreni { display: none; }
+html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-okreni {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: max-content;
+  max-width: calc(100% - 2 * var(--s-5));
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid rgba(243, 238, 228, 0.18);
+  border-radius: 18px;
+  background-color: rgba(21, 18, 14, 0.62);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #F3EEE4;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-okreni.je-vidljiv { opacity: 1; }
+.galerija-okreni svg {
+  width: 56px;
+  height: 56px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.galerija-okreni.je-vidljiv svg { animation: galerija-okreni 1.6s var(--ease) 0.2s 3 both; }
+@keyframes galerija-okreni {
+  0%, 15% { transform: rotate(0deg); }
+  50%, 80% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .galerija-okreni.je-vidljiv svg { animation: none; transform: rotate(-90deg); }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-okreni { display: none; }
+}
+
+/* Tačno vidljivi dio stranice (sucelje.js, visualViewport): traka
+   pregledača gore ili dolje nikad ne prekrije donja polja */
+html.galerija-uronjena .galerija[style*="--vidljivo-v"] {
+  top: var(--vidljivo-gore, 0);
+  bottom: auto;
+  height: var(--vidljivo-v);
+  --visina-sale: var(--vidljivo-v);
+}
+
+/* iPhone Safari, položeno: jednokratno uputstvo za skrivanje trake */
+@media (orientation: landscape) and (max-height: 500px) {
+  html.galerija-uronjena .galerija[data-stanje="soba"] .galerija-okreni--safari {
+    display: block;
+    top: auto;
+    bottom: calc(44px + 2 * var(--s-3) + var(--s-2));
+    transform: translateX(-50%);
+    max-width: min(30rem, calc(100% - 2 * var(--s-5)));
+    padding: var(--s-3) var(--s-4);
+    line-height: 1.4;
+  }
+}

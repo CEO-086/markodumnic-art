@@ -320,7 +320,9 @@ function pokreni(djela) {
   centrirajSalu();
   /* Svaki ulazak, na svakom uređaju: kratko uputstvo u tri sličice i
      pitanje „sa vodičem ili sam“. Fokus tada ide na prvo dugme u njemu. */
+  if (G.okreniNaUlazu) { G.okreniNaUlazu(); }
   if (el.savjeti) { pokaziSavjete(); return; }
+  if (G.savjetOkreni) { window.setTimeout(G.savjetOkreni, 500); }
 
   /* Fokus na platno: tipke rade odmah, bez Taba i bez klika.
      preventScroll — inače pregledač skoči na salu i otme mjesto čitanja. */
