@@ -34,7 +34,10 @@
   var PUTANJA_PODACI = 'data/radovi.json';
 
   /* --- Dozvoljene kategorije (serije iz radovi.json) --- */
-  var KATEGORIJE = ['sve', 'torino', 'atelje', 'rodni-grad', 'crtezi'];
+  var KATEGORIJE = ['sve', 'torino', 'atelje', 'rodni-grad', 'crtezi',
+                    /* ciklusi crteža — podkategorije „Crteži“ */
+                    'cetinjski-dnevnik', 'dnevnik-iz-ateljea'];
+  var KATEGORIJE_CIKLUSI = ['cetinjski-dnevnik', 'dnevnik-iz-ateljea'];
 
   /* Nazivi serija — za vezu „Serija” na stranici djela. Ako radovi.json
      donese svoje nazive (polje `kategorije`), oni imaju prednost. */
@@ -227,6 +230,8 @@
   function pokreniRadove(mreza) {
     var dugmad = nadjiSve('.filter__dugme');
     var stavke = nadjiSve('.rad', mreza);
+    /* Naslovi ciklusa crteža (podkategorije) — ne broje se kao radovi. */
+    var ciklusi = nadjiSve('.rad-ciklus', mreza);
     var brojac = nadji('#broj-radova');
     var prazno = nadji('#radovi-prazno');
     var ukupno = stavke.length;
@@ -247,20 +252,44 @@
 
       stavke.forEach(function (stavka) {
         var pripada = kategorija === 'sve' ||
-                      stavka.getAttribute('data-kategorija') === kategorija;
+                      stavka.getAttribute('data-kategorija') === kategorija ||
+                      stavka.getAttribute('data-ciklus') === kategorija;
 
         /* hidden atribut, ne samo klasa — stavka tada izlazi i iz
            pristupačnog drveta, ne samo iz vizuelnog prikaza. */
         stavka.hidden = !pripada;
         if (pripada) { prikazano += 1; }
       });
+      ciklusi.forEach(function (c) {
+        c.hidden = !(kategorija === 'sve' || c.getAttribute('data-kategorija') === kategorija ||
+                     c.getAttribute('data-ciklus') === kategorija);
+      });
+
+      /* Ciklusi crteža su podkategorije „Crteži“: njihov red se vidi
+         samo uz „Crteži“ ili izabrani ciklus, a „Crteži“ tada ostaje
+         podvučen kao roditelj. */
+      var uCrtezima = kategorija === 'crtezi' || KATEGORIJE_CIKLUSI.indexOf(kategorija) !== -1;
+      var podRed = nadji('#filter-ciklusi');
+      if (podRed) { podRed.hidden = !uCrtezima; }
 
       /* Stanje dugmadi — aria-pressed nosi informaciju, klasa nosi liniju. */
       dugmad.forEach(function (dugme) {
-        var aktivno = dugme.getAttribute('data-filter') === kategorija;
+        var f = dugme.getAttribute('data-filter');
+        var aktivno = f === kategorija;
         dugme.setAttribute('aria-pressed', aktivno ? 'true' : 'false');
-        dugme.classList.toggle('je-aktivno', aktivno);
+        dugme.classList.toggle('je-aktivno', aktivno || (f === 'crtezi' && uCrtezima));
       });
+
+      /* Telefon: red filtera se pomjera prstom — podvučeno dugme se
+         dovodi u vidno polje (samo vodoravno, stranica se ne pomjera). */
+      var red = nadji('#filter-radova');
+      var istaknuto = red && nadji('.filter__dugme.je-aktivno', red);
+      if (red && istaknuto && red.scrollWidth > red.clientWidth) {
+        var lijevo = istaknuto.offsetLeft - red.offsetLeft;
+        if (lijevo < red.scrollLeft || lijevo + istaknuto.offsetWidth > red.scrollLeft + red.clientWidth) {
+          red.scrollLeft = Math.max(0, lijevo - 24);
+        }
+      }
 
       /* Brojač u aria-live elementu — čitač ekrana pročita promjenu. */
       if (brojac) {
@@ -414,6 +443,14 @@
       veza.hidden = false;
       veza.setAttribute('href', 'djelo/' + encodeURIComponent(susjed.id) + '.html');
       if (naziv) { naziv.textContent = susjed.naziv; }
+      /* Isti susjed i na strelicama lijevo/desno od slike (prvi ekran) */
+      var gore = nadji(selektor + '-gore');
+      if (gore) {
+        gore.setAttribute('href', veza.getAttribute('href'));
+        var oznaka = nadji('.oznaka', veza);
+        gore.setAttribute('aria-label', (oznaka ? oznaka.textContent.replace(/[←→]/g, '').trim() + ': ' : '') + susjed.naziv);
+        gore.hidden = false;
+      }
     }
 
     /* Manje verzije slike za <picture> (img/radovi/w/, pravi ih

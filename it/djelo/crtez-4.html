@@ -28,7 +28,7 @@
 <!-- /fontovi -->
 <link rel="stylesheet" href="../../css/tokens.css?v=27375fd933">
 <link rel="stylesheet" href="../../css/base.css?v=fd3b053f77">
-<link rel="stylesheet" href="../../css/radovi.css?v=8b55034708">
+<link rel="stylesheet" href="../../css/radovi.css?v=3cbaf6b778">
 
 <!-- schema.org/VisualArtwork — statički, po djelu.
      Nema JavaScripta: crawleri ovo čitaju iz izvornog HTML-a. -->
@@ -111,10 +111,14 @@
         <a href="../radovi.html">Opere</a>
         <span aria-hidden="true">/</span>
         <a href="../radovi.html#crtezi">Disegni</a>
+        <span aria-hidden="true">/</span>
+        <span class="djelo-putanja__izbor"><a class="djelo-putanja__ciklus" href="../radovi.html#cetinjski-dnevnik" aria-current="true">Diario di Cettigne</a><span aria-hidden="true"> · </span><a class="djelo-putanja__ciklus" href="../radovi.html#dnevnik-iz-ateljea">Diario dello studio</a></span>
       </nav>
 
       <article class="djelo">
         <div class="djelo__slikarnica">
+          <a class="djelo-strelica djelo-strelica--lijevo" href="crtez-3.html" aria-label="Opera precedente: Diario di Cettigne, 3/5"><svg class="djelo-strelica__ikona" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="djelo-strelica djelo-strelica--desno" href="crtez-5.html" aria-label="Opera successiva: Diario di Cettigne, 5/5"><svg class="djelo-strelica__ikona" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
           <figure class="djelo__figura">
             <picture>
               <source type="image/avif" srcset="../../img/radovi/w/crtez-4-480.avif 480w, ../../img/radovi/w/crtez-4-800.avif 800w, ../../img/radovi/w/crtez-4-1200.avif 1200w, ../../img/radovi/w/crtez-4-1600.avif 1600w"
@@ -142,7 +146,7 @@
             </div>
             <div class="djelo__par">
               <dt class="oznaka oznaka--gola">Serie</dt>
-              <dd><a href="../radovi.html#crtezi">Diario di Cettigne</a></dd>
+              <dd><a href="../radovi.html#cetinjski-dnevnik">Diario di Cettigne</a></dd>
             </div>
           </dl>
 
@@ -156,6 +160,64 @@
           </p>
         </div>
       </article>
+
+      <!-- Ciklus: svih pet crteža ovog rada na jednoj stranici
+           (zamisao autora — pet crteža na jednu temu su jedno djelo). -->
+      <section class="djelo-ciklus" aria-labelledby="djelo-ciklus-naslov">
+        <h2 class="djelo-ciklus__naslov" id="djelo-ciklus-naslov">Diario di Cettigne<span class="oznaka oznaka--gola djelo-ciklus__pod">Ciclo di cinque disegni · 2025</span></h2>
+        <ol class="djelo-ciklus__lista">
+          <li class="djelo-ciklus__stavka">
+            <a class="djelo-ciklus__veza" href="crtez-1.html">
+              <picture>
+                <source type="image/avif" srcset="../../img/radovi/w/crtez-1-480.avif">
+                <source type="image/webp" srcset="../../img/radovi/w/crtez-1-480.webp">
+                <img class="djelo-ciklus__slika" src="../../img/radovi/crtez-1.jpg" width="918" height="1400" loading="lazy" decoding="async" alt="Diario di Cettigne, 1/5">
+              </picture>
+              <span class="djelo-ciklus__broj" aria-hidden="true">1/5</span>
+            </a>
+          </li>
+          <li class="djelo-ciklus__stavka">
+            <a class="djelo-ciklus__veza" href="crtez-2.html">
+              <picture>
+                <source type="image/avif" srcset="../../img/radovi/w/crtez-2-480.avif">
+                <source type="image/webp" srcset="../../img/radovi/w/crtez-2-480.webp">
+                <img class="djelo-ciklus__slika" src="../../img/radovi/crtez-2.jpg" width="958" height="1400" loading="lazy" decoding="async" alt="Diario di Cettigne, 2/5">
+              </picture>
+              <span class="djelo-ciklus__broj" aria-hidden="true">2/5</span>
+            </a>
+          </li>
+          <li class="djelo-ciklus__stavka">
+            <a class="djelo-ciklus__veza" href="crtez-3.html">
+              <picture>
+                <source type="image/avif" srcset="../../img/radovi/w/crtez-3-480.avif">
+                <source type="image/webp" srcset="../../img/radovi/w/crtez-3-480.webp">
+                <img class="djelo-ciklus__slika" src="../../img/radovi/crtez-3.jpg" width="962" height="1400" loading="lazy" decoding="async" alt="Diario di Cettigne, 3/5">
+              </picture>
+              <span class="djelo-ciklus__broj" aria-hidden="true">3/5</span>
+            </a>
+          </li>
+          <li class="djelo-ciklus__stavka">
+            <a class="djelo-ciklus__veza" href="crtez-4.html" aria-current="page">
+              <picture>
+                <source type="image/avif" srcset="../../img/radovi/w/crtez-4-480.avif">
+                <source type="image/webp" srcset="../../img/radovi/w/crtez-4-480.webp">
+                <img class="djelo-ciklus__slika" src="../../img/radovi/crtez-4.jpg" width="995" height="1400" loading="lazy" decoding="async" alt="Diario di Cettigne, 4/5">
+              </picture>
+              <span class="djelo-ciklus__broj" aria-hidden="true">4/5</span>
+            </a>
+          </li>
+          <li class="djelo-ciklus__stavka">
+            <a class="djelo-ciklus__veza" href="crtez-5.html">
+              <picture>
+                <source type="image/avif" srcset="../../img/radovi/w/crtez-5-480.avif">
+                <source type="image/webp" srcset="../../img/radovi/w/crtez-5-480.webp">
+                <img class="djelo-ciklus__slika" src="../../img/radovi/crtez-5.jpg" width="944" height="1400" loading="lazy" decoding="async" alt="Diario di Cettigne, 5/5">
+              </picture>
+              <span class="djelo-ciklus__broj" aria-hidden="true">5/5</span>
+            </a>
+          </li>
+        </ol>
+      </section>
 
       <!-- Susjedna djela se vrte u krug, pa nema mrtvih veza na
            krajevima spiska. Putanje su bez prefiksa — susjedi su u
@@ -204,6 +266,6 @@
 
 <!-- Samo base.js: mobilni meni i tekuća godina. Sadržaj stranice
      ne zavisi od JavaScripta — radi i kad je isključen. -->
-<script src="../../js/base.js?v=b5b76d13c2"></script>
+<script src="../../js/base.js?v=d45e0ec884"></script>
 </body>
 </html>

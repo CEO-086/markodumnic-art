@@ -326,4 +326,19 @@
     }
   }());
 
+  /* Stranica djela: strelice ← → na tastaturi vode na prethodno i
+     sljedeće djelo (isti linkovi kao strelice lijevo i desno od slike).
+     Ne smeta kucanju u poljima ni prečicama sa modifikatorima. */
+  (function () {
+    document.addEventListener('keydown', function (e) {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) { return; }
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') { return; }
+      var t = e.target;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) { return; }
+      var veza = document.querySelector(e.key === 'ArrowLeft' ? '.djelo-strelica--lijevo:not([hidden])' : '.djelo-strelica--desno:not([hidden])');
+      var href = veza && veza.getAttribute('href');
+      if (href && href !== '#') { window.location.href = veza.href; }
+    });
+  }());
+
 }());

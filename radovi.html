@@ -11,7 +11,7 @@
 <!-- /fontovi -->
 <link rel="stylesheet" href="css/tokens.css?v=27375fd933">
 <link rel="stylesheet" href="css/base.css?v=fd3b053f77">
-<link rel="stylesheet" href="css/radovi.css?v=8b55034708">
+<link rel="stylesheet" href="css/radovi.css?v=3cbaf6b778">
 
 <!--
   Degradiranje bez JavaScripta:
@@ -23,7 +23,7 @@
 <noscript>
   <style>
     /* Bez JS-a nema filtriranja — skrivamo dugmad i objašnjavamo zašto. */
-    .filter__dugmad { display: none; }
+    .filter__dugmad, .filter__pod { display: none; }
     .filter__bez-js { display: block; }
   </style>
 </noscript>
@@ -95,7 +95,7 @@
         <h1 class="naslov-1">Radovi</h1>
         <p class="uvodni">
           Ulja na platnu u tri serije: pejzaži Torina, Trentina i Grčke, prizori
-          iz ateljea i sanjarenja o rodnom gradu — Cetinju. Uz njih i crteži.
+          iz ateljea i sanjarenja o rodnom gradu — Cetinju. Uz njih i crteži, u dva ciklusa: Cetinjski dnevnik i Dnevnik iz ateljea.
         </p>
       </header>
 
@@ -110,6 +110,11 @@
           <button class="filter__dugme" type="button" data-filter="atelje" aria-pressed="false">Prizori iz ateljea</button>
           <button class="filter__dugme" type="button" data-filter="rodni-grad" aria-pressed="false">Sanjarenja o rodnom gradu</button>
           <button class="filter__dugme" type="button" data-filter="crtezi" aria-pressed="false">Crteži</button>
+        </div>
+
+        <div class="filter__pod" id="filter-ciklusi" role="group" aria-label="Ciklusi crteža" hidden>
+          <button class="filter__dugme filter__dugme--pod" type="button" data-filter="cetinjski-dnevnik" aria-pressed="false">Cetinjski dnevnik</button>
+          <button class="filter__dugme filter__dugme--pod" type="button" data-filter="dnevnik-iz-ateljea" aria-pressed="false">Dnevnik iz ateljea</button>
         </div>
 
         <p class="oznaka oznaka--gola filter__broj" id="broj-radova" aria-live="polite">Prikazano 31 od 31 rada</p>
@@ -481,7 +486,12 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad-ciklus" data-kategorija="crtezi" data-ciklus="cetinjski-dnevnik">
+          <h2 class="rad-ciklus__naslov"><a class="rad-ciklus__veza" href="#cetinjski-dnevnik">Cetinjski dnevnik</a></h2>
+          <span class="oznaka oznaka--gola rad-ciklus__meta">Ciklus od pet crteža · 2025</span>
+        </li>
+
+        <li class="rad" data-kategorija="crtezi" data-ciklus="cetinjski-dnevnik">
           <a class="rad__veza" href="djelo/crtez-1.html">
             <span class="rad__okvir">
               <picture>
@@ -498,7 +508,7 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad" data-kategorija="crtezi" data-ciklus="cetinjski-dnevnik">
           <a class="rad__veza" href="djelo/crtez-2.html">
             <span class="rad__okvir">
               <picture>
@@ -515,7 +525,7 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad" data-kategorija="crtezi" data-ciklus="cetinjski-dnevnik">
           <a class="rad__veza" href="djelo/crtez-3.html">
             <span class="rad__okvir">
               <picture>
@@ -532,7 +542,7 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad" data-kategorija="crtezi" data-ciklus="cetinjski-dnevnik">
           <a class="rad__veza" href="djelo/crtez-4.html">
             <span class="rad__okvir">
               <picture>
@@ -549,7 +559,7 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad" data-kategorija="crtezi" data-ciklus="cetinjski-dnevnik">
           <a class="rad__veza" href="djelo/crtez-5.html">
             <span class="rad__okvir">
               <picture>
@@ -566,7 +576,12 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad-ciklus" data-kategorija="crtezi" data-ciklus="dnevnik-iz-ateljea">
+          <h2 class="rad-ciklus__naslov"><a class="rad-ciklus__veza" href="#dnevnik-iz-ateljea">Dnevnik iz ateljea</a></h2>
+          <span class="oznaka oznaka--gola rad-ciklus__meta">Ciklus od pet crteža · 2025–2026</span>
+        </li>
+
+        <li class="rad" data-kategorija="crtezi" data-ciklus="dnevnik-iz-ateljea">
           <a class="rad__veza" href="djelo/crtez-6.html">
             <span class="rad__okvir">
               <picture>
@@ -583,7 +598,7 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad" data-kategorija="crtezi" data-ciklus="dnevnik-iz-ateljea">
           <a class="rad__veza" href="djelo/crtez-7.html">
             <span class="rad__okvir">
               <picture>
@@ -600,7 +615,7 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad" data-kategorija="crtezi" data-ciklus="dnevnik-iz-ateljea">
           <a class="rad__veza" href="djelo/crtez-8.html">
             <span class="rad__okvir">
               <picture>
@@ -617,7 +632,7 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad" data-kategorija="crtezi" data-ciklus="dnevnik-iz-ateljea">
           <a class="rad__veza" href="djelo/crtez-9.html">
             <span class="rad__okvir">
               <picture>
@@ -634,7 +649,7 @@
           </a>
         </li>
 
-        <li class="rad" data-kategorija="crtezi">
+        <li class="rad" data-kategorija="crtezi" data-ciklus="dnevnik-iz-ateljea">
           <a class="rad__veza" href="djelo/crtez-10.html">
             <span class="rad__okvir">
               <picture>
@@ -690,7 +705,7 @@
     <span class="podnozje__pokrece">Powered by <a href="https://cryptogorac.com" rel="noopener">cryptogorac.com</a></span></p>
 </footer>
 
-<script src="js/base.js?v=b5b76d13c2"></script>
-<script src="js/radovi.js?v=90d91dff90"></script>
+<script src="js/base.js?v=d45e0ec884"></script>
+<script src="js/radovi.js?v=8042493fda"></script>
 </body>
 </html>
