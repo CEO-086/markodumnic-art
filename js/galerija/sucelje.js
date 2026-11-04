@@ -239,7 +239,8 @@ function savjetOkreni() {
   const scena = korijen.querySelector('.galerija-scena');
   if (!scena) { return; }
   const dd = /** @type {any} */ (document.documentElement);
-  const moze = !!(dd.requestFullscreen || dd.webkitRequestFullscreen);
+  /* iPhone nikad nema pun ekran za stranicu, čak i kad pregledač javi funkciju */
+  const moze = !/iPhone|iPod/.test(navigator.userAgent || '') && !!(dd.requestFullscreen || dd.webkitRequestFullscreen);
   let z = /** @type {HTMLElement|null} */ (scena.querySelector('.galerija-okreni:not(.galerija-okreni--safari)'));
   if (!z) {
     z = document.createElement('div');
@@ -261,8 +262,7 @@ function savjetOkreni() {
    ručno. Chrome/Firefox/Edge na iPhoneu taj meni nemaju, pa ništa. */
 function safariIPhone() {
   const ua = navigator.userAgent || '';
-  const dd = /** @type {any} */ (document.documentElement);
-  return /iPhone|iPod/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(ua) && !(dd.requestFullscreen || dd.webkitRequestFullscreen);
+  return /iPhone|iPod/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(ua);
 }
 function savjetSafari() {
   if (!polozeno() || !safariIPhone()) { return; }
