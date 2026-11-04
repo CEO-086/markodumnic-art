@@ -18,7 +18,7 @@
 
 /** @type {Galerija} */
 const G = /** @type {any} */ (window).__galerija;
-const { korijen, el, S, jeDruga, sada, poruka } = G;   /* osnova.js */
+const { korijen, el, S, jeDruga, sada } = G;   /* osnova.js */
 const { TEKST } = G;   /* tekstovi, osnova.js */
 
 /* Kartica djela na uspravnom telefonu (panel odozdo): svako novo djelo
@@ -198,7 +198,6 @@ function pripremiPunEkran() {
       if (POLOZEN.matches) {
         if (polozeno()) { zapamtiOkretao(); }
         traziPunEkran();
-        window.setTimeout(savjetSafari, 400);
       } else {
         izadjiIzPunog();
       }
@@ -219,14 +218,12 @@ function pripremiPunEkran() {
    crtežu tri puta okrene na bok, pa znak nestane. Čim se telefon
    položi, znak odmah nestaje. */
 let okreniCeka = false;   /* znak samo na ulazu u salu, ne usred posjete */
-let safariCeka = false;
-function okreniNaUlazu() { okreniCeka = true; safariCeka = true; }
+function okreniNaUlazu() { okreniCeka = true; }
 /* Povratak sa druge stranice (keš pregledača vrati salu kakva je bila) */
 window.addEventListener('pageshow', function (e) {
   if (!e.persisted || korijen.getAttribute('data-stanje') !== 'soba') { return; }
   okreniNaUlazu();
   window.setTimeout(savjetOkreni, 500);
-  window.setTimeout(savjetSafari, 400);
 });
 function zapamtiOkretao() {
   const z = korijen.querySelector('.galerija-okreni:not(.galerija-okreni--safari)');
@@ -260,30 +257,6 @@ function savjetOkreni() {
   window.setTimeout(function () { zz.classList.remove('je-vidljiv'); }, 5200);
 }
 
-/* iPhone (Safari): stranica ne može sakriti trake pregledača (Apple ne
-   daje Fullscreen API na iPhoneu). Kad se telefon položi u sali —
-   jednom po ulasku, 6 s — kratko uputstvo kako ih sakriti ručno. Chrome/Firefox/Edge na iPhoneu taj meni nemaju, pa ništa. */
-function safariIPhone() {
-  const ua = navigator.userAgent || '';
-  return /iPhone|iPod/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(ua);
-}
-function savjetSafari() {
-  if (!safariCeka || !polozeno() || !safariIPhone()) { return; }
-  safariCeka = false;   /* jednom po ulasku u salu */
-  const scena = korijen.querySelector('.galerija-scena');
-  if (!scena) { return; }
-  const z = document.createElement('div');
-  z.className = 'galerija-okreni galerija-okreni--safari';
-  z.setAttribute('role', 'status');
-  z.textContent = TEKST.safariTraka;
-  scena.appendChild(z);
-  window.requestAnimationFrame(function () { z.classList.add('je-vidljiv'); });
-  window.setTimeout(function () {
-    z.classList.remove('je-vidljiv');
-    window.setTimeout(function () { if (z.parentNode) { z.parentNode.removeChild(z); } }, 600);
-  }, 6000);
-}
-
 /* Galerija preko ekrana na iPhoneu u položaju: bez viewport-fit=cover
    Safari i Chrome ostavljaju crne pruge lijevo i desno (izrez kamere).
    Samo dok je galerija preko ekrana meta dobija „cover“ — ostatak sajta
@@ -308,7 +281,6 @@ function osvjeziUronjeno() {
   }
   if (st !== 'soba' && st !== 'ucitavanje') { izadjiIzPunog(); }
   if (st === 'soba') {
-    window.setTimeout(savjetSafari, 400);
     if (polozeno()) { zapamtiOkretao(); }   /* ušao već položen — zna za položeni prikaz */
   }
   prilagodiVidljivo();
@@ -362,7 +334,6 @@ function prebaciCisto() {
     korijen.setAttribute('data-cisto', 'da');
     postaviOpcije(false);
     postaviKarticu(false);
-    if (!vecRecen('cisto-nazad')) { poruka(TEKST.cistoNazad, 2200); }
   } else {
     korijen.removeAttribute('data-cisto');
     cistoVracen = sada();
@@ -372,25 +343,12 @@ function prebaciCisto() {
    upravo pojavilo pod prstom (click stiže poslije pointerup). */
 let cistoVracen = 0;
 
-/* Savjet koji se na ovom uređaju kaže samo jednom (localStorage); bez
-   njega (privatni prozor) — jednom po posjeti. Vraća true ako je već rečen. */
-const RECENO = {};
-function vecRecen(kljuc) {
-  if (RECENO[kljuc]) { return true; }
-  RECENO[kljuc] = true;
-  try {
-    if (window.localStorage.getItem('galerija-savjet-' + kljuc)) { return true; }
-    window.localStorage.setItem('galerija-savjet-' + kljuc, '1');
-  } catch (e) { /* bez memorije: jednom po posjeti */ }
-  return false;
-}
-
-/* Prvi izbor djela na telefonu, jednom na uređaju: kratko „dodir na
-   sliku sakriva dugmad“ — inače se taj pokret ne bi ni otkrio. */
+/* Prvi izbor djela na telefonu — nekad kratki natpis „dodir na sliku
+   sakriva dugmad“; vlasnik ga ne želi (sve je u „?“), pa samo bilježi. */
 function savjetCisto() {
   if (!uronjeno() || S.cistoRecen || S.tura) { return; }
   S.cistoRecen = true;
-  if (!vecRecen('cisto')) { poruka(TEKST.cistoSavjet, 2600); }
+  /* Bez iskačućeg natpisa — sve je u „?“ (vlasnik, 2026-11-04) */
 }
 
 const IKONA = {
