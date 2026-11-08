@@ -18,7 +18,7 @@ const {
 } = G;
 const { EN, IT, TEKST } = G;   /* tekstovi, osnova.js */
 const { SVJ, zagrijNaEkranu, SVJETLA_U_KADRU, osvjeziSjenke } = G;   /* svjetla, scena.js */
-const { zatvoriBitmapu, jedanPosaoKadra, paziNaDrugu } = G;   /* teksture, scena.js */
+const { zatvoriBitmapu, jedanPosaoKadra, paziNaDrugu, izvorMali, izvorDjela, AVIF_PROVJERA } = G;   /* teksture, scena.js */
 const { MJESTA_VELIKE, napraviSobu, postaviDjela, zamrzniNepokretno } = G;   /* scena.js */
 /* telefon, sucelje.js */
 const {
@@ -555,6 +555,77 @@ function izadji() {
 }
 
 /* ---------------------------------------------------------
+   PREDUČITAVANJE U POZADINI
+
+   Dok posjetilac čita stranicu, sala se tiho priprema: Three.js
+   (modulepreload), data/radovi.json i slike PRVE sale (sićušne,
+   prave, pa reljef poteza), plus teksture zidova, poda i plafona. Sve ide u keš
+   pregledača sa niskim prioritetom, kad se stranica smiri — pa je klik
+   na „Uđi u salu“ praktično trenutan, a slike su već na platnima.
+   Ne pokreće se uz „štedi podatke“ ili 2G (tada tek kad posjetilac
+   krene ka dugmetu), ni bez WebGL-a.
+   --------------------------------------------------------- */
+const SOBA_MAPE = ['zid-albedo', 'zid-normal', 'zid-roughness', 'pod-albedo', 'pod-normal', 'pod-roughness',
+  'plafon-albedo', 'plafon-normal'];
+function predSliku(url, cors, gotovo) {
+  if (!url) { if (gotovo) { gotovo(); } return; }
+  const i = new Image();
+  if (gotovo) { i.onload = i.onerror = gotovo; }
+  /* Isti način kao kasnije u sali (TextureLoader traži CORS, rasterizuj
+     ne), da pregledač uzme istu kopiju iz keša. */
+  if (cors) { i.crossOrigin = 'anonymous'; }
+  try { /** @type {any} */ (i).fetchPriority = 'low'; } catch (e) { /* stari pregledač */ }
+  i.decoding = 'async';
+  i.src = url;
+}
+function predUcitaj() {
+  if (S.predUcitano) { return; }
+  S.predUcitano = true;
+  najaviThree();
+  const p = ucitajPodatke();
+  S.podaciRano = p;
+  p.then(function (djela) {
+    SOBA_MAPE.forEach(function (ime) { predSliku(izKorijena('img/soba/' + ime + '.webp'), true); });
+    const prva = djela.slice(0, S.uMaloj || 0);
+    prva.forEach(function (d) { predSliku(izvorMali(d), false); });
+    /* Prave slike tek kad se zna radi li AVIF (izvorDjela bira format) */
+    AVIF_PROVJERA.then(function () {
+      /* Reljef poteza (normal mape, ~250 KB) tek kad stignu sve slike —
+         ne smije im oduzimati vezu. Crteži reljef nemaju. */
+      let ostalo = prva.length;
+      const reljef = function () {
+        if (--ostalo) { return; }
+        const kraj = TELEFON ? '-512.webp' : '.webp';
+        prva.forEach(function (d) {
+          if (d.id && d.kategorija !== 'crtezi') {
+            predSliku(izKorijena('img/reljef/' + encodeURIComponent(d.id) + kraj), true);
+          }
+        });
+      };
+      prva.forEach(function (d) { predSliku(izvorDjela(d), false, reljef); });
+    });
+  }, function () { /* greška se pokazuje tek na klik (ulaz) */ });
+}
+function predUcitajKadTreba() {
+  if (!korijen || !imaWebGL() || location.protocol === 'file:') { return; }
+  const d = el.pokreni;
+  /* Posjetilac krene ka dugmetu — odmah, bez čekanja */
+  if (d) {
+    ['pointerenter', 'focus', 'touchstart'].forEach(function (tip) {
+      d.addEventListener(tip, predUcitaj, { once: true, passive: true });
+    });
+  }
+  const veza = /** @type {any} */ (navigator).connection;
+  if (stediPodatke() || (veza && /(^|-)2g$/.test(veza.effectiveType || ''))) { return; }
+  const kreni = function () {
+    if (window.requestIdleCallback) { window.requestIdleCallback(predUcitaj, { timeout: 2500 }); }
+    else { window.setTimeout(predUcitaj, 300); }
+  };
+  if (document.readyState === 'complete') { kreni(); }
+  else { window.addEventListener('load', kreni, { once: true }); }
+}
+
+/* ---------------------------------------------------------
    Klik na "Uđi u salu"
    --------------------------------------------------------- */
 async function ulaz() {
@@ -568,9 +639,14 @@ async function ulaz() {
   const obecanjeThree = ucitajThree();
   obecanjeThree.catch(function () { /* obrađuje se ispod */ });
 
+  /* Podaci iz pozadinskog predučitavanja, ako su već tu (samo jednom —
+     ponovni ulazak čita svježe). Ako je ono palo, pokušava se iznova. */
+  const rano = S.podaciRano;
+  S.podaciRano = null;
+  S.predUcitano = true;
   let djela;
   try {
-    djela = await ucitajPodatke();
+    djela = rano ? await rano.catch(function () { return ucitajPodatke(); }) : await ucitajPodatke();
   } catch (g) {
     na2D((g && g.vrsta) || 'podaci');
     return;
@@ -632,6 +708,7 @@ if (korijen) {
       ukras.addEventListener('click', function () { el.pokreni.click(); });
     }
     najaviKadTreba();
+    predUcitajKadTreba();
     /* „Uđi u galeriju“ sa početne (galerija.html?ulaz) ulazi odmah u
        salu, bez drugog klika. Parametar se briše iz adrese, pa
        osvježavanje stranice opet prikazuje običan ulaz. */

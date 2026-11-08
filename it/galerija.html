@@ -13,7 +13,7 @@
 <!-- /fontovi -->
 <link rel="stylesheet" href="../css/tokens.css?v=27375fd933">
 <link rel="stylesheet" href="../css/base.css?v=fd3b053f77">
-<link rel="stylesheet" href="../css/galerija.css?v=367ebd9105">
+<link rel="stylesheet" href="../css/galerija.css?v=166cfcdf71">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
@@ -147,8 +147,15 @@
           <!-- Platno. Canvas ubacuje js/galerija/glavni.js (pokreni). -->
           <div class="galerija-platno" id="galerija-platno"></div>
 
-          <!-- Poruka tokom preuzimanja biblioteke i tekstura -->
-          <p class="galerija-ucitavanje" id="galerija-ucitavanje" role="status">Caricamento della sala e delle opere…</p>
+          <!-- Učitavanje: potpis i tanka traka, samo dok stižu Three.js i podaci.
+               Sala se priprema u pozadini (glavni.js, predUcitaj), pa ovo obično traje tren. -->
+          <div class="galerija-ucitavanje" id="galerija-ucitavanje" role="status">
+            <img class="galerija-ucitavanje__potpis" src="../img/potpis-marko-r3-bijeli-uski-304.webp" srcset="../img/potpis-marko-r3-bijeli-uski-154.webp 154w, ../img/potpis-marko-r3-bijeli-uski-304.webp 304w, ../img/potpis-marko-r3-bijeli-uski-456.webp 456w" sizes="11rem" width="456" height="133" alt="" aria-hidden="true" decoding="async">
+            <div class="galerija-ucitavanje__traka" id="galerija-ucitavanje-traka" role="progressbar" aria-label="Caricamento della sala">
+              <span class="galerija-ucitavanje__punjenje" id="galerija-ucitavanje-punjenje"></span>
+            </div>
+            <p class="galerija-ucitavanje__tekst">Prepariamo la sala</p>
+          </div>
 
           <!-- HUD: izlaz, FPS, kretanje ka djelima, uglovi gledanja -->
           <div class="galerija-hud" id="galerija-hud">
@@ -548,10 +555,10 @@
      Mjereno: na 4G bez razlike; na sporijoj vezi (1,6 Mbit/s) ili
      iscrtavanje kasni do ~0,1 s ili spremnost sale ~0,07 s, zavisno od
      servera. Izvršavaju se i dalje ovdje, ovim redom. -->
-<script src="../js/galerija/osnova.js?v=53cd7c84f3" fetchpriority="low"></script>
-<script src="../js/galerija/scena.js?v=90d579ac11" fetchpriority="low"></script>
+<script src="../js/galerija/osnova.js?v=f7459d7c61" fetchpriority="low"></script>
+<script src="../js/galerija/scena.js?v=b3823d317e" fetchpriority="low"></script>
 <script src="../js/galerija/sucelje.js?v=25b90cc628" fetchpriority="low"></script>
 <script src="../js/galerija/kretanje.js?v=346d965acf" fetchpriority="low"></script>
-<script src="../js/galerija/glavni.js?v=cf38b7c76e" fetchpriority="low"></script>
+<script src="../js/galerija/glavni.js?v=c42b38cf37" fetchpriority="low"></script>
 </body>
 </html>

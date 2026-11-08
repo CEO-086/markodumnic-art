@@ -466,7 +466,9 @@ const { zagrijDrugu } = G;   /* svjetla, scena.js */
 function izvorMali(djelo) {
   return djelo.id ? izKorijena('img/sala/' + encodeURIComponent(djelo.id) + '-160.webp') : null;
 }
-/* Izvori po redu: prvi koji prođe ide na platno (vidi ucitajBoju). */
+/* Izvori po redu: prvi koji prođe ide na platno (vidi ucitajBoju).
+   PAZI: početna stranica unaprijed preuzima iste adrese (izvorPrave u
+   js/najava-galerije.js) — izmjena ovdje ide i tamo. Isto za izvorReljefa. */
 function izvoriDjela(djelo) {
   const id = djelo.id ? encodeURIComponent(djelo.id) : '';
   const avif = id && avifRadi !== false;
@@ -871,6 +873,7 @@ function predUcitajVeliku(djelo) {
 }
 
 Object.assign(G, {
+  izvorMali, AVIF_PROVJERA,
   izvorDjela, izvorVelike, rasterizuj, zatvoriBitmapu, jedanPosaoKadra, rasporediTeksture, ucitajDrugu,
   paziNaDrugu, predUcitajVeliku
 });

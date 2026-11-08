@@ -224,6 +224,8 @@
  * @property {number} [svjetlaKrug]
  * @property {boolean} [drugaZagrijana]
  * @property {boolean} [drugaZakazana]
+ * @property {boolean} [predUcitano]  pozadinsko predučitavanje je krenulo (glavni.js)
+ * @property {Promise<Djelo[]>|null} [podaciRano]  data/radovi.json iz predučitavanja
  * @property {boolean} [zagrijavanjeZakazano]
  * @property {number} [zagrijEkran]
  * @property {number} [zagrijMalo]
@@ -433,7 +435,7 @@ const MAX_TEKSTURA = Math.min(
   (window.screen && screen.width) || 1024,
   (window.screen && screen.height) || 1024
 ) < 700 ? 1024 : 2048;
-const TELEFON = MAX_TEKSTURA <= 1024;
+const TELEFON = MAX_TEKSTURA <= 1024;   /* isto pravilo i u js/najava-galerije.js */
 
 /* ŠTEDNJA PODATAKA: „štedi podatke“ (navigator.connection.saveData) ili
    prefers-reduced-data — manje teksture i ništa unaprijed (ni Three.js
