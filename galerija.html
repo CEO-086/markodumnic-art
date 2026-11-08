@@ -13,7 +13,7 @@
 <!-- /fontovi -->
 <link rel="stylesheet" href="css/tokens.css?v=27375fd933">
 <link rel="stylesheet" href="css/base.css?v=fd3b053f77">
-<link rel="stylesheet" href="css/galerija.css?v=166cfcdf71">
+<link rel="stylesheet" href="css/galerija.css?v=86d50ea629">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/img/ikone/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/img/ikone/apple-touch-icon.png">
@@ -146,13 +146,30 @@
           <!-- Platno. Canvas ubacuje js/galerija/glavni.js (pokreni). -->
           <div class="galerija-platno" id="galerija-platno"></div>
 
-          <!-- Učitavanje: potpis i tanka traka, samo dok stižu Three.js i podaci.
-               Sala se priprema u pozadini (glavni.js, predUcitaj), pa ovo obično traje tren. -->
+          <!-- Učitavanje: Markov potpis se ispisuje dok stižu Three.js i podaci. Pojavljuje se
+               tek ako čekanje traje duže od tren (glavni.js, POTPIS) — sala se priprema u pozadini. -->
           <div class="galerija-ucitavanje" id="galerija-ucitavanje" role="status">
-            <img class="galerija-ucitavanje__potpis" src="img/potpis-marko-r3-bijeli-uski-304.webp" srcset="img/potpis-marko-r3-bijeli-uski-154.webp 154w, img/potpis-marko-r3-bijeli-uski-304.webp 304w, img/potpis-marko-r3-bijeli-uski-456.webp 456w" sizes="11rem" width="456" height="133" alt="" aria-hidden="true" decoding="async">
-            <div class="galerija-ucitavanje__traka" id="galerija-ucitavanje-traka" role="progressbar" aria-label="Učitavanje sale">
-              <span class="galerija-ucitavanje__punjenje" id="galerija-ucitavanje-punjenje"></span>
-            </div>
+            <!-- Potpis se ispisuje: maska je trag pera (5 slova, redom kojim se piše),
+                 a ispod je prava slika potpisa — Markov rukopis, ne imitacija.
+                 Pero pokreće js/galerija/glavni.js (POTPIS); na kraju se pretopi u punu sliku. -->
+            <svg class="galerija-ucitavanje__potpis" viewBox="0 0 456 133" width="456" height="133" aria-hidden="true" focusable="false">
+              <defs>
+                <mask id="galerija-potpis-maska" maskUnits="userSpaceOnUse" x="0" y="0" width="456" height="133">
+                  <g class="galerija-potpis-pero" fill="none" stroke="#fff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 28C6.8 28.8 5.3 30.8 6 33C6.7 35.2 8.8 38.7 11 41C13.2 43.3 16.3 46.0 19 47C21.7 48.0 23.2 48.2 27 47C30.8 45.8 36.0 43.3 42 40C48.0 36.7 59.0 27.8 63 27C67.0 26.2 64.7 33.0 66 35C67.3 37.0 66.8 39.2 71 39C75.2 38.8 87.2 34.2 91 34C94.8 33.8 93.7 33.7 94 38C94.3 42.3 93.2 56.3 93 60" pathLength="1" data-slovo="0"/>
+                  <path d="M156 43C156.0 42.3 154.5 40.5 156 39C157.5 37.5 163.2 36.0 165 34C166.8 32.0 166.7 28.2 167 27" pathLength="1" data-slovo="1"/>
+                  <path d="M164 35C164.8 35.8 168.2 37.8 169 40C169.8 42.2 168.5 45.5 169 48C169.5 50.5 171.5 53.8 172 55" pathLength="1" data-slovo="1"/>
+                  <path d="M240 13C239.8 15.5 239.8 23.2 239 28C238.2 32.8 236.8 34.7 235 42C233.2 49.3 230.3 61.7 228 72C225.7 82.3 223.7 94.8 221 104C218.3 113.2 213.5 123.2 212 127" pathLength="1" data-slovo="2"/>
+                  <path d="M242 12C243.2 13.0 247.7 15.3 249 18C250.3 20.7 250.8 24.8 250 28C249.2 31.2 245.0 35.5 244 37" pathLength="1" data-slovo="2"/>
+                  <path d="M318 8C317.7 9.0 316.5 10.3 316 14C315.5 17.7 315.7 26.0 315 30C314.3 34.0 313.0 35.2 312 38C311.0 40.8 309.5 44.7 309 47C308.5 49.3 309.0 51.2 309 52" pathLength="1" data-slovo="3"/>
+                  <path d="M327 17C328.0 17.7 332.3 18.8 333 21C333.7 23.2 331.3 27.2 331 30C330.7 32.8 330.0 35.3 331 38C332.0 40.7 334.2 44.2 337 46C339.8 47.8 346.2 48.5 348 49" pathLength="1" data-slovo="3"/>
+                  <path d="M402 35C401.5 34.2 399.3 31.8 399 30C398.7 28.2 398.7 26.3 400 24C401.3 21.7 403.8 17.2 407 16C410.2 14.8 414.8 15.7 419 17C423.2 18.3 429.0 22.8 432 24C435.0 25.2 434.0 26.0 437 24C440.0 22.0 447.8 14.0 450 12" pathLength="1" data-slovo="4"/>
+                  </g>
+                </mask>
+              </defs>
+              <image class="galerija-potpis-slika" href="img/potpis-marko-r3-bijeli-uski-456.webp" width="456" height="133" mask="url(#galerija-potpis-maska)"/>
+              <image class="galerija-potpis-slika galerija-potpis-slika--puna" href="img/potpis-marko-r3-bijeli-uski-456.webp" width="456" height="133"/>
+            </svg>
             <p class="galerija-ucitavanje__tekst">Pripremamo salu</p>
           </div>
 
@@ -558,6 +575,6 @@
 <script src="js/galerija/scena.js?v=b3823d317e" fetchpriority="low"></script>
 <script src="js/galerija/sucelje.js?v=25b90cc628" fetchpriority="low"></script>
 <script src="js/galerija/kretanje.js?v=346d965acf" fetchpriority="low"></script>
-<script src="js/galerija/glavni.js?v=c42b38cf37" fetchpriority="low"></script>
+<script src="js/galerija/glavni.js?v=da5e6ec068" fetchpriority="low"></script>
 </body>
 </html>

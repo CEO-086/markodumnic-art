@@ -472,6 +472,7 @@ function petlja() {
    Izlaz — rušenje scene i oslobađanje WebGL konteksta
    --------------------------------------------------------- */
 function izadji() {
+  potpisStani();
   S.gen++;              /* poslovi iz reda za ovu salu se više ne izvršavaju */
   S.red.length = 0;
   S.teksture = [];
@@ -626,6 +627,95 @@ function predUcitajKadTreba() {
 }
 
 /* ---------------------------------------------------------
+   POTPIS — Markov potpis se ispisuje dok se sala priprema
+
+   Zastor se pokaže tek ako čekanje potraje duže od POTPIS_PRAG (kad je
+   sala već u kešu, ulazi se bez treptaja). Pero ide slovo po slovo,
+   ujednačenom brzinom, sa kratkim zastojem gdje se pero podiže. Ako je
+   sala spremna usred pisanja, ostatak se dopiše ubrzano (najviše
+   POTPIS_DOVRSI ms) — potpis nikad ne ostane prekinut na pola slova —
+   pa se zastor pretopi u salu. Ako čekanje traje duže od pisanja,
+   potpis se pretopi u punu sliku i blago „diše“ (CSS).
+   Uz smanjeno kretanje potpis stoji cijeli (CSS), bez pera.
+   --------------------------------------------------------- */
+const POTPIS_PRAG = 300;      /* ms do pojave zastora */
+const POTPIS_BRZINA = 0.5;    /* px putanje po ms — ~1,5 s za cijeli potpis */
+const POTPIS_DOVRSI = 200;    /* ms za dopisivanje kad je sala spremna */
+const POT = { tajmer: 0, anim: /** @type {Animation[]} */ ([]), vidljiv: false };
+const potpisPera = el.ucitavanje ? Array.prototype.slice.call(el.ucitavanje.querySelectorAll('.galerija-potpis-pero path')) : [];
+
+function potpisPisi() {
+  POT.anim = [];
+  if (!potpisPera.length || smanjenoKretanje() || !potpisPera[0].animate) {
+    el.ucitavanje.setAttribute('data-potpis', 'gotov');
+    return;
+  }
+  el.ucitavanje.removeAttribute('data-potpis');
+  let t = 0, slovo = null;
+  potpisPera.forEach(function (p) {
+    const duz = (p.getTotalLength && p.getTotalLength()) || 60;
+    if (slovo !== null) { t += p.getAttribute('data-slovo') === slovo ? 40 : 90; }   /* pero se podiže */
+    slovo = p.getAttribute('data-slovo');
+    const trajanje = Math.max(90, duz / POTPIS_BRZINA);
+    /* Početak malo prije putanje: okrugli vrh pera (r = 13) ne smije
+       ostaviti tačku dok slovo ne krene. */
+    const od = 1 + 14 / duz;
+    POT.anim.push(p.animate([{ strokeDashoffset: od }, { strokeDashoffset: 0 }], {
+      duration: trajanje, delay: t, easing: 'cubic-bezier(.4, .05, .5, .95)', fill: 'both'
+    }));
+    t += trajanje;
+  });
+  Promise.all(POT.anim.map(function (a) { return a.finished; })).then(function () {
+    if (POT.vidljiv) { el.ucitavanje.setAttribute('data-potpis', 'gotov'); }
+  }, function () { /* otkazano (izlaz) */ });
+}
+
+/* Klik na ulaz: zastor tek posle praga */
+function potpisKreni() {
+  potpisStani();
+  if (!el.ucitavanje) { return; }
+  POT.tajmer = window.setTimeout(function () {
+    POT.tajmer = 0;
+    POT.vidljiv = true;
+    korijen.setAttribute('data-ucitavanje-vidljivo', '');
+    potpisPisi();
+  }, POTPIS_PRAG);
+}
+
+/* Sala je spremna: dopiši ubrzano ako treba. Vraća Promise kad je
+   potpis cio (odmah, ako zastor nije ni bio vidljiv). */
+function potpisDovrsi() {
+  if (POT.tajmer) { window.clearTimeout(POT.tajmer); POT.tajmer = 0; }
+  if (!POT.vidljiv || !POT.anim.length) { return Promise.resolve(); }
+  let ostalo = 0;
+  POT.anim.forEach(function (a) {
+    const tm = a.effect && a.effect.getComputedTiming ? a.effect.getComputedTiming() : null;
+    const kraj = tm ? Number(tm.endTime) || 0 : 0;
+    ostalo = Math.max(ostalo, kraj - (Number(a.currentTime) || 0));
+  });
+  if (ostalo > POTPIS_DOVRSI) {
+    const brze = ostalo / POTPIS_DOVRSI;
+    POT.anim.forEach(function (a) { a.playbackRate = brze; });
+  }
+  return Promise.all(POT.anim.map(function (a) { return a.finished; })).then(function () {}, function () {});
+}
+
+/* Zastor se povlači (CSS pretapanje) */
+function potpisSkloni() {
+  if (POT.tajmer) { window.clearTimeout(POT.tajmer); POT.tajmer = 0; }
+  POT.vidljiv = false;
+  korijen.removeAttribute('data-ucitavanje-vidljivo');
+}
+
+/* Izlaz ili 2D: sve nazad na početak */
+function potpisStani() {
+  potpisSkloni();
+  POT.anim.forEach(function (a) { try { a.cancel(); } catch (e) { /* nebitno */ } });
+  POT.anim = [];
+  if (el.ucitavanje) { el.ucitavanje.removeAttribute('data-potpis'); }
+}
+
+/* ---------------------------------------------------------
    Klik na "Uđi u salu"
    --------------------------------------------------------- */
 async function ulaz() {
@@ -633,6 +723,7 @@ async function ulaz() {
   if (location.protocol === 'file:') { na2D('fajl'); return; }
 
   stanje('ucitavanje');
+  potpisKreni();
 
   /* Three.js i podaci se preuzimaju ISTOVREMENO, ne jedno za drugim */
   najaviThree();
@@ -648,6 +739,7 @@ async function ulaz() {
   try {
     djela = rano ? await rano.catch(function () { return ucitajPodatke(); }) : await ucitajPodatke();
   } catch (g) {
+    potpisStani();
     na2D((g && g.vrsta) || 'podaci');
     return;
   }
@@ -660,14 +752,21 @@ async function ulaz() {
     /* Three.js nije stigao iz vendor/three/ (nema veze, blokiran) ili je
        nepotpun. Razlog se i dalje zove 'cdn' — tako ga čitaju CSS i
        galerija.html (data-razlog). */
+    potpisStani();
     na2D('cdn');
     return;
   }
 
   S.tri = modul;
+  /* Potpis se dopiše (najviše POTPIS_DOVRSI ms) prije gradnje sale:
+     gradnja zauzme glavnu nit, pa bi pero inače stalo usred slova. */
+  await potpisDovrsi();
   try {
     pokreni(djela);
+    /* Zastor se povlači tek kad sala nacrta prvi kadar */
+    window.requestAnimationFrame(function () { window.requestAnimationFrame(potpisSkloni); });
   } catch (g) {
+    potpisStani();
     /* Ako crtanje padne, ne ostavljamo prazan crni pravougaonik.
        Pokupi za sobom sve što je stiglo da se napravi. */
     try { izadji(); } catch (e) { /* nebitno */ }
